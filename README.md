@@ -2,8 +2,8 @@
 
 A user-friendly GUI tool to easily normalize the loudness of your audio files using FFmpeg. The normalized file is automatically saved in the same folder as the original file.
 
-<!-- Hier könntest du später einen Screenshot deines Programms einfügen! -->
-<!-- ![Screenshot of Audio Normalizer](...) -->
+![Screenshot of the main interface](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/images/Screenshot%202025-01-22%20175408_.png?raw=true)
+![Screenshot of the options dialog](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/images/Screenshot%202025-02-28%20074549.png?raw=true)
 
 ## Features
 
