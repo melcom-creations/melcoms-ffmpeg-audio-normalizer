@@ -32,7 +32,7 @@ This program requires **`ffmpeg.exe`** to function.
 
 #### 3. Normalize an Audio File
 *   In the main window, click `Browse` and select the audio file you want to process.
-*   Choose a `LUFS Preset` or enter a custom value.
+*   Adjust the **LUFS** and **True Peak** presets as needed. The default settings are a great starting point for general use.
 *   Select your desired `Output Format`.
 *   Click `Start Normalization`.
 
