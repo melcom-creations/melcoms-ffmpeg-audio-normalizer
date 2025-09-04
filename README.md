@@ -42,7 +42,7 @@ For more detailed information, please refer to the help files included in the do
 
 ## License
 
-This software is open-source and released under the MIT License. See the [LICENSE]([LICENSE](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/License.txt)) file for details.
+This software is open-source and released under the MIT License. See the [LICENSE.txt](License.txt) file for details.
 
 ---
 
