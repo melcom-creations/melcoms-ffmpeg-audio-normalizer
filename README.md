@@ -19,6 +19,10 @@ You can download the latest version, which includes the `.exe` and all necessary
 
 ## How to Use
 
+For a visual guide, check out the official video tutorial on how to install and use the program:
+
+[![How to Install & Use Video Tutorial](https://img.youtube.com/vi/8nzvCOJsASw/hqdefault.jpg)](https://youtu.be/8nzvCOJsASw)
+
 #### 1. Prerequisite: Get FFmpeg
 This program requires **`ffmpeg.exe`** to function.
 *   Download the latest FFmpeg package from a trusted source, for example: **[BtbN's FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest)**.
