@@ -36,6 +36,13 @@ This program requires **`ffmpeg.exe`** to function.
 *   Select your desired `Output Format`.
 *   Click `Start Normalization`.
 
+## Support & Feedback
+
+Please note that the GitHub "Issues" feature has been disabled for this project. As a solo developer, I can provide the best support via direct email.
+
+If you find a bug, have a feature request, or need help, please send a constructive email to:
+**[melcom@gmx.net](mailto:melcom@gmx.net)**
+
 ## Detailed Help
 
 For more detailed information, please refer to the help files included in the download package. Open `help_de_DE.html` (German), `help_en_US.html` (English), or `help_pl_PL.html` (Polish) in your web browser.
