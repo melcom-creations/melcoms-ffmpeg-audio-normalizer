@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!-- Declares the document type as HTML5 to ensure the browser renders the page in standard mode -->
+<html lang="en-US">
+<!-- Defines the root level of the HTML document and sets the language to US English -->
+
+<head>
+    <!-- Head section of the HTML document, contains metadata, title, and stylesheets -->
+    <meta charset="UTF-8">
+    <!-- Defines the character encoding for the document as UTF-8 to ensure correct display of special characters -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Optimizes the display of the page on different screen sizes, especially for mobile devices -->
+    <title>melcom's FFmpeg Audio Normalizer - Help</title>
+    <!-- Sets the title of the page, which is displayed in the browser tab or window title -->
+    <style>
+        /* CSS styles for the layout of the help page (ORIGINAL LAYOUT & COLORS) */
+
+        body {
+            background-color: #183641; /* Background color of the page (dark blue-green) */
+            color: #aedcf6; /* Default text color (light blue) */
+            font-family: Arial, sans-serif; /* Font for all text */
+            line-height: 1.6; /* Line spacing for better readability */
+        }
+
+        h1,
+        h2 {
+            color: #70a9ff; /* Color of main and subheadings (light blue) */
+        }
+
+        table {
+            width: 100%; /* Set table width to 100% of the parent element */
+            border-collapse: collapse; /* Merge table and cell borders for a unified appearance */
+            margin-bottom: 20px; /* Spacing below the table */
+        }
+
+        th {
+            background-color: #011f27; /* Background color for table header cells (very dark blue-green) */
+            color: #aedcf6; /* Text color for table header cells (light blue) */
+            padding: 10px; /* Padding inside table header cells for better readability */
+        }
+
+        td {
+            background-color: #1c3f4c; /* Background color for table cells (darker blue-green) */
+            color: #aedcf6; /* Text color for table cells (light blue) */
+            padding: 10px; /* Padding inside table cells */
+        }
+
+        /* New CSS classes for links and highlights */
+        .help-link {
+            color: #70a9ff; /* Light blue color for help links */
+        }
+
+        .highlight {
+            color: #70a9ff; /* Light blue color for highlights */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main content area of the HTML document, all visible elements of the page are placed here -->
+    <h1>melcom's FFmpeg Audio Normalizer - Help</h1>
+    <!-- Main heading of the help page, prominently at the top of the page -->
+    <h2>Table of Contents</h2>
+    <!-- Subheading, introduces the table of contents -->
+    <ul>
+        <!-- Unordered list, serves as a table of contents with anchor links to different sections of the page -->
+        <li><a class="help-link" href="#requirements">Requirements</a></li>
+        <!-- List item with a link to the 'Requirements' section, using CSS class 'help-link' for color -->
+        <li><a class="help-link" href="#steps-gui">Steps for Using v2 (GUI Version)</a></li>
+        <!-- List item with a link to the 'Steps for Using the GUI Version' section, using CSS class 'help-link' for color -->
+        <li><a class="help-link" href="#additional-notes">Additional Notes</a></li>
+        <!-- List item with a link to the 'Additional Notes' section, using CSS class 'help-link' for color -->
+        <li><a class="help-link" href="#ffmpeg-tips">Tips for Using FFmpeg</a></li>
+        <!-- List item with a link to the 'Tips for Using FFmpeg' section, using CSS class 'help-link' for color -->
+        <li><a class="help-link" href="#about-this-file">About This File</a></li>
+        <!-- List item with a link to the 'About This File' section, using CSS class 'help-link' for color -->
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <!-- Main section 'Requirements', defines necessary conditions for using the program -->
+    <ul>
+        <!-- Unordered list, lists the requirements -->
+        <li>To use <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, you need FFmpeg (ffmpeg.exe). You can download FFmpeg from <a class="help-link" href="https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest" target="_blank" rel="noopener">this link</a>.</li>
+        <!-- List item, informs about the necessity of FFmpeg and provides a download link, using CSS classes for color -->
+        <li>Make sure that `ffmpeg.exe` is located in a folder that is included in your system path (`PATH`), **or** that you can specify the path to `ffmpeg.exe` in the program options (see section 'Options' in the GUI instructions).</li>
+        <!-- List item, explains the path requirements for FFmpeg -->
+    </ul>
+
+    <h2 id="steps-gui">Steps for Using v2 (GUI Version)</h2>
+    <!-- Main section 'Steps for Using the GUI Version', provides a step-by-step guide -->
+    <ol>
+        <!-- Ordered list, numbers the steps for operating the GUI -->
+        <li>Start the GUI version (the `.exe` file). Make sure that FFmpeg is installed correctly and that the program can find `ffmpeg.exe`. If you receive error messages, check the FFmpeg path in the options (File -> Options).</li>
+        <!-- Numbered step 1, starting the program and checking the FFmpeg installation -->
+        <li>Click "Browse" to select an audio file.</li>
+        <!-- Numbered step 2, file selection via the "Browse" button -->
+        <li>Optionally select a <strong>LUFS Preset</strong> from the dropdown list or enter a <strong>Target LUFS Value</strong>.</li>
+        <!-- Numbered step 3, Optional LUFS preset selection or manual input -->
+        <li>Optionally select a <strong>True Peak Preset</strong> from the dropdown list or enter a <strong>True Peak Value</strong> (dBTP).</li>
+        <!-- Numbered step 4, Optional True Peak preset selection or manual input -->
+        <li>Optionally select the <strong>Output Format</strong> (new: also <strong>OGG</strong>).</li>
+        <!-- Numbered step 5, Optional selection of the output format -->
+        <li>Click "Analyze Audio" or "Start Normalization".</li>
+        <!-- Numbered step 6, Starting the analysis or normalization -->
+        <li>The progress is displayed in the progress bar and in the process information field.</li>
+        <!-- Numbered step 7, Hint about progress display -->
+        <li>The normalized output file is created by default in the **same folder as the original file**. The file name is based on the original file name, supplemented by the addition '-Normalized' before the file extension.  **Example:** `musicfile.wav` becomes `musicfile-Normalized.wav`.</li>
+        <!-- Numbered step 8, Explanation of the storage location and naming of the output file -->
+    </ol>
+
+    <h2 id="additional-notes">Additional Notes</h2>
+    <!-- Main section 'Additional Notes', contains more detailed information and explanations about certain program functions -->
+    <p><strong>Information about the LUFS and True Peak Presets in this tool:</strong></p>
+    <!-- Introductory paragraph on the topic of LUFS and True Peak Presets -->
+    <ul>
+        <!-- Unordered list, groups information about LUFS and True Peak Presets -->
+        <li><strong>LUFS Presets:</strong> Predefined target loudness values (Integrated Loudness) in LUFS, optimized for different platforms and applications:
+            <!-- List item, explains LUFS Presets and their optimization -->
+            <ul>
+                <!-- Nested unordered list, details the individual LUFS Presets -->
+                <li><strong>Default (-14 LUFS):</strong> A common standard target value for music production and mastering.</li>
+                <!-- Detailed description of the "Default" LUFS Preset -->
+                <li><strong>YouTube (-14 LUFS):</strong> Recommended target value for YouTube uploads.</li>
+                <!-- Detailed description of the "YouTube" LUFS Preset -->
+                <li><strong>Spotify (-14 LUFS):</strong> Recommended target value for Spotify.</li>
+                <!-- Detailed description of the "Spotify" LUFS Preset -->
+                <li><strong>Broadcast EBU R128 (-23 LUFS):</strong> Target value for TV and radio broadcasting according to EBU R128 standard.</li>
+                <!-- Detailed description of the "Broadcast EBU R128" LUFS Preset -->
+                <li><strong>Custom:</strong> Allows manual entry of your own target LUFS value in the input field next to the preset dropdown. This is useful if you need specific target loudness values for other platforms or applications that are not included in the presets.  <strong>Note:</strong> The recommended LUFS range is between -70 and -5 LUFS.</li>
+                <!-- Detailed description of the "Custom" LUFS Preset with note on the value range -->
+            </ul>
+        </li>
+        <li><strong>True Peak Presets:</strong> Predefined True Peak limit values in dBTP (Decibels True Peak):
+            <!-- List item, explains True Peak Presets -->
+            <ul>
+                <!-- Nested unordered list, details the individual True Peak Presets -->
+                <li><strong>Default (-1 dBTP):</strong> A common standard limit value to avoid inter-sample peaks.</li>
+                <!-- Detailed description of the "Default" True Peak Preset -->
+                <li><strong>Broadcast (-2 dBTP):</strong> Stricter limit value for broadcasting applications.</li>
+                <!-- Detailed description of the "Broadcast" True Peak Preset -->
+                <li><strong>No Limit (0 dBTP):</strong> No True Peak limit (0 dBTP). <strong>Caution: Risky!</strong> Can lead to inter-sample peaks and clipping, especially when encoding into lossy formats. Recommended for experienced users only.</li>
+                <!-- Detailed description of the "No Limit" True Peak Preset with warning -->
+                <li><strong>Custom:</strong> Allows manual entry of your own True Peak limit value (in dBTP) in the input field next to the preset dropdown. This is intended for advanced users who have specific True Peak requirements. <strong>Note:</strong> The recommended True Peak range is between -9 and 0 dBTP.</li>
+                <!-- Detailed description of the "Custom" True Peak Preset with note on the value range -->
+            </ul>
+        </li>
+    </ul>
+
+    <p><strong>'Single Log Entry' Option (Options -> Log File Settings):</strong></p>
+    <!-- Paragraph, introduces the explanation of the 'Single Log Entry' option -->
+    <ul>
+        <!-- Unordered list, explains the function and effects of the 'Single Log Entry' option -->
+        <li><strong>Enabled by default:</strong>  With each analysis or normalization, the previous log file is **cleared** and only the information about the current process is saved. This creates a **short and clear log file** that always contains only the last operation.</li>
+        <!-- List item, describes the default behavior of the option (enabled) -->
+        <li><strong>Can be deactivated:</strong> If you deactivate this option, **all** analysis and normalization processes are **saved one after the other** in the log file (log rolling behavior if the log file reaches a certain size). This is useful if you want a **history** of the processes performed.</li>
+        <!-- List item, describes the behavior when the option is deactivated (log rolling) -->
+        <li><strong>'Maximum Log File Size' Field:</strong>  If 'Single Log Entry' is enabled, the 'Maximum Log File Size' field is **inactive** because the log file starts anew with each process anyway.</li>
+        <!-- List item, explains the inactivity of the 'Maximum Log File Size' field when 'Single Log Entry' is enabled -->
+    </ul>
+
+    <h2 id="ffmpeg-tips">Tips for Using FFmpeg</h2>
+    <!-- Main section 'Tips for Using FFmpeg', offers useful hints and commands for working with FFmpeg -->
+    <p>FFmpeg is a powerful tool for processing multimedia files. Here are some useful commands related to audio analysis and normalization, including the standard command that this tool uses internally:</p>
+    <!-- Introductory paragraph to the 'FFmpeg Tips' section -->
+    <ul>
+        <!-- Unordered list, contains various FFmpeg commands and explanations -->
+        <li><strong>Standard Normalization Command (used by 'melcom's FFmpeg Audio Normalizer'):</strong><br>
+            <!-- List item, begins with the standard normalization command -->
+            <code>ffmpeg -i "musicfile.wav" -af "loudnorm=I=-14:TP=-1" -ar 48000 -ac 2 -c:a pcm_f32le "musicfile-Normalized.wav"</code>
+            <!-- Code block, shows the standard FFmpeg command -->
+            <br>This command is an example of the standard normalization command that 'melcom's FFmpeg Audio Normalizer' uses when you select the default settings (LUFS Preset: 'Default (-14 LUFS)', True Peak Preset: 'Default (-1 dBTP)', Output Format: WAV).  Here is a detailed explanation of the individual options and parameters:
+            <!-- Paragraph, explains the context and purpose of the standard command -->
+            <ul>
+                <!-- Nested unordered list, details the individual options and parameters of the standard command -->
+                <li><code>ffmpeg</code>:  Calls the FFmpeg program.</li>
+                <!-- Detailed explanation of the 'ffmpeg' command -->
+                <li><code>-i "musicfile.wav"</code>:  Specifies the **input file**. In this case, it is `musicfile.wav`. Replace this with the path to your actual audio file.</li>
+                <!-- Detailed explanation of the '-i' option (input file) -->
+                <li><code>-af "loudnorm=I=-14:TP=-1"</code>:  Uses the **audio filter** `loudnorm` for loudness normalization.
+                    <!-- Detailed explanation of the '-af loudnorm' option (audio filter) -->
+                    <ul>
+                        <!-- Nested unordered list, details the parameters of the 'loudnorm' filter -->
+                        <li><code>loudnorm</code>:  Name of the loudness normalization filter.</li>
+                        <!-- Explanation of the 'loudnorm' filter name -->
+                        <li><code>I=-14</code>:  Sets the **Target Integrated Loudness** to -14 LUFS (Loudness Units Full Scale). This is the default LUFS value in the tool.</li>
+                        <!-- Detailed explanation of the 'I' parameter (target LUFS) -->
+                        <li><code>TP=-1</code>:  Sets the **Target True Peak Level** to -1 dBTP (Decibels True Peak). This is the default True Peak value in the tool and helps to avoid clipping.</li>
+                        <!-- Detailed explanation of the 'TP' parameter (target True Peak) -->
+                    </ul>
+                </li>
+                <li><code>-ar 48000</code>:  Sets the **audio sampling rate** to 48000 Hz. 48 kHz is a common sampling rate for audio and video.</li>
+                <!-- Detailed explanation of the '-ar' option (sampling rate) -->
+                <li><code>-ac 2</code>:  Sets the **number of audio channels** to 2 (stereo).  This ensures that the output signal is stereo.</li>
+                <!-- Detailed explanation of the '-ac' option (audio channels) -->
+                <li><code>-c:a pcm_f32le</code>:  Sets the **audio codec** for the output to `pcm_f32le`.
+                    <!-- Detailed explanation of the '-c:a pcm_f32le' option (audio codec) -->
+                    <ul>
+                        <!-- Nested unordered list, details the components of the 'pcm_f32le' codec -->
+                        <li><code>-c:a</code>:  Option to specify the audio codec.</li>
+                        <!-- Explanation of the '-c:a' option (codec specification) -->
+                        <li><code>pcm_f32le</code>:  Stands for "Pulse Code Modulation, 32-bit float, little-endian". This is an uncompressed, lossless audio codec (WAV format with 32-bit floating point). The tool uses WAV as the default output format.</li>
+                        <!-- Detailed explanation of the 'pcm_f32le' codec and its properties -->
+                    </ul>
+                </li>
+                <li><code>"musicfile-Normalized.wav"</code>:  Specifies the **output file**. In this case, a new file named `musicfile-Normalized.wav` is created. The tool appends "-Normalized" to the file name by default.</li>
+                <!-- Detailed explanation of the output file specification -->
+            </ul>
+        </li>
+        <li><strong>Audio Analysis with Loudnorm Filter:</strong><br>
+            <!-- List item, begins with the command for audio analysis -->
+            <code>ffmpeg -i inputfile.wav -af loudnorm=print_format=summary -f null -</code>
+            <!-- Code block, shows the FFmpeg command for audio analysis -->
+            <br>This command analyzes the audio file `inputfile.wav` with FFmpeg's `loudnorm` filter, but does not output a normalized file. Instead, it outputs a summary of the loudness values (Integrated Loudness, True Peak, Loudness Range) to the console. This can be useful to check the current loudness values of a file before starting normalization.
+            <!-- Paragraph, explains the purpose and function of the analysis command -->
+        </li>
+        <li><strong>Simple Audio Conversion (Example WAV to MP3):</strong><br>
+            <!-- List item, begins with the command for simple audio conversion -->
+            <code>ffmpeg -i inputfile.wav outputfile.mp3</code>
+            <!-- Code block, shows the FFmpeg command for simple conversion -->
+            <br>This command converts the WAV file `inputfile.wav` to an MP3 file `outputfile.mp3`. If you have general problems with FFmpeg, you can use this simple command to test whether FFmpeg works in principle.
+            <!-- Paragraph, explains the purpose of the conversion command and its usefulness for basic FFmpeg tests -->
+        </li>
+        <!-- More tips could be added here -->
+    </ul>
+
+    <h2 id="about-this-file">About This File</h2>
+    <!-- Main section 'About This File', contains information about copyright and license -->
+    <p>This program was created by Andreas 'melcom' Urban and is **open-source software**, licensed under the **MIT License**.  This means you are free to use, modify, and distribute it, both for private and commercial purposes. The full license terms can be found in the `LICENSE.txt` file that accompanies the program.</p>
+    <!-- Paragraph, explains the open-source nature and MIT license of the program -->
+    <p>If you have any questions, you can contact melcom via the following link: <a class="help-link" href="https://www.melcom-music.de/p/contact.html" target="_blank" rel="noopener">Contact Form</a></p>
+    <!-- Paragraph, provides a link to the author's contact form, using CSS class 'help-link' for color -->
+</body>
+<!-- End of the main content area -->
+
+</html>
+<!-- End of the HTML document -->
