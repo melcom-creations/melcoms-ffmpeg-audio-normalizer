@@ -1,6 +1,26 @@
 melcom's FFmpeg Audio Normalizer
 
-Version 2.2.1 (Current Version)
+Version 2.2.2 (Build Date: 2025-10-03)
+
+Key New Features in Version 2.2.2:
+
+*   New Feature: Audio Preview with Play/Stop Functionality
+    *   Play & Stop Buttons Added: New "Play" and "Stop" buttons have been added to the file selection area.
+    *   Instant File Preview: Allows users to quickly listen to the selected audio file directly within the application before starting normalization or analysis.
+    *   Improved Workflow: Helps to verify that the correct file is loaded, saving time and preventing errors.
+
+*   Major Improvement: Real-Time Process Information and Scrollbar
+    *   Live FFmpeg Output: The "Process Information" window now streams the output from FFmpeg in real-time, providing detailed feedback as the process runs.
+    *   Enhanced User Feedback: Users can now see exactly what the tool is doing at every step, instead of waiting for a final summary.
+    *   Scrollbar Implemented: A vertical scrollbar has been added to the information window, allowing users to scroll through long logs.
+
+*   Various Minor Improvements
+    *   Updated "Check for Updates" Link: The URL for checking for updates in the "Info" menu has been updated to the new project website.
+    *   GUI Layout Adjustments: The default window width has been slightly increased to better accommodate the new preview buttons.
+
+---
+
+Version 2.2.1
 
 Key New Features in Version 2.2.1 (Build Date: 2025-08-29):
 

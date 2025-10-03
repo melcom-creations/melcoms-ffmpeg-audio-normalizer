@@ -3,7 +3,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
-from tkinter.ttk import Progressbar, Combobox, Style
+from tkinter.ttk import Progressbar, Combobox, Style, Scrollbar
 import tkinter.ttk as ttk
 import subprocess
 import os
@@ -15,19 +15,19 @@ import json
 import winsound
 
 # Define the version of the application
-VERSION = "2.2.1"
+VERSION = "2.2.2"
 # Define the build date of the application
-BUILD_DATE = "2025-08-29"
+BUILD_DATE = "2025-10-03"
 
 # Define padding values for GUI elements
 GUI_PADX = 15
 GUI_PADY = 8
 GUI_LABEL_PADX = 3
 GUI_LABEL_PADY = 3
-GUI_BUTTON_PADX = 15
+GUI_BUTTON_PADX = 5
 GUI_BUTTON_PADY = 8
 # Define width for file path entry
-GUI_ENTRY_WIDTH_FILE = 70
+GUI_ENTRY_WIDTH_FILE = 58
 # Define width for LUFS and True Peak value entries
 GUI_ENTRY_WIDTH_LUFS_TP = 10
 # Define width for LUFS and True Peak preset comboboxes
@@ -56,6 +56,7 @@ ANALYSIS_LOG_FILE_NAME = "analysis.log"
 
 # Define the name of the FFmpeg executable
 FFMPEG_EXECUTABLE_NAME = "ffmpeg.exe"
+FFPLAY_EXECUTABLE_NAME = "ffplay.exe"
 # Define temporary file extension used during processing
 TEMP_FILE_EXTENSION = ".temp"
 
@@ -151,6 +152,17 @@ TRUE_PEAK_PRESETS = TRUE_PEAK_PRESETS_EN
 LUFS_PRESET_NAMES = list(LUFS_PRESETS.keys())
 TRUE_PEAK_PRESET_NAMES = list(TRUE_PEAK_PRESETS.keys())
 
+# --- NEUE HILFSFUNKTION ---
+def update_process_info(message):
+    """Fügt eine Nachricht zum Prozess-Infofenster hinzu und scrollt nach unten."""
+    if not message: # Leere Zeilen ignorieren
+        return
+        
+    process_info_field.config(state=tk.NORMAL)
+    process_info_field.insert(tk.END, message + "\n")
+    process_info_field.see(tk.END) # Auto-scroll
+    process_info_field.config(state=tk.DISABLED)
+
 # Define a class to manage application configuration
 class Config:
     def __init__(self):
@@ -211,6 +223,8 @@ class Config:
 config = Config()
 # Global variable to store the normalization process, allowing for cancellation
 normalization_process = None
+# Global variable to store the playback process
+playback_process = None
 
 # Function to load language data from JSON file
 def load_language(language_code):
@@ -295,7 +309,7 @@ def get_text(key):
 
 # Function to open the update webpage
 def check_for_updates():
-    webbrowser.open("https://melcom-music.blogspot.com/p/my-samples.html#ffmpeg")
+    webbrowser.open("http://melcom-creations.github.io/melcom-music/creations.html#ffmpeg")
 
 # Function to apply the loaded language to the GUI elements
 def apply_language(dialog_type):
@@ -303,6 +317,7 @@ def apply_language(dialog_type):
     global output_format_frame_group, process_information_frame_group, file_label, browse_button
     global lufs_preset_label, true_peak_preset_label, lufs_label, true_peak_label, output_format_label
     global analyze_button, start_button, cancel_button, lufs_preset_combobox, true_peak_preset_combobox
+    global play_button, stop_button
 
     # Set the main window title with localized app title and version
     window.title(f"{get_text('app_title')} v{VERSION}")
@@ -363,6 +378,8 @@ def apply_language(dialog_type):
 
         file_label.config(text=get_text("select_audio_file_label"))
         browse_button.config(text=get_text("browse_file_button"))
+        play_button.config(text=get_text("play_audio_button"))
+        stop_button.config(text=get_text("stop_audio_button"))
         lufs_preset_label.config(text=get_text("lufs_preset_label"))
         true_peak_preset_label.config(text=get_text("true_peak_preset_label"))
         lufs_label.config(text=get_text("target_lufs_label_custom"))
@@ -641,6 +658,8 @@ def show_info_box():
 
 # Function to open file dialog for audio file selection
 def browse_file():
+    # Stop any ongoing playback before opening a new file
+    stop_audio()
     # Open file dialog to select an audio file
     file_path = filedialog.askopenfilename(
         defaultextension=AUDIO_FILE_EXTENSION_WAV, # Default file extension
@@ -660,9 +679,82 @@ def browse_file():
     if file_path:
         file_input.delete(0, tk.END) # Clear the file input field
         file_input.insert(0, file_path) # Insert the selected file path into the input field
+        play_button.config(state=tk.NORMAL) # Enable the play button
+        stop_button.config(state=tk.DISABLED)
+
+# Function to start audio playback
+def play_audio():
+    global playback_process
+    file = file_input.get()
+
+    if not file:
+        return
+
+    # Stop any existing playback
+    stop_audio()
+
+    ffplay_path = os.path.join(config.ffmpeg_path, FFPLAY_EXECUTABLE_NAME)
+    if not os.path.exists(ffplay_path):
+        messagebox.showerror(get_text("play_error_ffplay_not_found_title"),
+                             get_text("play_error_ffplay_not_found_message"),
+                             parent=window)
+        return
+
+    try:
+        command = [ffplay_path, "-nodisp", "-autoexit", file]
+        playback_process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                            creationflags=subprocess.CREATE_NO_WINDOW)
+        
+        # Update button states
+        play_button.config(state=tk.DISABLED)
+        stop_button.config(state=tk.NORMAL)
+        browse_button.config(state=tk.DISABLED)
+        analyze_button.config(state=tk.DISABLED)
+        start_button.config(state=tk.DISABLED)
+
+        # Start a thread to monitor when playback finishes
+        monitor_thread = threading.Thread(target=_monitor_playback)
+        monitor_thread.daemon = True
+        monitor_thread.start()
+
+    except Exception as e:
+        messagebox.showerror("Playback Error", f"Failed to start playback:\n{e}", parent=window)
+
+# Function to stop audio playback
+def stop_audio():
+    global playback_process
+    if playback_process:
+        try:
+            playback_process.terminate()
+        except OSError:
+            pass # Process might have already terminated
+        playback_process = None
+        # Reset button states via the main thread
+        window.after(0, _reset_playback_buttons)
+
+# Helper function to monitor playback process in a separate thread
+def _monitor_playback():
+    if playback_process:
+        playback_process.wait() # Wait for the process to complete
+        # When done, schedule the button state reset on the main thread
+        window.after(0, _reset_playback_buttons)
+
+# Helper function to reset button states after playback stops/finishes
+def _reset_playback_buttons():
+    global playback_process
+    playback_process = None
+    if file_input.get(): # Only enable play if there is a file path
+        play_button.config(state=tk.NORMAL)
+    else:
+        play_button.config(state=tk.DISABLED)
+    stop_button.config(state=tk.DISABLED)
+    browse_button.config(state=tk.NORMAL)
+    analyze_button.config(state=tk.NORMAL)
+    start_button.config(state=tk.NORMAL)
 
 # Function to initiate audio analysis process
 def analyze_audio():
+    stop_audio() # Stop any playback before starting analysis
     file = file_input.get() # Get the file path from the input field
 
     # Check if a file is selected
@@ -676,14 +768,16 @@ def analyze_audio():
     analyze_button.config(state=tk.DISABLED)
     start_button.config(state=tk.DISABLED)
     cancel_button.config(state=tk.DISABLED)
+    play_button.config(state=tk.DISABLED)
+    stop_button.config(state=tk.DISABLED)
     progressbar.grid(row=7, column=0, columnspan=3, sticky="ew", padx=GUI_PADX, pady=GUI_PADY) # Show progress bar
     progressbar.start() # Start progress bar animation
 
+    # --- GEÄNDERT ---
     process_info_field.config(state=tk.NORMAL) # Enable process info text field for writing
     process_info_field.delete("1.0", tk.END) # Clear previous process info text
-    process_info_field.insert(tk.END,
-                             get_text("analysis_start_message").format(filename=os.path.basename(file))) # Display analysis start message
     process_info_field.config(state=tk.DISABLED) # Disable process info text field after writing
+    update_process_info(get_text("analysis_start_message").format(filename=os.path.basename(file))) # Display analysis start message
 
     # Prepare log entry for analysis start
     log_entry_start = f"======================== {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ========================\n"
@@ -696,110 +790,111 @@ def analyze_audio():
                                       args=(file,))
     analysis_thread.start()
 
-# Function to execute audio analysis in a separate thread
+# --- STARK GEÄNDERTE FUNKTION ---
 def audio_analysis_thread_function(file):
     global normalization_process, config
 
-    # Construct FFmpeg command for loudness analysis
     ffmpeg_analysis_command = [
-        os.path.join(config.ffmpeg_path, FFMPEG_EXECUTABLE_NAME), # Path to FFmpeg executable from config
-        "-i", file, # Input audio file path
-        "-af", "loudnorm=print_format=json", # Apply loudnorm filter and request JSON output
-        "-f", "null", "-" # Output format null and output file '-' to discard output
+        os.path.join(config.ffmpeg_path, FFMPEG_EXECUTABLE_NAME),
+        "-i", file,
+        "-af", "loudnorm=print_format=json",
+        "-f", "null", "-"
     ]
-    # Log the generated FFmpeg command
     log_entry_command = get_text("analysis_log_ffmpeg_command") + "\n" + " ".join(ffmpeg_analysis_command) + "\n\n"
-    append_analysis_log(log_entry_command) # Append command log entry to analysis log
+    append_analysis_log(log_entry_command)
 
     try:
-        # Execute FFmpeg analysis command
-        analysis_result = subprocess.run(ffmpeg_analysis_command, check=True, capture_output=True, text=True,
-                                            creationflags=subprocess.CREATE_NO_WINDOW) # Run FFmpeg command and capture output
-        log_output = analysis_result.stderr # Get standard error output from FFmpeg (where loudness analysis is printed)
-        append_analysis_log(get_text("analysis_log_ffmpeg_output") + "\n" + log_output + "\n") # Append FFmpeg output to analysis log
+        # Popen statt run, um die Ausgabe live zu verarbeiten
+        process = subprocess.Popen(
+            ffmpeg_analysis_command,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
+            text=True,
+            encoding='utf-8',
+            creationflags=subprocess.CREATE_NO_WINDOW
+        )
+        
+        full_stderr_output = ""
+        # Lese die Ausgabe Zeile für Zeile in Echtzeit
+        for line in iter(process.stderr.readline, ''):
+            full_stderr_output += line
+            window.after(0, update_process_info, line.strip()) # Sende die Zeile an die GUI
+
+        process.wait() # Warte auf das Ende des Prozesses
+        
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, cmd=ffmpeg_analysis_command, stderr=full_stderr_output)
+            
+        append_analysis_log(get_text("analysis_log_ffmpeg_output") + "\n" + full_stderr_output + "\n")
 
         try:
-            # Parse JSON output from FFmpeg stderr
-            start_index = log_output.find("{") # Find start of JSON object
-            end_index = log_output.rfind("}") + 1 # Find end of JSON object
-            json_string = log_output[start_index:end_index] # Extract JSON string from FFmpeg output
-            json_output = json.loads(json_string) # Parse JSON string to Python dictionary
+            start_index = full_stderr_output.find("{")
+            end_index = full_stderr_output.rfind("}") + 1
+            json_string = full_stderr_output[start_index:end_index]
+            json_output = json.loads(json_string)
 
-            # Extract relevant loudness analysis values from JSON output
-            input_i = json_output.get("input_i") # Integrated loudness
-            input_tp = json_output.get("input_tp") # True Peak
-            lra = json_output.get("input_lra") # Loudness Range
-            analysis_results = { # Store analysis results in a dictionary
-                "input_i": input_i,
+            analysis_results = {
+                "input_i": json_output.get("input_i"),
                 "input_tp": json_output.get("input_tp"),
-                "lra": lra
+                "lra": json_output.get("input_lra")
             }
-            window.after(0, _update_gui_on_analysis_completion, "Success", file, analysis_results) # Update GUI with analysis success
+            window.after(0, _update_gui_on_analysis_completion, "Success", file, analysis_results)
 
         except json.JSONDecodeError:
-            # Handle JSON decode error
-            error_message_json = get_text("analysis_log_json_error") # Get localized JSON error message
-            append_analysis_log("ERROR: " + error_message_json + "\n") # Log JSON error
-            window.after(0, _update_gui_on_analysis_completion, "Error", file, error_message_json) # Update GUI with analysis error
+            error_message_json = get_text("analysis_log_json_error")
+            append_analysis_log("ERROR: " + error_message_json + "\n")
+            window.after(0, _update_gui_on_analysis_completion, "Error", file, error_message_json)
 
     except subprocess.CalledProcessError as e:
-        # Handle FFmpeg command execution error
-        error_message_ffmpeg = get_text("analysis_ffmpeg_error_message").format(return_code=e.returncode, stderr=e.stderr) # Format localized FFmpeg error message
-        append_log("ERROR: " + error_message_ffmpeg + "\n") # Log FFmpeg error to normalization log (general log)
-        window.after(0, update_gui_on_completion, "Error", file, error_message_ffmpeg) # Update GUI with general error handler
+        error_message_ffmpeg = get_text("analysis_ffmpeg_error_message").format(return_code=e.returncode, stderr=e.stderr)
+        append_log("ERROR: " + error_message_ffmpeg + "\n")
+        window.after(0, _update_gui_on_analysis_completion, "Error", file, error_message_ffmpeg)
     except FileNotFoundError:
-        # Handle FFmpeg executable not found error
-        error_message_ffmpeg_path = get_text("analysis_ffmpeg_not_found_error_message") # Get localized FFmpeg not found error message
-        append_log("ERROR: " + error_message_ffmpeg_path + "\n") # Log FFmpeg not found error to normalization log
-        window.after(0, update_gui_on_completion, "FileNotFound", file, error_message_ffmpeg_path) # Update GUI with file not found error handler
+        error_message_ffmpeg_path = get_text("analysis_ffmpeg_not_found_error_message")
+        append_log("ERROR: " + error_message_ffmpeg_path + "\n")
+        window.after(0, _update_gui_on_analysis_completion, "FileNotFound", file, error_message_ffmpeg_path)
     except Exception as e:
-        # Handle unexpected errors during analysis
-        error_message_unknown = get_text("analysis_unknown_error_message").format(error=e) # Format localized unknown error message
-        append_log("ERROR: " + error_message_unknown + "\n") # Log unknown error to normalization log
-        window.after(0, update_gui_on_completion, "UnknownError", file, error_message_unknown) # Update GUI with unknown error handler
+        error_message_unknown = get_text("analysis_unknown_error_message").format(error=e)
+        append_log("ERROR: " + error_message_unknown + "\n")
+        window.after(0, _update_gui_on_analysis_completion, "UnknownError", file, error_message_unknown)
     finally:
-        normalization_process = None # Reset normalization process global variable
+        normalization_process = None
 
 # Function to update GUI after process completion (analysis or normalization)
 def _update_gui_after_process(status, process_type, message_text="", error_message="", output_file=None):
     # Re-enable buttons after process completion
-    analyze_button.config(state=tk.NORMAL)
-    start_button.config(state=tk.NORMAL)
+    _reset_playback_buttons() # This handles play, stop, browse, analyze, start
     cancel_button.config(state=tk.DISABLED)
     progressbar.stop() # Stop progress bar animation
     progressbar.grid_forget() # Hide progress bar
-    process_info_field.config(state=tk.NORMAL) # Enable process info text field
-    process_info_field.delete("1.0", tk.END) # Clear process info text field
+    
+    # Hier wird das Fenster nicht mehr geleert, nur noch die Erfolgs/Fehlermeldung hinzugefügt
+    # process_info_field.config(state=tk.NORMAL)
+    # process_info_field.delete("1.0", tk.END)
 
     # Handle different process statuses (Success, Error, File Not Found, Unknown Error, Cancel)
     if status == "Success":
-        process_info_field.insert(tk.END, message_text) # Display success message in process info field
+        update_process_info(f"\n>>>> {message_text} <<<<") # Hebt die Nachricht hervor
         winsound.Beep(1000, 200) # Play a short beep sound for success
     elif status == "Error":
-        process_info_field.insert(tk.END, error_message) # Display error message in process info field
-        process_info_field.config(state=tk.DISABLED) # Disable process info field after error message display
+        update_process_info(f"\n>>>> ERROR: {error_message} <<<<")
         error_title_key = f"{process_type.lower()}_ffmpeg_error_title" # Construct error title key based on process type
         messagebox.showerror(get_text(error_title_key), error_message, parent=window) # Show error message box
         winsound.Beep(1500, 500) # Play error beep sound
     elif status == "FileNotFound":
-        process_info_field.insert(tk.END, error_message) # Display file not found error
-        process_info_field.config(state=tk.DISABLED)
+        update_process_info(f"\n>>>> ERROR: {error_message} <<<<")
         error_title_key = f"{process_type.lower()}_ffmpeg_not_found_error_title" # Construct file not found error title key
         messagebox.showerror(get_text(error_title_key), error_message, parent=window) # Show file not found error message box
         winsound.Beep(1500, 500) # Play error beep sound
     elif status == "UnknownError":
-        process_info_field.config(state=tk.NORMAL) # Re-enable for writing error
-        process_info_field.insert(tk.END, error_message) # Display unknown error
-        process_info_field.config(state=tk.DISABLED) # Disable again
+        update_process_info(f"\n>>>> ERROR: {error_message} <<<<")
         error_title_key = f"{process_type.lower()}_unknown_error_title" # Construct unknown error title key
         messagebox.showerror(get_text(error_title_key), get_text(f"{process_type.lower()}_unknown_error_message_title_only"), parent=window) # Show unknown error message box (title only from localized text)
         winsound.Beep(1500, 500) # Play error beep sound
     elif status == "Cancel":
-        process_info_field.insert(tk.END, message_text) # Display cancel message
-        process_info_field.config(state=tk.DISABLED)
+        update_process_info(f"\n>>>> {message_text} <<<<")
         winsound.Beep(500, 300) # Play cancel beep sound
 
-    process_info_field.config(state=tk.DISABLED) # Ensure process info field is disabled after update
     window.after(100, lambda: window.focus_force()) # Force focus back to main window
     window.after(100, lambda: window.update()) # Update window to reflect changes
 
@@ -807,15 +902,14 @@ def _update_gui_after_process(status, process_type, message_text="", error_messa
 def _update_gui_on_analysis_completion(status=None, file=None, result=None):
     if status == "Success":
         analysis_results = result # Get analysis results
-        output_text = "\n"
-        output_text += get_text("analysis_completed_message_process_info").format(
+        output_text = get_text("analysis_completed_message_process_info").format(
                                      filename=os.path.basename(file)
-                                 ) + "\n\n" # Format analysis completion message
+                                 )
         if analysis_results:
-            output_text += get_text("analysis_result_input_i").format(input_i=analysis_results['input_i']) + "\n" # Display Integrated Loudness
-            output_text += get_text("analysis_result_input_tp").format(input_tp=analysis_results['input_tp']) + "\n" # Display True Peak
-            output_text += get_text("analysis_result_lra").format(lra=analysis_results['lra']) + "\n\n" # Display Loudness Range
-        output_text += get_text("analysis_hint_log_file") # Add hint about log file location
+            output_text += f"\n{get_text('analysis_result_input_i').format(input_i=analysis_results['input_i'])}"
+            output_text += f"\n{get_text('analysis_result_input_tp').format(input_tp=analysis_results['input_tp'])}"
+            output_text += f"\n{get_text('analysis_result_lra').format(lra=analysis_results['lra'])}"
+        output_text += f"\n{get_text('analysis_hint_log_file')}"
         _update_gui_after_process(status, "Analysis", message_text=output_text) # Update GUI with success status and message
     elif status == "Error":
         _update_gui_after_process(status, "Analysis", error_message=result) # Update GUI with error status and message
@@ -829,9 +923,8 @@ def _update_gui_on_analysis_completion(status=None, file=None, result=None):
 # Function to update GUI after normalization completion (reusing _update_gui_after_process)
 def update_gui_on_completion(status=None, output_file=None, error_message=None):
     if status == "Success":
-        output_text = "\n"
-        output_text += get_text("normalization_completed_message_process_info").format(output_filename=os.path.basename(output_file)) + "\n\n" # Format normalization completion message
-        output_text += get_text("normalization_hint_log_file") # Add hint about log file location
+        output_text = get_text("normalization_completed_message_process_info").format(output_filename=os.path.basename(output_file))
+        output_text += f"\n{get_text('normalization_hint_log_file')}"
         _update_gui_after_process(status, "Normalization", message_text=output_text, output_file=output_file) # Update GUI with success status and message
     elif status == "Error":
         _update_gui_after_process(status, "Normalization", error_message=error_message) # Update GUI with error status and message
@@ -844,6 +937,7 @@ def update_gui_on_completion(status=None, output_file=None, error_message=None):
 
 # Function to start the audio normalization process
 def start_normalization():
+    stop_audio() # Stop any playback before starting normalization
     file = file_input.get() # Get input file path
     output_format = output_format_var.get() # Get selected output format
     lufs_preset_name = lufs_preset_var.get() # Get selected LUFS preset name
@@ -959,21 +1053,28 @@ def start_normalization():
     start_button.config(state=tk.DISABLED)
     analyze_button.config(state=tk.DISABLED)
     cancel_button.config(state=tk.NORMAL) # Enable cancel button
+    play_button.config(state=tk.DISABLED)
+    stop_button.config(state=tk.DISABLED)
     progressbar.grid(row=7, column=0, columnspan=3, sticky="ew", padx=GUI_PADX, pady=GUI_PADY) # Show progress bar
     progressbar.start() # Start progress bar animation
 
+    # --- GEÄNDERT ---
     process_info_field.config(state=tk.NORMAL) # Enable process info field for writing
     process_info_field.delete("1.0", tk.END) # Clear process info field
-    process_info_field.insert(tk.END,
-                             get_text("normalization_start_message").format( # Display normalization start message with settings
+    process_info_field.config(state=tk.DISABLED) # Disable process info field after writing
+    
+    start_message = get_text("normalization_start_message").format(
                                  filename=os.path.basename(file_input.get()),
                                  target_lufs=target_lufs,
                                  target_true_peak=target_true_peak,
                                  output_format=output_format,
                                  lufs_preset_name=lufs_preset_name,
                                  true_peak_preset_name=true_peak_preset_name
-                             ))
-    process_info_field.config(state=tk.DISABLED) # Disable process info field after writing
+                             )
+    # Zeilenweise in die Info-Box schreiben für bessere Lesbarkeit
+    for line in start_message.split('\n'):
+        update_process_info(line)
+        
     process_info_field.grid() # Ensure process info field is visible
 
     # Prepare log entry for normalization start
@@ -994,110 +1095,86 @@ def start_normalization():
                               args=(ffmpeg_command, temporary_output_file, output_file))
     thread.start()
 
-# Function to execute audio normalization in a separate thread
+# --- STARK GEÄNDERTE FUNKTION ---
 def normalize_audio_thread_function(ffmpeg_command, temporary_output_file, output_file):
     global normalization_process
 
     status = None  # Track the process status
 
     try:
-        # Execute FFmpeg normalization command using subprocess.Popen for process control
-        normalization_process = subprocess.Popen(ffmpeg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                                     text=True,
-                                                     creationflags=subprocess.CREATE_NO_WINDOW) # Run FFmpeg as subprocess and capture output
-        stdout, stderr = normalization_process.communicate() # Wait for process to finish and get stdout and stderr
-        result_code = normalization_process.returncode # Get FFmpeg return code
+        normalization_process = subprocess.Popen(
+            ffmpeg_command, 
+            stderr=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
+            text=True,
+            encoding='utf-8',
+            creationflags=subprocess.CREATE_NO_WINDOW
+        )
+        
+        # Live-Ausgabe verarbeiten
+        full_stderr_output = ""
+        for line in iter(normalization_process.stderr.readline, ''):
+            full_stderr_output += line
+            window.after(0, update_process_info, line.strip())
 
-        log_output = stdout + "\n" + stderr # Combine stdout and stderr for logging
-        append_log(log_output) # Append FFmpeg output to normalization log
+        result_code = normalization_process.wait()
+        append_log(full_stderr_output)
 
-        # Check FFmpeg result code for success
         if result_code == 0:
             try:
-                # Rename temporary output file to final output file on success
                 if os.path.exists(output_file):
-                    os.remove(output_file) # Remove existing output file if it exists
-                os.rename(temporary_output_file, output_file) # Rename temporary file to output file
+                    os.remove(output_file)
+                os.rename(temporary_output_file, output_file)
                 status = "Success"
-                window.after(0, update_gui_on_completion, "Success", output_file) # Update GUI with normalization success
+                window.after(0, update_gui_on_completion, "Success", output_file)
             except OSError as e:
-                # Handle file rename error
-                error_message_rename = get_text("normalization_rename_error").format(error=e) # Format localized rename error message
-                append_log("ERROR: " + error_message_rename + "\n") # Log rename error
+                error_message_rename = get_text("normalization_rename_error").format(error=e)
+                append_log("ERROR: " + error_message_rename + "\n")
                 status = "Error"
-                window.after(0, update_gui_on_completion, "Error", output_file, error_message_rename) # Update GUI with error and rename error message
+                window.after(0, update_gui_on_completion, "Error", output_file, error_message_rename)
 
-        elif result_code == 1:
-            # Handle normalization cancel (result code 1 typically indicates user cancel in FFmpeg)
+        elif result_code == 1 and normalization_process is not None:
+             # FFmpeg kann mit Code 1 bei User-Abbruch enden
             if os.path.exists(temporary_output_file):
-                os.remove(temporary_output_file) # Remove temporary file if cancel
+                os.remove(temporary_output_file)
             status = "Cancel"
-            window.after(0, update_gui_on_completion, "Cancel",
-                         output_file) # Update GUI with cancel status
-
+            window.after(0, update_gui_on_completion, "Cancel", output_file)
+        
         else:
-            # Handle FFmpeg normalization error (result code other than 0 or 1)
             if os.path.exists(temporary_output_file):
-                os.remove(temporary_output_file) # Remove temporary file on error
-            error_message = get_text("normalization_ffmpeg_error_message").format(return_code=result_code, stderr=stderr) # Format localized FFmpeg error message
-            append_log("ERROR: " + error_message + "\n") # Log FFmpeg error
+                os.remove(temporary_output_file)
+            # Nutze die bereits gesammelte Ausgabe für die Fehlermeldung
+            error_message = get_text("normalization_ffmpeg_error_message").format(return_code=result_code, stderr=full_stderr_output)
+            append_log("ERROR: " + error_message + "\n")
             status = "Error"
-            window.after(0, update_gui_on_completion, "Error", output_file, error_message) # Update GUI with error status and message
+            window.after(0, update_gui_on_completion, "Error", output_file, error_message)
 
     except FileNotFoundError:
-        # Handle FFmpeg executable not found error
-        error_message = get_text("normalization_ffmpeg_not_found_error_message") # Get localized FFmpeg not found error message
-        append_log("ERROR: " + error_message + "\n") # Log FFmpeg not found error
+        error_message = get_text("normalization_ffmpeg_not_found_error_message")
+        append_log("ERROR: " + error_message + "\n")
         status = "FileNotFound"
-        window.after(0, update_gui_on_completion, "FileNotFound", output_file, error_message) # Update GUI with file not found error handler
+        window.after(0, update_gui_on_completion, "FileNotFound", output_file, error_message)
     except Exception as e:
-        # Handle unexpected errors during normalization
-        error_message = get_text("normalization_unknown_error_message").format(error=e) # Format localized unknown error message
-        append_log("ERROR: " + error_message + "\n") # Log unknown error
+        error_message = get_text("normalization_unknown_error_message").format(error=e)
+        append_log("ERROR: " + error_message + "\n")
         status = "UnknownError"
-        window.after(0, update_gui_on_completion, "UnknownError", output_file, error_message) # Update GUI with unknown error handler
+        window.after(0, update_gui_on_completion, "UnknownError", output_file, error_message)
     finally:
-        normalization_process = None # Reset normalization process global variable
-        if os.path.exists(temporary_output_file) and status not in ["Success", "Cancel"]: # Clean up temporary file in case of unexpected exit, but not on success or cancel
+        normalization_process = None
+        if os.path.exists(temporary_output_file) and status not in ["Success", "Cancel"]:
             try:
-                os.remove(temporary_output_file) # Try to remove temporary file
+                os.remove(temporary_output_file)
             except OSError:
-                pass # Ignore OSError during cleanup
-        window.after(0, update_gui_on_completion) # Ensure GUI is updated even in finally block
-
-# Redundant function definition - already defined above. Keeping only one definition.
-# def update_gui_on_completion(status=None, output_file=None, error_message=None):
-#     if status == "Success":
-#         output_text = "\n"
-#         output_text += get_text("normalization_completed_message_process_info").format(output_filename=os.path.basename(output_file)) + "\n\n"
-#         output_text += get_text("normalization_hint_log_file")
-#         _update_gui_after_process(status, "Normalization", message_text=output_text, output_file=output_file)
-#     elif status == "Error":
-#         _update_gui_after_process(status, "Normalization", error_message=error_message)
-#     elif status == "FileNotFound":
-#         _update_gui_after_process(status, "Normalization", error_message=error_message)
-#     elif status == "UnknownError":
-#         _update_gui_after_process(status, "Normalization", error_message=error_message)
-#     elif status == "Cancel":
-#         _update_gui_after_process(status, "Normalization", message_text=get_text("normalization_canceled_by_user_message"))
+                pass
 
 # Function to cancel the normalization process
 def cancel_normalization():
     global normalization_process
 
-    # Check if a normalization process is currently running
     if normalization_process:
         normalization_process.terminate() # Terminate the FFmpeg normalization process
-
-        progressbar.stop() # Stop progress bar animation
-        progressbar.grid_forget() # Hide progress bar
-
-        process_info_field.config(state=tk.NORMAL) # Enable process info field for writing
-        process_info_field.delete("1.0", tk.END) # Clear process info field
-        process_info_field.insert(tk.END,
-                                 get_text("normalization_cancel_process_message")) # Display cancel message
-        process_info_field.config(state=tk.DISABLED) # Disable process info field
-
+        # Der Thread wird den Abbruch erkennen und die GUI aktualisieren
+        update_process_info(get_text("normalization_cancel_process_message"))
     else:
         messagebox.showinfo(get_text("normalization_cancel_title"), # Show info message if no process to cancel
                              get_text("normalization_no_process_cancel_message"),
@@ -1105,6 +1182,7 @@ def cancel_normalization():
 
 # Function to exit the application
 def exit_program():
+    stop_audio()
     window.destroy() # Destroy the main application window, exiting the program
 
 # Function to update the state of LUFS input entry based on preset selection
@@ -1161,21 +1239,21 @@ def _append_analysis_log_with_rolling(log_file_name, text, config_obj):
         # Handle single log entry mode (truncate log file on each new entry)
         if config_obj.single_log_entry_enabled:
             if os.path.exists(log_file_path):
-                with open(log_file_path, "w") as logfile_truncate: # Open log file in write mode to truncate
+                with open(log_file_path, "w", encoding="utf-8") as logfile_truncate: # Open log file in write mode to truncate
                     pass # Truncate file by doing nothing
 
         # Handle log rolling (keep log file size within limit)
         else:
             if os.path.exists(log_file_path) and os.path.getsize(log_file_path) >= log_size_limit_bytes: # Check if log file exists and exceeds size limit
-                with open(log_file_path, "r") as logfile_r: # Open log file in read mode
+                with open(log_file_path, "r", encoding="utf-8") as logfile_r: # Open log file in read mode
                     lines = logfile_r.readlines() # Read all lines from log file
 
                 lines_to_write = lines[len(lines) // 2:] # Keep only the last half of the lines
 
-                with open(log_file_path, "w") as logfile_w: # Open log file in write mode
+                with open(log_file_path, "w", encoding="utf-8") as logfile_w: # Open log file in write mode
                     logfile_w.writelines(lines_to_write) # Write the last half of the lines back to the log file
 
-        with open(log_file_path, "a") as logfile: # Open log file in append mode
+        with open(log_file_path, "a", encoding="utf-8") as logfile: # Open log file in append mode
             logfile.write(text) # Append the new text to the log file
 
     except Exception as e:
@@ -1190,20 +1268,20 @@ def _append_log_with_rolling(log_file_name, text, config_obj):
         # Handle single log entry mode (truncate log file on each new entry)
         if config_obj.single_log_entry_enabled:
             if os.path.exists(log_file_path):
-                with open(log_file_path, "w") as logfile_truncate: # Open log file in write mode to truncate
+                with open(log_file_path, "w", encoding="utf-8") as logfile_truncate: # Open log file in write mode to truncate
                     pass # Truncate file by doing nothing
         # Handle log rolling (keep log file size within limit)
         else:
             if os.path.exists(log_file_path) and os.path.getsize(log_file_path) >= log_file_size_bytes: # Check if log file exists and exceeds size limit
-                with open(log_file_path, "r") as logfile_r: # Open log file in read mode
+                with open(log_file_path, "r", encoding="utf-8") as logfile_r: # Open log file in read mode
                     lines = logfile_r.readlines() # Read all lines from log file
 
                 lines_to_write = lines[len(lines) // 2:] # Keep only the last half of the lines
 
-                with open(log_file_path, "w") as logfile_w: # Open log file in write mode
+                with open(log_file_path, "w", encoding="utf-8") as logfile_w: # Open log file in write mode
                     logfile_w.writelines(lines_to_write) # Write the last half of the lines back to the log file
 
-        with open(log_file_path, "a") as logfile: # Open log file in append mode
+        with open(log_file_path, "a", encoding="utf-8") as logfile: # Open log file in append mode
             logfile.write(text) # Append the new text to the log file
 
     except Exception as e:
@@ -1227,7 +1305,7 @@ def update_language_selection(event, language_variable):
 # Initialize main application window
 window = tk.Tk()
 window.title(f"{get_text('app_title')} v{VERSION}") # Set window title with localized app title and version
-window_width = 800
+window_width = 890
 window_height = 630
 window.geometry(f"{window_width}x{window_height}") # Set initial window size
 
@@ -1285,13 +1363,20 @@ content_frame.grid(row=0, column=0, sticky="nsew") # Place content frame in grid
 # Create File Selection frame group
 file_frame_group = tk.LabelFrame(content_frame, text=get_text("file_selection_group"), padx=GUI_PADX, pady=GUI_PADY, bg=background_color)
 file_frame_group.grid(row=0, column=0, columnspan=3, sticky="ew", pady=(0, GUI_PADY)) # Place file frame group in grid
+file_frame_group.columnconfigure(1, weight=1)
 
 file_label = tk.Label(file_frame_group, text=get_text("select_audio_file_label"), anchor="w", bg=background_color)
 file_label.grid(row=0, column=0, sticky="w", padx=(0, GUI_LABEL_PADX)) # Place file label in file frame group
 file_input = ttk.Entry(file_frame_group, width=GUI_ENTRY_WIDTH_FILE)
 file_input.grid(row=0, column=1, sticky="ew") # Place file input entry in file frame group
 browse_button = ttk.Button(file_frame_group, text=get_text("browse_file_button"), command=browse_file)
-browse_button.grid(row=0, column=2, padx=(GUI_LABEL_PADX, 0)) # Place browse button in file frame group
+browse_button.grid(row=0, column=2, padx=(GUI_LABEL_PADX*2, 0)) # Place browse button in file frame group
+
+play_button = ttk.Button(file_frame_group, text=get_text("play_audio_button"), command=play_audio, state=tk.DISABLED)
+play_button.grid(row=0, column=3, padx=(40, 0))
+
+stop_button = ttk.Button(file_frame_group, text=get_text("stop_audio_button"), command=stop_audio, state=tk.DISABLED)
+stop_button.grid(row=0, column=4, padx=(GUI_LABEL_PADX, 0))
 
 # Separator line 1
 separator_line_1 = tk.Frame(content_frame, bg=separator_color, height=1)
@@ -1372,19 +1457,24 @@ buttons_frame.columnconfigure(2, weight=1)
 # Progress bar
 progressbar = Progressbar(content_frame, mode='indeterminate') # Create progress bar widget
 
-# Process Information frame group
+# --- GEÄNDERT: Process Information Frame mit Scrollbar ---
 process_information_frame_group = tk.LabelFrame(content_frame, text=get_text("process_information_group"), padx=GUI_PADX, pady=GUI_PADY, bg=background_color)
 process_information_frame_group.grid(row=8, column=0, columnspan=3, sticky="nsew") # Place process information frame group in grid
 
 process_info_field = tk.Text(process_information_frame_group, height=GUI_PROCESS_INFO_HEIGHT, width=GUI_PROCESS_INFO_WIDTH,
                               wrap=tk.WORD, state=tk.DISABLED, bg=PROCESS_INFO_BACKGROUND_COLOR, font=('Helvetica', 9))
-process_info_field.grid(row=1, column=0, sticky="nsew", padx=GUI_LABEL_PADX,
-                        pady=(0, GUI_LABEL_PADY)) # Place process info text field
+process_info_field.grid(row=0, column=0, sticky="nsew") # Textfeld in Spalte 0
 
-process_information_frame_group.columnconfigure(0, weight=1) # Configure process info frame group column and row weights for resizing
-process_information_frame_group.rowconfigure(1, weight=1)
+# Scrollbar hinzufügen
+scrollbar = Scrollbar(process_information_frame_group, orient="vertical", command=process_info_field.yview)
+scrollbar.grid(row=0, column=1, sticky="ns") # Scrollbar in Spalte 1
+process_info_field.config(yscrollcommand=scrollbar.set) # Scrollbar mit Textfeld verbinden
 
-content_frame.columnconfigure(0, weight=1) # Configure content frame column and row weights for resizing
+process_information_frame_group.columnconfigure(0, weight=1) # Textfeld soll sich ausdehnen
+process_information_frame_group.rowconfigure(0, weight=1) # Zeile soll sich ausdehnen
+
+
+content_frame.columnconfigure(1, weight=1) # Configure content frame column and row weights for resizing
 content_frame.rowconfigure(8, weight=1)
 window.columnconfigure(0, weight=1) # Configure window column and row weights for resizing
 window.rowconfigure(0, weight=1)
