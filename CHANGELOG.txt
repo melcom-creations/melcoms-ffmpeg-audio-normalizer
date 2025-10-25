@@ -1,5 +1,61 @@
 melcom's FFmpeg Audio Normalizer
 
+Version 3.0.0 (Halloween Edition) (Build Date: 2025-10-24)
+
+This is a major rewrite of the application, focusing on batch processing and an improved user experience.
+
+Key New Features & Workflow Improvements (compared to v2.2.2):
+
+*   New Core Feature: Batch Processing
+    *   Process Multiple Files: The tool is no longer limited to a single file. You can now add a list of audio files to be processed in sequence.
+    *   Add Entire Folders: A new "Add Folder" button allows you to recursively scan a directory and add all supported audio files.
+    *   Redesigned File Management: A modern file list now displays all files queued for processing.
+
+*   New Feature: Integrated Audio Player & Playlist
+    *   Audio Preview for Batches: To help verify that the correct files are loaded, a mini-player has been integrated below the file list.
+    *   Full Playback Controls: Includes Play, Stop, Next («), and Previous (») buttons for easy navigation.
+    *   Playlist Functionality: The Next and Previous buttons allow you to cycle through the entire list of loaded files.
+    *   Real-Time Time Display: A live time display shows the current playback position and the total duration of the track.
+    *   Note: The time display requires `ffprobe.exe` to be in the same directory as `ffmpeg.exe`.
+
+*   Major Improvement: Completely Redesigned User Interface (UI)
+    *   New Two-Column Layout: Files are now managed on the left, while all normalization and output settings are neatly grouped on the right.
+    *   Batch Progress Bar: A progress bar at the bottom of the window shows the overall progress of the batch job.
+    *   Live Status Bar: A status bar provides real-time information on the current file being processed or the total number of files loaded.
+
+*   New Feature: Output Format Information
+    *   Dynamic Info Box: When selecting an output format, a descriptive panel appears, showing technical specifications (bitrate, sample rate) and a brief description of the format's intended use.
+
+*   Improved Workflow: Overwrite Confirmation
+    *   Pre-Process Check: The application now checks for existing output files *before* starting the normalization process.
+    *   Per-File Confirmation: You will be asked for each file whether you want to overwrite it, allowing you to skip specific files without interrupting the entire batch.
+
+Technical & Under-the-Hood Improvements:
+
+*   Complete Code Refactoring for Stability and Future Extensibility
+    *   Modern Object-Oriented Structure: The entire codebase has been rewritten into classes for better organization and maintainability.
+    *   Improved Threading Model: A queue-based system now handles communication between the processing thread and the UI, preventing the application from freezing and ensuring stability.
+    *   Modular Code: Logic for configuration, FFmpeg processing, and the GUI are now separated, making future updates and new features much easier to implement.
+
+User Interface (UI) & Consistency Updates:
+
+*   New: Modernized File List
+    *   The simple file list has been upgraded to a modern Treeview, providing a cleaner look and a foundation for future features like displaying track metadata.
+
+*   New: Live Input Validation
+    *   The custom input fields for LUFS and True Peak now provide immediate visual feedback. Invalid entries (e.g., non-numeric values or values out of range) will instantly cause the field to be highlighted in red, preventing errors before a process is started.
+
+*   Return to a Unified Retro Look & Feel
+    *   Custom-Styled Windows: The "Options" and "About" windows have been rebuilt as custom windows to perfectly match the application's unique retro design, ensuring a consistent visual experience.
+    *   Automatic Window Centering: All windows (main, options, about) now automatically open in the center of the screen.
+*   Consistent FFmpeg Parameters
+    *   Output parameters have been aligned to ensure maximum, predictable output quality, consistent with the philosophy of previous versions.
+*   GUI Behavior Fixes
+    *   Fixed an issue where disabled dropdown menus (Comboboxes) would turn bright white during processing. They now blend seamlessly into the background as intended.
+    *   Fixed an issue where closing the application via the "X" button would not terminate a running audio preview. All child processes are now properly closed.
+
+---
+
 Version 2.2.2 (Build Date: 2025-10-03)
 
 Key New Features in Version 2.2.2:
