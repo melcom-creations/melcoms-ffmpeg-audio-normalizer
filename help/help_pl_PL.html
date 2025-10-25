@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>melcom's FFmpeg Audio Normalizer - Pomoc</title>
+    <style>
+        body {
+            background-color: #292929;
+            color: #e0e0e0;
+            font-family: 'PT Sans', sans-serif, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #f5f5f5;
+            border-bottom: 1px solid #3c3c3c;
+            padding-bottom: 10px;
+        }
+        a {
+            color: #87cefa;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code {
+            background-color: #333333;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            color: #e0e0e0;
+            padding: 2px 6px;
+            font-family: monospace, monospace;
+        }
+        .highlight {
+            color: #87cefa;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>melcom's FFmpeg Audio Normalizer - Pomoc</h1>
+        <h2>Spis Treści</h2>
+        <ul>
+            <li><a href="#wymagania">Wymagania</a></li>
+            <li><a href="#kroki-gui">Instrukcja obsługi (Wersja 3)</a></li>
+            <li><a href="#dodatkowe-uwagi">Dodatkowe uwagi</a></li>
+            <li><a href="#o-tym-pliku">O tym pliku</a></li>
+        </ul>
+
+        <h2 id="wymagania">Wymagania</h2>
+        <ul>
+            <li>Aby używać <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, potrzebujesz pełnego pakietu FFmpeg. Obejmuje on:
+                <ul>
+                    <li><code>ffmpeg.exe</code> (do normalizacji i analizy)</li>
+                    <li><code>ffplay.exe</code> (do funkcji podglądu audio)</li>
+                    <li><code>ffprobe.exe</code> (do odczytu czasu trwania utworu dla wyświetlacza czasu odtwarzacza)</li>
+                </ul>
+            </li>
+            <li>Możesz pobrać najnowsze kompilacje z <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">tej strony</a>. Dla użytkowników systemu Windows zalecamy plik taki jak <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
+            <li>Po rozpakowaniu musisz podać ścieżkę do folderu `bin` (zawierającego pliki wykonywalne) w opcjach programu.</li>
+        </ul>
+
+        <h2 id="kroki-gui">Instrukcja obsługi (Wersja 3)</h2>
+        <ol>
+            <li>Uruchom aplikację (`AudioNormalizer.exe`). Jeśli używasz programu po raz pierwszy, przejdź do "Plik" -> "Opcje" i ustaw ścieżkę do folderu `bin` FFmpeg.</li>
+            <li>Użyj przycisków <span class="highlight">"Dodaj pliki"</span> lub <span class="highlight">"Dodaj folder"</span>, aby wypełnić listę po lewej stronie plikami audio, które chcesz przetworzyć.</li>
+            <li>(Opcjonalnie) Aby odsłuchać utwór, zaznacz go na liście i naciśnij przycisk <span class="highlight">"▶"</span> (Odtwarzaj). Możesz używać przycisków "«" i "»" do nawigacji po całej liście jak po playliście.</li>
+            <li>Po prawej stronie wybierz pożądany <span class="highlight">Preset LUFS</span> i <span class="highlight">Preset True Peak</span>. Wybierz "Własny", aby wprowadzić własne wartości.</li>
+            <li>Wybierz <span class="highlight">Format wyjściowy</span> (np. WAV, MP3). Pole informacyjne pokaże szczegóły techniczne wyjścia.</li>
+            <li>Kliknij <span class="highlight">"Start Normalizacji"</span>, aby rozpocząć przetwarzanie wszystkich plików na liście. Jeśli plik wyjściowy już istnieje, zostaniesz zapytany, czy chcesz go nadpisać.</li>
+            <li>Pasek postępu i dziennik procesu na dole będą pokazywać status operacji wsadowej w czasie rzeczywistym.</li>
+            <li>Znormalizowane pliki zostaną zapisane w tym samym folderze, co ich oryginalne pliki źródłowe, z dodanym do nazwy pliku sufiksem "-Normalized".</li>
+        </ol>
+
+        <h2 id="dodatkowe-uwagi">Dodatkowe uwagi</h2>
+        <p><strong>Informacje o presetach LUFS i True Peak:</strong></p>
+        <ul>
+            <li><strong>Presety LUFS:</strong> Są to predefiniowane cele głośności zoptymalizowane dla różnych platform. "-14 LUFS" to powszechny standard dla wielu serwisów streamingowych, takich jak YouTube i Spotify, podczas gdy "-23 LUFS" to standard EBU R128 dla transmisji.</li>
+            <li><strong>Presety True Peak:</strong> Ustawiają one pułap dla sygnału audio, aby zapobiec przesterowaniu (clippingowi) po konwersji. "-1.0 dBTP" to bezpieczny standard dla większości cyfrowego audio.</li>
+        </ul>
+
+        <p><strong>Opcja 'Pojedynczy wpis w logu' (w Opcjach):</strong></p>
+        <ul>
+            <li><strong>Domyślnie włączona:</strong> Za każdym razem, gdy rozpoczynasz nowy proces wsadowy, poprzedni plik dziennika jest czyszczony. Dzięki temu dziennik jest zawsze czysty i odnosi się do ostatniej operacji.</li>
+            <li><strong>Gdy wyłączona:</strong> Każdy proces jest dołączany do pliku dziennika, tworząc bieżącą historię wszystkich Twoich normalizacji i analiz.</li>
+        </ul>
+
+        <h2 id="o-tym-pliku">O tym pliku</h2>
+        <p>Ten program został stworzony przez melcom (Andreas Thomas Urban) i jest <span class="highlight">oprogramowaniem open-source</span> na <span class="highlight">licencji MIT</span>. Możesz go swobodnie używać, modyfikować i rozpowszechniać. Pełne szczegóły znajdują się w pliku `LICENSE.txt`.</p>
+        <p>W razie pytań, skontaktuj się ze mną przez <a href="http://melcom-creations.github.io/melcom-music/contact.html" target="_blank" rel="noopener">formularz kontaktowy</a>.</p>
+    </div>
+</body>
+</html>

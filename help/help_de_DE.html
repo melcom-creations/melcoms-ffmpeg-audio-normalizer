@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>melcom's FFmpeg Audio Normalisierer - Hilfe</title>
+    <style>
+        body {
+            background-color: #292929;
+            color: #e0e0e0;
+            font-family: 'PT Sans', sans-serif, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #f5f5f5;
+            border-bottom: 1px solid #3c3c3c;
+            padding-bottom: 10px;
+        }
+        a {
+            color: #87cefa;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code {
+            background-color: #333333;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            color: #e0e0e0;
+            padding: 2px 6px;
+            font-family: monospace, monospace;
+        }
+        .highlight {
+            color: #87cefa;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>melcom's FFmpeg Audio Normalisierer - Hilfe</h1>
+        <h2>Inhaltsverzeichnis</h2>
+        <ul>
+            <li><a href="#voraussetzungen">Voraussetzungen</a></li>
+            <li><a href="#schritte-gui">Anleitung (Version 3)</a></li>
+            <li><a href="#zusatzliche-hinweise">Zusätzliche Hinweise</a></li>
+            <li><a href="#uber-diese-datei">Über diese Datei</a></li>
+        </ul>
+
+        <h2 id="voraussetzungen">Voraussetzungen</h2>
+        <ul>
+            <li>Für die Verwendung von <span class="highlight">melcom's FFmpeg Audio Normalisierer</span> benötigst du die komplette FFmpeg-Suite. Diese beinhaltet:
+                <ul>
+                    <li><code>ffmpeg.exe</code> (für die Normalisierung und Analyse)</li>
+                    <li><code>ffplay.exe</code> (für die Audio-Vorschau)</li>
+                    <li><code>ffprobe.exe</code> (um die Titeldauer für die Zeitanzeige des Players auszulesen)</li>
+                </ul>
+            </li>
+            <li>Du kannst die neuesten Builds von <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">hier herunterladen</a>. Für Windows-Nutzer empfehle ich eine Datei wie <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
+            <li>Nach dem Entpacken musst du den Pfad zum `bin`-Ordner (welcher die .exe-Dateien enthält) in den Optionen des Programms angeben.</li>
+        </ul>
+
+        <h2 id="schritte-gui">Anleitung (Version 3)</h2>
+        <ol>
+            <li>Starte die Anwendung (`AudioNormalizer.exe`). Wenn du das Programm zum ersten Mal verwendest, gehe zu "Datei" -> "Optionen" und stelle den Pfad zu deinem FFmpeg-`bin`-Ordner ein.</li>
+            <li>Nutze die <span class="highlight">"Dateien hinzufügen"</span> oder <span class="highlight">"Ordner hinzufügen"</span> Buttons, um die Liste auf der linken Seite mit den zu verarbeitenden Audiodateien zu füllen.</li>
+            <li>(Optional) Um einen Titel vorzuhören, wähle ihn in der Liste aus und drücke den <span class="highlight">"▶"</span> (Play) Button. Mit den "«" und "»" Buttons kannst du wie in einer Playlist durch die gesamte Dateiliste navigieren.</li>
+            <li>Wähle auf der rechten Seite dein gewünschtes <span class="highlight">LUFS-Preset</span> und <span class="highlight">True-Peak-Preset</span>. Wähle "Benutzerdefiniert", um eigene Werte einzugeben.</li>
+            <li>Wähle das <span class="highlight">Ausgabeformat</span> (z.B. WAV, MP3). Eine Info-Box zeigt dir die technischen Details der Ausgabe an.</li>
+            <li>Klicke auf <span class="highlight">"Normalisierung starten"</span>, um die Verarbeitung aller Dateien in der Liste zu beginnen. Falls eine Ausgabedatei bereits existiert, wirst du gefragt, ob du diese überschreiben möchtest.</li>
+            <li>Die Fortschrittsanzeige und das Prozessprotokoll am unteren Rand zeigen den Echtzeit-Status der Stapelverarbeitung an.</li>
+            <li>Die normalisierten Dateien werden im selben Ordner wie ihre Quelldateien gespeichert, wobei "-Normalized" an den Dateinamen angehängt wird.</li>
+        </ol>
+
+        <h2 id="zusatzliche-hinweise">Zusätzliche Hinweise</h2>
+        <p><strong>Informationen zu den LUFS- und True Peak Presets:</strong></p>
+        <ul>
+            <li><strong>LUFS-Presets:</strong> Dies sind vordefinierte Lautheits-Zielwerte, die für verschiedene Plattformen optimiert sind. "-14 LUFS" ist ein gängiger Standard für viele Streaming-Dienste wie YouTube und Spotify, während "-23 LUFS" der EBU R128-Standard für den Rundfunk ist.</li>
+            <li><strong>True-Peak-Presets:</strong> Diese setzen eine Obergrenze für das Audiosignal, um Übersteuerungen (Clipping) nach der Konvertierung zu verhindern. "-1.0 dBTP" ist ein sicherer Standard für die meisten digitalen Audioformate.</li>
+        </ul>
+
+        <p><strong>'Einzelner Logeintrag' Option (in den Optionen):</strong></p>
+        <ul>
+            <li><strong>Standardmäßig aktiviert:</strong> Jedes Mal, wenn du einen neuen Stapelprozess startest, wird die vorherige Log-Datei geleert. So bleibt die Log-Datei sauber und auf den letzten Vorgang bezogen.</li>
+            <li><strong>Bei Deaktivierung:</strong> Jeder Prozess wird an die Log-Datei angehängt, wodurch eine laufende Historie all deiner Normalisierungen und Analysen entsteht.</li>
+        </ul>
+
+        <h2 id="uber-diese-datei">Über diese Datei</h2>
+        <p>Dieses Programm wurde von melcom (Andreas Thomas Urban) erstellt und ist <span class="highlight">Open-Source-Software</span> unter der <span class="highlight">MIT-Lizenz</span>. Du darfst es frei verwenden, verändern und weitergeben. Alle Details findest du in der Datei `LICENSE.txt`.</p>
+        <p>Bei Fragen kannst du mich gerne über das <a href="http://melcom-creations.github.io/melcom-music/contact.html" target="_blank" rel="noopener">Kontaktformular</a> erreichen.</p>
+    </div>
+</body>
+</html>
