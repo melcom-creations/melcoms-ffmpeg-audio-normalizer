@@ -1,61 +1,70 @@
 # melcom's FFmpeg Audio Normalizer
 
-A user-friendly GUI tool to easily normalize the loudness of your audio files using FFmpeg. The normalized file is automatically saved in the same folder as the original file.
+A user-friendly GUI for Windows to batch-normalize audio files using the power of FFmpeg's EBU R128 loudness normalization filter.
 
-![Screenshot of the main interface](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/images/Screenshot%202025-01-22%20175408_.png?raw=true)
-![Screenshot of the options dialog](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/images/Screenshot%202025-02-28%20074549.png?raw=true)
+Version 3 is a complete rewrite from the ground up, focusing on a powerful batch-processing workflow, an integrated audio player, and a modern, intuitive user interface.
 
-## Features
+![Main application window of FFmpeg Audio Normalizer v3](images/creations-ffmpeg-main.png?raw=true)
 
-*   **Loudness Normalization:** Normalize audio to target loudness (LUFS) and True Peak (dBTP).
-*   **Platform Presets:** Includes presets for popular platforms like YouTube, Spotify, Apple Music, and more.
-*   **Audio Analysis:** Analyze audio files to check their current loudness levels before processing.
-*   **Multiple Output Formats:** Save your normalized files in WAV, MP3, FLAC, AAC, or OGG format.
+## ✨ Features
+
+*   **Batch Processing:** Add multiple files or entire folders to the queue and process them all in one go.
+*   **Integrated Audio Player:** Preview your tracks before processing with simple playlist controls (Play, Stop, Next, Previous).
+*   **Loudness Normalization:** Normalize audio to a target loudness (LUFS) and True Peak (dBTP) based on the EBU R128 standard.
+*   **Platform Presets:** Includes presets for popular platforms like YouTube, Spotify, Apple Music, and broadcast standards.
+*   **Multiple Output Formats:** Save your normalized files in WAV, MP3, FLAC, AAC, or OGG format, with clear information about each format's specs.
+*   **Live Input Validation:** Custom LUFS/TP fields provide immediate visual feedback to prevent errors.
 *   **Multi-Language Support:** The user interface is available in English, German, and Polish.
 
-## Download & Installation
+<p align="center">
+  <img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="600">
+</p>
+
+## 📥 Download & Installation
 
 You can download the latest version, which includes the `.exe` and all necessary files, from the **[Releases Page](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/releases/latest)**.
 
-## How to Use
+No installation is required. Simply unzip the archive and run `AudioNormalizer.exe`.
 
-For a visual guide, check out the official video tutorial on how to install and use the program:
+## 🚀 How to Use
 
-[![How to Install & Use Video Tutorial](https://img.youtube.com/vi/8nzvCOJsASw/hqdefault.jpg)](https://youtu.be/8nzvCOJsASw)
+#### 1. Prerequisite: Get the FFmpeg Suite
+This program requires the complete FFmpeg suite to function correctly:
+*   `ffmpeg.exe` (for normalization)
+*   `ffplay.exe` (for the audio player)
+*   `ffprobe.exe` (for reading track duration)
 
-#### 1. Prerequisite: Get FFmpeg
-This program requires **`ffmpeg.exe`** to function.
-*   Download the latest FFmpeg package from a trusted source, for example: **[BtbN's FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest)**.
-*   For Windows, look for the `.zip` file in the assets list, typically named something like `ffmpeg-master-latest-win64-gpl.zip`.
-*   Unzip the package. The `ffmpeg.exe` file you need is located inside the `bin` subfolder.
+Download the latest FFmpeg package from a trusted source, for example: **[BtbN's FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest)**. For Windows, look for a `.zip` file named something like `ffmpeg-master-latest-win64-gpl.zip`. Unzip it, and you will find the required `.exe` files inside the `bin` subfolder.
 
 #### 2. Configure the Program
 *   Start `AudioNormalizer.exe`.
 *   Go to the menu `File` -> `Options`.
-*   Under "FFmpeg Path", click the browse button and select the folder where your `ffmpeg.exe` is located (the `bin` folder from the previous step). This only needs to be done once.
+*   Under "FFmpeg Path", click the **Browse** button and select the folder where your `.exe` files are located (the `bin` folder from the previous step). This only needs to be done once.
 
-#### 3. Normalize an Audio File
-*   In the main window, click `Browse` and select the audio file you want to process.
-*   Adjust the **LUFS** and **True Peak** presets as needed. The default settings are a great starting point for general use.
-*   Select your desired `Output Format`.
-*   Click `Start Normalization`.
+#### 3. Process Your Files
+*   Use the **"Add Files"** or **"Add Folder"** buttons to populate the file list.
+*   (Optional) Select a file in the list and use the player controls to preview it.
+*   On the right, choose your desired **LUFS** and **True Peak** presets.
+*   Select your **Output Format**.
+*   Click **"Start Normalization"** to process all files in the queue.
 
-## Support & Feedback
+The normalized files will be saved in the same folder as the source files with a "-Normalized" suffix.
 
-Please note that the GitHub "Issues" feature has been disabled for this project. As a solo developer, I can provide the best support via direct email.
+## 💬 Support & Feedback
 
-If you find a bug, have a feature request, or need help, please send a constructive email to:
-**[melcom@gmx.net](mailto:melcom@gmx.net)**
+Please note that the GitHub "Issues" feature has been disabled for this project. As a solo developer, I can provide the best support via direct contact.
 
-## Detailed Help
+If you find a bug, have a feature request, or need help, please use the **[contact form on my website](http://melcom-creations.github.io/melcom-music/contact.html)**.
+
+## 📖 Detailed Help
 
 For more detailed information, please refer to the help files included in the download package. Open `help_de_DE.html` (German), `help_en_US.html` (English), or `help_pl_PL.html` (Polish) in your web browser.
 
 ## License
 
-This software is open-source and released under the MIT License. See the [LICENSE.txt](License.txt) file for details.
+This software is open-source and released under the MIT License. See the [LICENSE.txt](LICENSE.txt) file for details.
 
 ---
 
-Sincerely,
+Cheers,<br>
 melcom
