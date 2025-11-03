@@ -1,5 +1,16 @@
 melcom's FFmpeg Audio Normalizer
 
+Version 3.0.1 (Build Date: 2025-11-03)
+
+Key Fixes in Version 3.0.1:
+
+*   Bug Fix: Improved Application Path Handling for Robustness
+    *   Fixed a critical issue where language files and other resources (e.g., options.ini, logs) would fail to load when the application was launched from the Windows Start Menu search.
+    *   The program now correctly determines its own location, ensuring that all necessary files are found regardless of how or from where it is started.
+    *   This enhances stability and provides a consistent user experience across all versions of Windows.
+
+---
+
 Version 3.0.0 (Halloween Edition) (Build Date: 2025-10-24)
 
 This is a major rewrite of the application, focusing on batch processing and an improved user experience.
