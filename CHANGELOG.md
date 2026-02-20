@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-02-20
+### "Feierabend Edition"
+
+### Added
+- **New Normalization Mode: Two-Pass (Linear)**
+    - Introduced a professional Two-Pass normalization mode that preserves the original dynamics (LRA) of the audio while reaching the target LUFS.
+    - Uses a first pass for analysis and a second pass for high-precision linear gain adjustment.
+- **Metadata Preservation**
+    - The tool now preserves global metadata tags (Artist, Album, Title, etc.) from the source file and maps them to the output file across all formats.
+- **Automatic Temporary File Cleanup**
+    - Implemented a robust cleanup system that ensures `.temp` files are automatically deleted from the workspace, regardless of whether a process succeeds, fails, or is cancelled by the user.
+
+### Changed
+- **Dynamic Quality Preservation for WAV and FLAC**
+    - WAV and FLAC outputs no longer force a fixed sample rate (48 kHz) or bit depth (32-bit).
+    - The tool now uses `ffprobe` to detect the source's properties and preserves the original sample rate and bit depth (e.g., keeping 24-bit/96kHz files intact).
+- **Enhanced MP3 Compatibility**
+    - MP3 encoding now forces ID3v2.3 tags, ensuring much better compatibility with Windows Explorer and older hardware players.
+- **Code Refactoring and Documentation**
+    - Completely overhauled the internal comments for better readability and future maintainability.
+    - Cleaned up legacy code blocks and refined the FFmpeg command generation logic.
+
+### Fixed
+- **About Dialog Bug:** Fixed a variable reference error in the "About" window that could cause issues when closing the dialog.
+- **Process Robustness:** Improved the error handling during the Two-Pass analysis phase to prevent crashes on malformed audio files.
+
 ## [3.0.1] - 2025-11-03
 
 ### Fixed
