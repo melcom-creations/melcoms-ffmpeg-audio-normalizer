@@ -2,15 +2,18 @@
 """
 AudioNormalizer.py
 
-A graphical user interface for normalizing audio files to a target loudness (LUFS)
-and true peak (dBTP) using FFmpeg.
+A graphical user interface (GUI) for normalizing audio files to specific
+Loudness (LUFS) and True Peak (dBTP) targets using FFmpeg.
 
-This application allows users to add audio files, select loudness presets or
-custom values, choose an output format, and process the files in a batch.
-It also includes a simple audio player for previewing files.
+Features:
+- Batch processing of audio files.
+- Two normalization modes: Two-Pass (Linear) and One-Pass (Dynamic).
+- Integrated audio player (using ffplay).
+- Support for multiple input and output formats.
+- Multi-language support.
 """
 
-# --- STANDARD LIBRARY IMPORTS ---
+# --- Standard Library Imports ---
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk, simpledialog
 import subprocess
@@ -21,18 +24,18 @@ import datetime
 import threading
 import json
 import winsound
+import math
 from queue import Queue
 import re
+import sys
 
-# --- METADATA ---
-# Application version and build information.
-VERSION = "3.0.0"
-EDITION_NAME = "👻 Halloween Edition 🎃"
-BUILD_DATE = "2025-10-24"
+# --- Metadata ---
+VERSION = "3.1.0-dev09"
+EDITION_NAME = "Feierabend Edition"
+BUILD_DATE = "2026-02-20"
 AUTHOR = "melcom (Andreas Thomas Urban)"
 
-# --- GUI CONSTANTS ---
-# Defines padding and sizing for Tkinter widgets for a consistent look and feel.
+# --- GUI Layout Constants ---
 GUI_PADX = 10
 GUI_PADY = 5
 GUI_ENTRY_WIDTH_FILE = 58
@@ -42,8 +45,7 @@ GUI_COMBOBOX_WIDTH_TP_PRESET = 30
 DIALOG_PADX_OPTIONS = 10
 DIALOG_PADY_OPTIONS = 5
 
-# --- FILE & CONFIG CONSTANTS ---
-# Defines filenames and extensions used for configuration, logging, and processing.
+# --- File System & Configuration Constants ---
 CONFIG_FILE_NAME = "options.ini"
 LOG_FILE_NAME = "normalization.log"
 ANALYSIS_LOG_FILE_NAME = "analysis.log"
@@ -51,7 +53,8 @@ FFMPEG_EXECUTABLE_NAME = "ffmpeg.exe"
 FFPLAY_EXECUTABLE_NAME = "ffplay.exe"
 FFPROBE_EXECUTABLE_NAME = "ffprobe.exe"
 TEMP_FILE_EXTENSION = ".temp"
-# Supported audio file types for input.
+
+# Supported input file extensions.
 AUDIO_FILE_EXTENSIONS = [
     (".wav", "WAV"),
     (".mp3", "MP3"),
@@ -60,93 +63,109 @@ AUDIO_FILE_EXTENSIONS = [
     (".ogg", "OGG"),
     (".m4a", "M4A")
 ]
-# Supported audio formats for output.
+
+# Supported output formats.
 OUTPUT_FORMATS_LIST = ["WAV", "MP3", "FLAC", "AAC", "OGG"]
 
-# --- CONFIG KEYS ---
-# Keys for accessing settings in the options.ini file.
+# --- Configuration Keys (INI) ---
 CONFIG_SECTION_SETTINGS = "Settings"
 CONFIG_KEY_FFMPEG_PATH = "ffmpeg_path"
 CONFIG_KEY_LOG_FILE_SIZE = "log_file_size_kb"
 CONFIG_KEY_SINGLE_LOG_ENTRY = "single_log_entry_enabled"
 CONFIG_KEY_LANGUAGE = "language"
 
-# --- LANGUAGE CONSTANTS ---
-# Defines constants for internationalization (i18n).
+# --- Language Settings ---
 LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL"]
 DEFAULT_LANGUAGE_CODE = "en_US"
 LANG_FOLDER_NAME = "lang"
 LANG_FILE_EXTENSION = ".json"
 
-# --- FFMPEG CONSTANTS ---
-# Maps output formats to their respective FFmpeg codecs and specific options.
+# --- FFmpeg Codec Mappings & Options ---
 CODECS = {
-    "WAV": "pcm_f32le",
+    "WAV": "pcm_f32le", # Default fallback; actual codec determined dynamically based on input.
     "MP3": "libmp3lame",
     "FLAC": "flac",
     "AAC": "aac",
     "OGG": "libvorbis"
 }
-# Additional FFmpeg options for specific codecs to ensure quality.
+
+# specific bitrate options for compressed formats.
 FFMPEG_OPTIONS = {
     "MP3": ["-b:a", "320k"],
     "AAC": ["-b:a", "256k"],
     "OGG": ["-b:a", "500k"]
 }
 
-# --- GLOBAL VARIABLES ---
-# Global state variables used throughout the application.
+# --- Global Application State ---
 language_data = {}
 current_language = DEFAULT_LANGUAGE_CODE
 config = None
 normalization_process = None
 playback_process = None
-gui_queue = Queue()
+gui_queue = Queue() # Thread-safe queue for GUI updates.
 
-# --- PRESET DEFINITIONS ---
-# Dictionaries populated by the load_language function.
+# --- Preset Containers ---
 LUFS_PRESETS = {}
 TRUE_PEAK_PRESETS = {}
 LUFS_PRESET_NAMES = []
 TRUE_PEAK_PRESET_NAMES = []
 
 
-# --- CORE CLASSES ---
+# --- Utility Functions ---
+
+def get_base_path():
+    """
+    Determines the root path of the application.
+    Handles both the frozen state (PyInstaller .exe) and standard script execution.
+    """
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
+
+# --- Core Logic Classes ---
 
 class Config:
-    """Manages application settings, loading from and saving to an INI file."""
+    """
+    Handles loading, saving, and validating application settings from 'options.ini'.
+    """
     
     def __init__(self):
-        """Initializes the configuration object by loading settings."""
         self.ffmpeg_path = ""
         self.log_file_size_kb = 1024
         self.single_log_entry_enabled = True
         self.load_options()
 
     def load_options(self):
-        """Reads settings from options.ini or sets defaults if the file is missing."""
+        """Reads settings from the INI file or applies defaults."""
         parser = configparser.ConfigParser()
-        if os.path.exists(CONFIG_FILE_NAME):
-            parser.read(CONFIG_FILE_NAME, encoding='utf-8')
+        config_path = os.path.join(get_base_path(), CONFIG_FILE_NAME)
+        
+        if os.path.exists(config_path):
+            parser.read(config_path, encoding='utf-8')
             settings = parser[CONFIG_SECTION_SETTINGS] if CONFIG_SECTION_SETTINGS in parser else {}
+            
+            # Use stored path or try to auto-detect ffmpeg.
             self.ffmpeg_path = settings.get(CONFIG_KEY_FFMPEG_PATH, self._find_ffmpeg_path())
             self.log_file_size_kb = settings.getint(CONFIG_KEY_LOG_FILE_SIZE, 1024)
             self.single_log_entry_enabled = settings.getboolean(CONFIG_KEY_SINGLE_LOG_ENTRY, True)
+            
             global current_language
             current_language = settings.get(CONFIG_KEY_LANGUAGE, DEFAULT_LANGUAGE_CODE)
         else:
             self.ffmpeg_path = self._find_ffmpeg_path()
+            
         self.ensure_log_size_valid()
 
     def _find_ffmpeg_path(self):
-        """Attempts to locate the FFmpeg executable in the script's directory."""
+        """Attempts to locate ffmpeg.exe in the application directory."""
         program_path = os.path.dirname(os.path.abspath(__file__))
         if os.path.exists(os.path.join(program_path, FFMPEG_EXECUTABLE_NAME)):
             return program_path
         return ""
 
     def save_options(self):
-        """Writes the current settings to the options.ini file."""
+        """Writes current settings to 'options.ini'."""
         parser = configparser.ConfigParser()
         parser[CONFIG_SECTION_SETTINGS] = {
             CONFIG_KEY_FFMPEG_PATH: self.ffmpeg_path,
@@ -154,47 +173,38 @@ class Config:
             CONFIG_KEY_SINGLE_LOG_ENTRY: str(self.single_log_entry_enabled),
             CONFIG_KEY_LANGUAGE: current_language
         }
-        with open(CONFIG_FILE_NAME, "w", encoding='utf-8') as f:
+        config_path = os.path.join(get_base_path(), CONFIG_FILE_NAME)
+        with open(config_path, "w", encoding='utf-8') as f:
             parser.write(f)
 
     def ensure_log_size_valid(self):
-        """Ensures the log file size is a positive integer, defaulting if not."""
+        """Validates that the log size setting is a positive integer."""
         if not isinstance(self.log_file_size_kb, int) or self.log_file_size_kb <= 0:
             self.log_file_size_kb = 1024
 
 class FFMpegProcessor:
-    """Handles all interactions with FFmpeg for analysis and normalization."""
+    """
+    Wrapper class for FFmpeg operations including analysis, normalization, 
+    and obtaining file metadata.
+    """
     
     def __init__(self, ffmpeg_path, update_callback):
-        """
-        Initializes the processor.
-        
-        Args:
-            ffmpeg_path (str): The directory containing the FFmpeg executables.
-            update_callback (function): A function to call with real-time FFmpeg output.
-        """
         self.ffmpeg_path = os.path.join(ffmpeg_path, FFMPEG_EXECUTABLE_NAME)
-        self.update_callback = update_callback
+        self.ffmpeg_dir = ffmpeg_path
+        self.update_callback = update_callback # Function to send status updates to GUI.
 
     def _run_process(self, command):
-        """
-        Executes an FFmpeg command as a subprocess and captures its stderr output.
-        
-        Args:
-            command (list): The command and its arguments to execute.
-        
-        Returns:
-            A tuple containing the process return code and the full stderr output.
-        """
+        """Executes a subprocess command and captures stderr for progress parsing."""
         global normalization_process
         try:
-            # CREATE_NO_WINDOW prevents a console from appearing on Windows.
+            # Create process without a visible window.
             normalization_process = subprocess.Popen(
                 command, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL,
                 text=True, encoding='utf-8', creationflags=subprocess.CREATE_NO_WINDOW
             )
             
             full_stderr = ""
+            # Read output line by line to update the GUI in real-time.
             for line in iter(normalization_process.stderr.readline, ''):
                 full_stderr += line
                 self.update_callback(line)
@@ -206,54 +216,162 @@ class FFMpegProcessor:
         except Exception as e:
             return -1, str(e)
 
+    def _get_audio_info(self, file_path):
+        """
+        Uses ffprobe to extract sample rate, format, and bit depth.
+        Used to preserve source quality for WAV/FLAC conversions.
+        """
+        ffprobe_path = os.path.join(self.ffmpeg_dir, FFPROBE_EXECUTABLE_NAME)
+        if not os.path.exists(ffprobe_path):
+            return None
+        
+        try:
+            cmd = [
+                ffprobe_path, "-v", "error", "-select_streams", "a:0",
+                "-show_entries", "stream=sample_rate,sample_fmt,bits_per_raw_sample",
+                "-of", "json", file_path
+            ]
+            result = subprocess.run(cmd, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            data = json.loads(result.stdout)
+            if "streams" in data and len(data["streams"]) > 0:
+                return data["streams"][0]
+        except Exception:
+            pass
+        return None
+
     def analyze(self, file_path):
-        """
-        Analyzes an audio file for loudness information using FFmpeg's loudnorm filter.
-        """
+        """Performs a loudness analysis pass using the loudnorm filter."""
         command = [self.ffmpeg_path, "-i", file_path, "-af", "loudnorm=print_format=json", "-f", "null", "-"]
         return self._run_process(command)
 
-    def normalize(self, input_file, output_file, lufs, tp, codec, options):
+    def normalize(self, input_file, output_file, lufs, tp, codec, options, mode="linear", output_format_name=""):
         """
-        Normalizes an audio file to the specified LUFS and True Peak values.
+        Main normalization logic.
         
-        It writes to a temporary file first and renames it on success to avoid
-        corrupting the output file if the process is interrupted.
+        Args:
+            mode (str): 
+                'linear'  - Two-Pass mode. Analyzes first, then applies calculated gain/limiting.
+                'dynamic' - One-Pass mode. Uses loudnorm's dynamic adjustment.
+            output_format_name (str): Used to determine special handling for WAV/FLAC.
         """
         temp_file = os.path.splitext(output_file)[0] + TEMP_FILE_EXTENSION + os.path.splitext(output_file)[1]
+        
+        af_filter_string = ""
+
+        if mode == "linear":
+            # --- Pass 1: Analysis ---
+            self.update_callback(f"--> Phase 1/2: Analyzing dynamics for {os.path.basename(input_file)}...\n")
+            ret_code, stderr = self.analyze(input_file)
+            if ret_code != 0:
+                return ret_code, stderr
+            
+            try:
+                # Extract JSON data from FFmpeg stderr.
+                json_match = re.search(r'\{.*\}', stderr, re.DOTALL)
+                if not json_match:
+                    return -1, "Error: Could not parse loudnorm analysis data."
+                
+                m = json.loads(json_match.group(0)) # Measured values
+                
+                # Construct filter string with measured input values for linear processing.
+                af_filter_string = (
+                    f"loudnorm=I={lufs}:TP={tp}:LRA=11:"
+                    f"measured_I={m['input_i']}:"
+                    f"measured_TP={m['input_tp']}:"
+                    f"measured_LRA={m['input_lra']}:"
+                    f"measured_thresh={m['input_thresh']}:"
+                    f"offset={m['target_offset']}:"
+                    f"linear=true:print_format=summary"
+                )
+                
+                self.update_callback(f"--> Analysis Result: Input {m['input_i']} LUFS, Peak {m['input_tp']} dBTP\n")
+                self.update_callback(f"--> Phase 2/2: Applying Professional 2-Pass Normalization...\n")
+                
+            except Exception as e:
+                return -1, f"Error parsing analysis: {str(e)}"
+
+        else:
+            # --- One-Pass (Dynamic) Mode ---
+            af_filter_string = f"loudnorm=I={lufs}:TP={tp}:print_format=summary"
+
+        # --- Output Format Configuration ---
+        # Default settings for compressed formats (MP3, AAC, etc.)
+        cmd_rate = ["-ar", "48000"]
+        cmd_channels = ["-ac", "2"]
+        cmd_codec = ["-c:a", codec]
+        
+        # Special handling for WAV and FLAC to preserve original audio properties.
+        if output_format_name in ["WAV", "FLAC"]:
+            info = self._get_audio_info(input_file)
+            if info:
+                # Preserve original sample rate.
+                if "sample_rate" in info:
+                    cmd_rate = ["-ar", str(info["sample_rate"])]
+                
+                # Preserve original channel layout.
+                cmd_channels = []
+
+                # Determine specific PCM codec for WAV based on input depth.
+                if output_format_name == "WAV" and "sample_fmt" in info:
+                    fmt = info["sample_fmt"]
+                    bits = info.get("bits_per_raw_sample", "N/A")
+                    
+                    if "s16" in fmt:
+                        cmd_codec = ["-c:a", "pcm_s16le"]
+                    elif "s32" in fmt and bits == "24":
+                        cmd_codec = ["-c:a", "pcm_s24le"]
+                    elif "s32" in fmt:
+                        cmd_codec = ["-c:a", "pcm_s32le"]
+                    elif "flt" in fmt or "dbl" in fmt:
+                        cmd_codec = ["-c:a", "pcm_f32le"]
+                    else:
+                        cmd_codec = ["-c:a", "pcm_s16le"] # Fallback
+
+        # --- Execute Normalization ---
         command = [
             self.ffmpeg_path, "-i", input_file,
-            "-af", f"loudnorm=I={lufs}:TP={tp}:print_format=summary",
-            "-ar", "48000", "-ac", "2", "-c:a", codec
+            "-map_metadata", "0", # Copy metadata tags.
+            "-af", af_filter_string
         ]
+        
+        # Force ID3v2 version 3 for MP3s for better Windows compatibility.
+        if output_format_name == "MP3":
+            command.extend(["-id3v2_version", "3"])
+        
+        command.extend(cmd_rate)
+        command.extend(cmd_channels)
+        command.extend(cmd_codec)
+        
         if options: command.extend(options)
-        command.extend(["-y", temp_file])
+        command.extend(["-y", temp_file]) # Overwrite temp file if exists.
         
-        return_code, stderr = self._run_process(command)
+        try:
+            return_code, stderr = self._run_process(command)
 
-        if return_code == 0:
-            try:
-                if os.path.exists(output_file): os.remove(output_file)
-                os.rename(temp_file, output_file)
-            except OSError as e:
-                return -1, str(e)
+            if return_code == 0:
+                try:
+                    # Rename temp file to final output filename.
+                    if os.path.exists(output_file): os.remove(output_file)
+                    os.rename(temp_file, output_file)
+                except OSError as e:
+                    return -1, str(e)
+            
+            return return_code, stderr
         
-        if os.path.exists(temp_file):
-            try: os.remove(temp_file)
-            except OSError: pass
-             
-        return return_code, stderr
+        finally:
+            # Always clean up the temporary file.
+            if os.path.exists(temp_file):
+                try: os.remove(temp_file)
+                except OSError: pass
 
-# --- HELPER FUNCTIONS ---
+# --- Helper Functions ---
 
 def load_language(language_code):
-    """
-    Loads language strings from a JSON file based on the provided language code.
-    Falls back to the default language if the specified file is not found.
-    """
+    """Loads localized strings and presets from the JSON language file."""
     global language_data, LUFS_PRESETS, TRUE_PEAK_PRESETS, LUFS_PRESET_NAMES, TRUE_PEAK_PRESET_NAMES
     try:
-        path = os.path.join(LANG_FOLDER_NAME, f"{language_code}{LANG_FILE_EXTENSION}")
+        base_path = get_base_path()
+        path = os.path.join(base_path, LANG_FOLDER_NAME, f"{language_code}{LANG_FILE_EXTENSION}")
         with open(path, "r", encoding="utf-8") as f:
             language_data = json.load(f)
         LUFS_PRESETS = language_data.get("lufs_presets", {})
@@ -261,33 +379,31 @@ def load_language(language_code):
         LUFS_PRESET_NAMES = list(LUFS_PRESETS.keys())
         TRUE_PEAK_PRESET_NAMES = list(TRUE_PEAK_PRESETS.keys())
     except (FileNotFoundError, json.JSONDecodeError):
+        # Fallback to default language if selected language fails.
         if language_code != DEFAULT_LANGUAGE_CODE:
             load_language(DEFAULT_LANGUAGE_CODE)
 
 def get_text(key, **kwargs):
-    """
-    Retrieves a string from the loaded language data by its key.
-    Supports simple string formatting.
-    """
+    """Retrieves a formatted localized string."""
     return language_data.get(key, f"[{key}]").format(**kwargs)
 
 def append_to_log(log_file, text, mode):
-    """
-    Appends text to a specified log file, trimming it if it exceeds the size limit.
-    """
+    """Writes to the log file, managing file rotation if size limit is exceeded."""
     try:
+        log_path = os.path.join(get_base_path(), log_file)
         if mode == "a":
             limit_bytes = config.log_file_size_kb * 1024
-            if not config.single_log_entry_enabled and os.path.exists(log_file) and os.path.getsize(log_file) > limit_bytes:
-                with open(log_file, "r", encoding="utf-8") as f: lines = f.readlines()
-                with open(log_file, "w", encoding="utf-8") as f: f.writelines(lines[len(lines)//2:])
-        with open(log_file, mode, encoding="utf-8") as f:
+            # If not in single-entry mode and file is too big, keep the last 50%.
+            if not config.single_log_entry_enabled and os.path.exists(log_path) and os.path.getsize(log_path) > limit_bytes:
+                with open(log_path, "r", encoding="utf-8") as f: lines = f.readlines()
+                with open(log_path, "w", encoding="utf-8") as f: f.writelines(lines[len(lines)//2:])
+        with open(log_path, mode, encoding="utf-8") as f:
             f.write(text)
     except Exception as e:
         print(f"Error writing to log {log_file}: {e}")
 
 def center_window(window):
-    """Centers a Tkinter window on the screen."""
+    """Centers a tkinter window on the screen."""
     window.update_idletasks()
     width = window.winfo_width()
     height = window.winfo_height()
@@ -296,7 +412,7 @@ def center_window(window):
     window.geometry(f'{width}x{height}+{x}+{y}')
 
 def format_time(seconds):
-    """Formats a duration in seconds into an HH:MM:SS string."""
+    """Formats seconds into HH:MM:SS string."""
     if seconds is None: return "00:00:00"
     try:
         secs = float(seconds)
@@ -306,18 +422,16 @@ def format_time(seconds):
     except (ValueError, TypeError):
         return "00:00:00"
 
-# --- GUI APPLICATION CLASS ---
+# --- Main GUI Class ---
 
 class AudioNormalizerApp:
-    """The main application class that builds and manages the GUI."""
     
     def __init__(self, root):
-        """Initializes the main application GUI."""
         self.root = root
         self.file_list = []
         self.is_cancelled = False
         
-        # --- Player State ---
+        # Audio Player State
         self.is_playing = False
         self.playback_thread = None
         self.current_track_index = -1
@@ -331,7 +445,7 @@ class AudioNormalizerApp:
         center_window(self.root)
 
     def setup_styles(self):
-        """Configures the visual style and color scheme for ttk widgets."""
+        """Configures the visual theme and custom styles for widgets."""
         self.style = ttk.Style()
         self.style.theme_use('clam')
         
@@ -346,20 +460,20 @@ class AudioNormalizerApp:
         }
 
         self.root.config(bg=self.colors["bg"])
-        
         self.root.option_add("*TCombobox*Listbox*Background", self.colors["entry_bg"])
         self.root.option_add("*TCombobox*Listbox*Foreground", self.colors["fg"])
 
+        # Define styles for various widget types.
         self.style.configure(".", background=self.colors["bg"], foreground=self.colors["fg"])
         self.style.configure("TFrame", background=self.colors["bg"])
         self.style.configure("TLabel", background=self.colors["bg"], foreground=self.colors["fg"])
         self.style.configure("TCheckbutton", background=self.colors["bg"], foreground=self.colors["fg"])
+        self.style.configure("TRadiobutton", background=self.colors["bg"], foreground=self.colors["fg"])
         self.style.configure("TLabelframe", background=self.colors["bg"], bordercolor=self.colors["separator"])
         self.style.configure("TLabelframe.Label", background=self.colors["bg"], foreground=self.colors["fg"])
         self.style.configure("TButton", background="#f0f0f0", foreground=self.colors["fg"])
         self.style.map("TButton", background=[('active', '#e0e0e0')])
         self.style.configure("TEntry", fieldbackground=self.colors["entry_bg"], foreground=self.colors["fg"])
-        # A specific style for entry widgets with invalid input.
         self.style.configure("Error.TEntry", fieldbackground=self.colors["error_bg"], foreground=self.colors["fg"])
         
         self.style.configure("TCombobox", fieldbackground=self.colors["entry_bg"], foreground=self.colors["fg"])
@@ -371,21 +485,21 @@ class AudioNormalizerApp:
         self.style.configure("Horizontal.TSeparator", background=self.colors["separator"])
 
     def create_widgets(self):
-        """Creates and arranges all the widgets in the main window."""
+        """Initializes and places all GUI widgets."""
         self.root.title(f"{get_text('app_title')} v{VERSION}")
-        self.root.geometry("900x680")
-        self.root.minsize(900, 680)
+        self.root.geometry("900x740") 
+        self.root.minsize(900, 720)
         
         self.main_frame = ttk.Frame(self.root, padding=GUI_PADY, style="TFrame")
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # --- Top Frame (File List and Settings) ---
+        # --- Top Area: File List and Settings ---
         top_frame = ttk.Frame(self.main_frame, style="TFrame")
         top_frame.pack(fill=tk.X, padx=GUI_PADX, pady=GUI_PADY)
         top_frame.columnconfigure(0, weight=1)
         top_frame.columnconfigure(1, weight=1)
         
-        # --- File Selection Frame ---
+        # --- File Selection Section (Left) ---
         file_frame = ttk.LabelFrame(top_frame, text=get_text("file_selection_group"), style="TLabelframe")
         file_frame.grid(row=0, column=0, sticky="nsew", padx=(0, GUI_PADX))
         file_frame.columnconfigure(0, weight=1)
@@ -415,7 +529,7 @@ class AudioNormalizerApp:
 
         ttk.Separator(file_frame, orient='horizontal').grid(row=2, column=0, columnspan=3, sticky='ew', pady=5)
         
-        # --- Audio Player Frame ---
+        # --- Audio Player Controls ---
         player_frame = ttk.Frame(file_frame, style="TFrame")
         player_frame.grid(row=3, column=0, columnspan=2, sticky='ew')
         player_frame.columnconfigure(0, weight=1)
@@ -442,12 +556,12 @@ class AudioNormalizerApp:
         self.prev_button.pack(side=tk.LEFT, padx=5)
         self.next_button.pack(side=tk.LEFT)
         
-        # --- Settings Frame (Right side) ---
+        # --- Settings Section (Right) ---
         settings_frame = ttk.Frame(top_frame, style="TFrame")
         settings_frame.grid(row=0, column=1, sticky="nsew")
         settings_frame.columnconfigure(0, weight=1)
 
-        # --- Loudness Settings ---
+        # 1. Loudness Targets
         loudness_frame = ttk.LabelFrame(settings_frame, text=get_text("loudness_settings_group"), style="TLabelframe")
         loudness_frame.pack(fill=tk.X, expand=True, pady=GUI_PADY)
         
@@ -467,6 +581,7 @@ class AudioNormalizerApp:
         self.lufs_entry_var = tk.StringVar()
         self.tp_entry_var = tk.StringVar()
 
+        # Input validation registration
         lufs_vcmd = (self.root.register(lambda P: self._validate_entry(self.lufs_entry, P, -70.0, 0.0)), '%P')
         tp_vcmd = (self.root.register(lambda P: self._validate_entry(self.tp_entry, P, -9.0, 0.0)), '%P')
         
@@ -480,7 +595,19 @@ class AudioNormalizerApp:
         self.tp_label.grid(row=1, column=2, padx=(GUI_PADX, 2), pady=GUI_PADY)
         self.tp_entry.grid(row=1, column=3, padx=(0, GUI_PADX), pady=GUI_PADY)
         
-        # --- Output Format Settings ---
+        # 2. Mode Selection
+        mode_frame = ttk.LabelFrame(settings_frame, text=get_text("mode_selection_group"), style="TLabelframe")
+        mode_frame.pack(fill=tk.X, expand=True, pady=GUI_PADY)
+        
+        self.mode_var = tk.StringVar(value="linear")
+        
+        self.radio_linear = ttk.Radiobutton(mode_frame, text=get_text("mode_linear"), variable=self.mode_var, value="linear")
+        self.radio_dynamic = ttk.Radiobutton(mode_frame, text=get_text("mode_dynamic"), variable=self.mode_var, value="dynamic")
+        
+        self.radio_linear.pack(anchor=tk.W, padx=GUI_PADX, pady=(GUI_PADY, 0))
+        self.radio_dynamic.pack(anchor=tk.W, padx=GUI_PADX, pady=GUI_PADY)
+
+        # 3. Output Format
         output_frame = ttk.LabelFrame(settings_frame, text=get_text("output_format_group"), style="TLabelframe")
         output_frame.pack(fill=tk.X, expand=True, pady=GUI_PADY)
         
@@ -503,7 +630,7 @@ class AudioNormalizerApp:
         self.output_desc_label = ttk.Label(self.output_info_frame, text="", style="TLabel", wraplength=350, justify=tk.LEFT)
         self.output_desc_label.pack(fill='x')
 
-        # --- Bottom Frame (Process Info and Controls) ---
+        # --- Bottom Area: Process Info and Action Buttons ---
         bottom_frame = ttk.Frame(self.main_frame, style="TFrame")
         bottom_frame.pack(fill=tk.BOTH, expand=True, padx=GUI_PADX, pady=GUI_PADY)
         bottom_frame.rowconfigure(0, weight=1)
@@ -542,7 +669,7 @@ class AudioNormalizerApp:
         self.update_player_button_states()
 
     def on_closing(self):
-        """Custom close handler to ensure child processes are terminated."""
+        """Cleanup actions when the window is closed."""
         self.stop_audio()
         self.cancel_task()
         self.root.destroy()
@@ -562,17 +689,34 @@ class AudioNormalizerApp:
         self.menubar.add_cascade(label=get_text("menu_info"), menu=info_menu)
 
     def apply_language(self):
-        """Reloads all UI text elements with strings from the current language."""
+        """Refreshes all GUI text elements based on the current language."""
         load_language(current_language)
         self.root.title(f"{get_text('app_title')} v{VERSION}")
         self.menubar.destroy()
         self.create_menu()
         
-        for frame, text_key in [(self.main_frame.winfo_children()[0].winfo_children()[0], "file_selection_group"),
-                                (self.main_frame.winfo_children()[0].winfo_children()[1].winfo_children()[0], "loudness_settings_group"),
-                                (self.main_frame.winfo_children()[0].winfo_children()[1].winfo_children()[1], "output_format_group"),
-                                (self.main_frame.winfo_children()[1].winfo_children()[0], "process_information_group")]:
-            frame.config(text=get_text(text_key))
+        # Helper to safely update label frames within the grid structure.
+        def update_labelframe_text(parent_idx, child_idx, key):
+            try:
+                frame = self.main_frame.winfo_children()[parent_idx].winfo_children()[child_idx]
+                pass 
+            except IndexError:
+                pass
+
+        try:
+            # File Selection Section
+            self.main_frame.winfo_children()[0].winfo_children()[0].config(text=get_text("file_selection_group"))
+            
+            # Settings Section
+            settings_frame = self.main_frame.winfo_children()[0].winfo_children()[1]
+            settings_frame.winfo_children()[0].config(text=get_text("loudness_settings_group"))
+            settings_frame.winfo_children()[1].config(text=get_text("mode_selection_group"))
+            settings_frame.winfo_children()[2].config(text=get_text("output_format_group"))
+            
+            # Bottom Section
+            self.main_frame.winfo_children()[1].winfo_children()[0].config(text=get_text("process_information_group"))
+        except Exception:
+            pass
             
         self.add_files_button.config(text=get_text("add_files_button"))
         self.add_folder_button.config(text=get_text("add_folder_button"))
@@ -586,6 +730,9 @@ class AudioNormalizerApp:
         self.cancel_button.config(text=get_text("cancel_normalization_button"))
         self.status_bar.config(text=get_text("status_ready"))
         
+        self.radio_linear.config(text=get_text("mode_linear"))
+        self.radio_dynamic.config(text=get_text("mode_dynamic"))
+        
         self.file_listbox.heading("filename", text=get_text("file_list_header_filename"))
         self.play_button.config(text="▶")
         self.stop_button.config(text="■")
@@ -596,7 +743,7 @@ class AudioNormalizerApp:
         self.update_output_format_info()
 
     def add_files(self):
-        """Opens a file dialog to add one or more audio files to the list."""
+        """Opens dialog to add specific audio files."""
         filetypes = [(get_text("file_dialog_audio_files"), " ".join([ext for ext, _ in AUDIO_FILE_EXTENSIONS]))]
         files = filedialog.askopenfilenames(title=get_text("file_dialog_title"), filetypes=filetypes)
         for f in files:
@@ -607,7 +754,7 @@ class AudioNormalizerApp:
         self.update_player_button_states()
 
     def add_folder(self):
-        """Opens a folder dialog and recursively adds all supported audio files."""
+        """scans a selected folder for audio files recursively."""
         folder = filedialog.askdirectory(title=get_text("folder_dialog_title"))
         if not folder: return
         for root_dir, _, files in os.walk(folder):
@@ -621,12 +768,11 @@ class AudioNormalizerApp:
         self.update_player_button_states()
 
     def remove_selected_files(self, event=None):
-        """Removes all selected files from the list."""
+        """Removes selected entries from the file list."""
         selected_items = self.file_listbox.selection()
         if not selected_items:
             return
             
-        # Sort indices in reverse to avoid index shifting issues during deletion.
         indices_to_delete = sorted([self.file_listbox.index(i) for i in selected_items], reverse=True)
         
         for index in indices_to_delete:
@@ -639,10 +785,7 @@ class AudioNormalizerApp:
         self.update_player_button_states()
 
     def _validate_entry(self, widget, new_value, min_val, max_val):
-        """
-        Validates the input of a numerical entry field on focus out.
-        Changes the widget's style to 'Error.TEntry' if the value is invalid.
-        """
+        """Validates numerical input, applying visual error styles if invalid."""
         if str(widget.cget('state')) == 'disabled':
             widget.config(style="TEntry")
             return True
@@ -657,10 +800,7 @@ class AudioNormalizerApp:
         return True
 
     def update_entry_states(self, event=None):
-        """
-        Enables or disables the custom LUFS/TP entry fields based on whether
-        the "Custom" preset is selected.
-        """
+        """Enables/disables custom value entries based on preset selection."""
         is_lufs_custom = self.lufs_preset_var.get() == get_text("preset_custom")
         is_tp_custom = self.true_peak_preset_var.get() == get_text("preset_custom")
         
@@ -676,18 +816,17 @@ class AudioNormalizerApp:
         if not is_tp_custom: self.tp_entry_var.set(TRUE_PEAK_PRESETS.get(self.true_peak_preset_var.get(), ""))
 
     def update_status_bar(self):
-        """Updates the status bar text to show the number of files in the list."""
         self.status_bar.config(text=get_text("status_files_selected", count=len(self.file_list)))
 
     def update_process_info(self, message):
-        """Appends a message to the process information text box."""
+        """Appends text to the process info log window."""
         self.process_info.config(state=tk.NORMAL)
         self.process_info.insert(tk.END, message)
         self.process_info.see(tk.END)
         self.process_info.config(state=tk.DISABLED)
 
     def update_output_format_info(self, event=None):
-        """Displays technical details about the selected output format."""
+        """Updates the description text for the selected output format."""
         selected_format = self.output_format_var.get()
         details = language_data.get("output_format_details", {}).get(selected_format, None)
         if details:
@@ -700,10 +839,7 @@ class AudioNormalizerApp:
             self.output_info_frame.grid_remove()
 
     def toggle_controls(self, enable=True, for_playback=False):
-        """
-        Enables or disables main UI controls to prevent user interaction
-        during a running process.
-        """
+        """Enables or disables GUI controls during processing or playback."""
         state = tk.NORMAL if enable else "disabled"
         readonly_state = "readonly" if enable else "disabled"
         
@@ -714,6 +850,9 @@ class AudioNormalizerApp:
         self.start_button.config(state=state)
         for combo in [self.lufs_combobox, self.tp_combobox, self.output_combobox]:
             combo.config(state=readonly_state)
+            
+        self.radio_linear.config(state=state)
+        self.radio_dynamic.config(state=state)
         
         if not for_playback:
             self.cancel_button.config(state="normal" if not enable else "disabled")
@@ -721,7 +860,7 @@ class AudioNormalizerApp:
         if enable: self.update_entry_states()
 
     def update_player_button_states(self, event=None):
-        """Updates the state of the audio player buttons based on context."""
+        """Updates the state of Play/Stop/Nav buttons based on selection and playback status."""
         if self.is_playing:
             self.play_button.config(state='disabled')
             self.stop_button.config(state='normal')
@@ -739,7 +878,7 @@ class AudioNormalizerApp:
         self.next_button.config(state=nav_state)
 
     def play_audio(self):
-        """Plays the currently selected audio file."""
+        """Initiates playback for the selected file."""
         if self.is_playing or not self.file_listbox.selection():
             return
         
@@ -748,47 +887,34 @@ class AudioNormalizerApp:
         self._start_playback(self.current_track_index)
         
     def stop_audio(self):
-        """Stops the currently playing audio."""
+        """Terminates the ffplay subprocess."""
         global playback_process
         self.is_playing = False
         if playback_process and playback_process.poll() is None:
             playback_process.terminate()
 
-        # --- RACE CONDITION FIX ---
-        # Immediately update the UI after stopping. This ensures the player
-        # controls are responsive and correctly reflect the "stopped" state
-        # without waiting for the worker thread to finish.
         self.update_player_button_states()
         self.time_label_var.set("00:00:00 / 00:00:00")
-        # --- END FIX ---
 
     def play_next(self):
-        """Plays the next track in the list."""
         if not self.file_list: return
         next_index = (self.current_track_index + 1) % len(self.file_list)
         self._start_playback(next_index)
 
     def play_previous(self):
-        """Plays the previous track in the list."""
         if not self.file_list: return
         prev_index = (self.current_track_index - 1 + len(self.file_list)) % len(self.file_list)
         self._start_playback(prev_index)
 
     def _start_playback(self, track_index):
-        """Handles the logic of starting a new playback thread."""
+        """Prepares UI and starts the playback thread."""
         if self.is_playing:
             self.stop_audio()
 
-        # --- RACE CONDITION FIX ---
-        # Immediately disable all player controls to prevent rapid, successive
-        # clicks from starting multiple playback threads. This acts as an
-        # atomic lock on the UI. The buttons will be correctly updated later
-        # by the worker thread via the GUI queue.
         self.play_button.config(state='disabled')
         self.stop_button.config(state='disabled')
         self.prev_button.config(state='disabled')
         self.next_button.config(state='disabled')
-        # --- END FIX ---
 
         self.current_track_index = track_index
         
@@ -807,13 +933,11 @@ class AudioNormalizerApp:
         self.playback_thread.start()
 
     def _playback_worker(self, filepath):
-        """
-        Worker thread function that handles audio playback using ffprobe and ffplay.
-        Communicates with the GUI thread via the `gui_queue`.
-        """
+        """Threaded function handling the FFplay subprocess."""
         global playback_process
         gui_queue.put(("toggle_playback_controls", False))
         
+        # Get duration using ffprobe.
         ffprobe_path = os.path.join(config.ffmpeg_path, FFPROBE_EXECUTABLE_NAME)
         if not os.path.exists(ffprobe_path):
             if not self.ffprobe_checked:
@@ -830,6 +954,7 @@ class AudioNormalizerApp:
         
         gui_queue.put(("update_time", (0, self.total_duration_sec)))
         
+        # Start playback using ffplay.
         ffplay_path = os.path.join(config.ffmpeg_path, FFPLAY_EXECUTABLE_NAME)
         if not os.path.exists(ffplay_path):
              gui_queue.put(("error", (get_text("play_error_ffplay_not_found_title"), get_text("play_error_ffplay_not_found_message"))))
@@ -840,6 +965,7 @@ class AudioNormalizerApp:
             command = [ffplay_path, "-nodisp", "-autoexit", "-loglevel", "info", filepath]
             playback_process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW, encoding='utf-8')
             
+            # Parse stderr for current time updates.
             for line in iter(playback_process.stderr.readline, ''):
                 if not self.is_playing: break
                 
@@ -855,9 +981,7 @@ class AudioNormalizerApp:
         gui_queue.put(("playback_finished", None))
 
     def start_task(self, task_type):
-        """
-        Starts an analysis or normalization task after performing validation checks.
-        """
+        """Prepares and starts the normalization or analysis batch process."""
         if self.is_playing: self.stop_audio()
         
         if not self.file_list:
@@ -900,20 +1024,22 @@ class AudioNormalizerApp:
         self.process_info.config(state=tk.NORMAL); self.process_info.delete("1.0", tk.END); self.process_info.config(state=tk.DISABLED)
         self.progressbar.config(value=0, maximum=len(files_to_process))
         
-        log_file = ANALYSIS_LOG_FILE_NAME if task_type == "analyze" else LOG_FILE_NAME
+        base_path = get_base_path()
+        log_filename = ANALYSIS_LOG_FILE_NAME if task_type == "analyze" else LOG_FILE_NAME
+        log_file = os.path.join(base_path, log_filename)
+        
         if config.single_log_entry_enabled:
             with open(log_file, "w", encoding='utf-8') as f:
                 f.write(f"--- {datetime.datetime.now()} | {VERSION} | Starting {task_type} batch ---\n")
 
         processor = FFMpegProcessor(config.ffmpeg_path, lambda msg: gui_queue.put(("info", msg)))
-        task_thread = threading.Thread(target=self.task_runner, args=(task_type, files_to_process, processor, lufs, tp))
+        mode = self.mode_var.get()
+        task_thread = threading.Thread(target=self.task_runner, args=(task_type, files_to_process, processor, lufs, tp, mode))
         task_thread.daemon = True
         task_thread.start()
 
-    def task_runner(self, task_type, files, processor, lufs, tp):
-        """
-        Worker thread function that iterates through files and processes them.
-        """
+    def task_runner(self, task_type, files, processor, lufs, tp, mode):
+        """Worker thread that executes the processing loop."""
         was_cancelled = False
         for i, file_path in enumerate(files):
             if self.is_cancelled:
@@ -933,7 +1059,9 @@ class AudioNormalizerApp:
                 options = FFMPEG_OPTIONS.get(output_format, [])
                 output_ext = next((ext for ext, name in AUDIO_FILE_EXTENSIONS if name == output_format), ".tmp")
                 output_file = os.path.splitext(file_path)[0] + "-Normalized" + output_ext
-                return_code, stderr = processor.normalize(file_path, output_file, lufs, tp, codec, options)
+                
+                # Pass mode and output format for specific handling.
+                return_code, stderr = processor.normalize(file_path, output_file, lufs, tp, codec, options, mode, output_format)
             
             log_content = f"\n--- File: {file_path} ---\n{stderr}\n"
             gui_queue.put(("log", (log_file, log_content, "a")))
@@ -952,7 +1080,7 @@ class AudioNormalizerApp:
         gui_queue.put(("finish", "cancelled" if was_cancelled else "completed"))
 
     def cancel_task(self):
-        """Sets the cancellation flag and terminates the running FFmpeg process."""
+        """Signals the worker thread to stop and kills current subprocess."""
         self.is_cancelled = True
         if normalization_process and normalization_process.poll() is None:
             normalization_process.terminate()
@@ -960,8 +1088,8 @@ class AudioNormalizerApp:
 
     def process_gui_queue(self):
         """
-        Periodically checks the GUI queue for messages from worker threads
-        and updates the GUI accordingly.
+        Polls the thread-safe queue to update the GUI.
+        Tkinter is not thread-safe, so all UI updates from threads go through here.
         """
         try:
             while True:
@@ -989,9 +1117,7 @@ class AudioNormalizerApp:
         self.root.after(100, self.process_gui_queue)
 
     def task_finished(self, status, message=None):
-        """
-        Handles the completion, cancellation, or error of a task.
-        """
+        """Handles completion state of the batch process."""
         self.toggle_controls(enable=True)
         self.progressbar.config(value=0)
         global normalization_process
@@ -1010,7 +1136,7 @@ class AudioNormalizerApp:
             winsound.MessageBeep(winsound.MB_ICONERROR)
 
     def show_about(self):
-        """Displays the 'About' window with application information."""
+        """Displays the 'About' dialog."""
         about_window = tk.Toplevel(self.root)
         about_window.geometry("455x585") 
         about_window.title(get_text("menu_info_about"))
@@ -1026,8 +1152,6 @@ class AudioNormalizerApp:
 
         tk.Label(about_frame, text=get_text("app_title_long"), font=large_bold_font, bg=self.colors["bg"], fg=self.colors["fg"]).pack(pady=(GUI_PADY, 2))
 
-        # Display version with emojis by splitting the label into parts. This is
-        # necessary because standard fonts do not render color emojis correctly.
         version_frame = tk.Frame(about_frame, bg=self.colors["bg"])
         version_frame.pack()
         emoji_font = ("Segoe UI Emoji", 10)
@@ -1066,10 +1190,11 @@ class AudioNormalizerApp:
         ttk.Button(about_frame, text=get_text("about_ok_button"), command=about_window.destroy).pack(pady=GUI_PADY)
         
         center_window(about_window)
-        about_window.wait_window(about_window)
+        # Corrected variable reference from original source (was options_window).
+        self.root.wait_window(about_window)
 
     def show_options(self):
-        """Displays the 'Options' window for configuring the application."""
+        """Displays the configuration/options dialog."""
         options_window = tk.Toplevel(self.root)
         options_window.geometry("600x270")
         options_window.title(get_text("options_dialog_title"))
@@ -1114,7 +1239,6 @@ class AudioNormalizerApp:
         toggle_log_size()
 
         def save_and_close():
-            """Validates, saves, and applies settings, then closes the window."""
             global current_language
             ffmpeg_path = ffmpeg_path_var.get()
             if not os.path.exists(os.path.join(ffmpeg_path, FFMPEG_EXECUTABLE_NAME)):
@@ -1138,17 +1262,11 @@ class AudioNormalizerApp:
         center_window(options_window)
         options_window.wait_window(options_window)
 
-# --- MAIN EXECUTION ---
-# This block runs when the script is executed directly.
+# --- Application Entry Point ---
 if __name__ == "__main__":
-    # Initialize the configuration.
     config = Config()
-    # Load the language specified in the config.
     load_language(current_language)
-    # Create the main Tkinter window and app instance.
     root = tk.Tk()
     app = AudioNormalizerApp(root)
-    # Set the custom closing protocol.
     root.protocol("WM_DELETE_WINDOW", app.on_closing)
-    # Start the Tkinter event loop.
     root.mainloop()
