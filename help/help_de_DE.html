@@ -41,6 +41,12 @@
             color: #87cefa;
             font-weight: bold;
         }
+        .mode-box {
+            background-color: #333333;
+            border-left: 4px solid #87cefa;
+            padding: 10px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -49,52 +55,66 @@
         <h2>Inhaltsverzeichnis</h2>
         <ul>
             <li><a href="#voraussetzungen">Voraussetzungen</a></li>
-            <li><a href="#schritte-gui">Anleitung (Version 3)</a></li>
-            <li><a href="#zusatzliche-hinweise">Zusätzliche Hinweise</a></li>
+            <li><a href="#schritte-gui">Anleitung (Version 3.1.0)</a></li>
+            <li><a href="#normalisierungs-modi">Normalisierungs-Modi</a></li>
+            <li><a href="#zusatzliche-hinweise">Qualität & Metadaten</a></li>
             <li><a href="#uber-diese-datei">Über diese Datei</a></li>
         </ul>
 
         <h2 id="voraussetzungen">Voraussetzungen</h2>
         <ul>
-            <li>Für die Verwendung von <span class="highlight">melcom's FFmpeg Audio Normalisierer</span> benötigst du die komplette FFmpeg-Suite. Diese beinhaltet:
+            <li>Für die Verwendung von <span class="highlight">melcom's FFmpeg Audio Normalisierer</span> benötigst du die komplette FFmpeg-Suite:
                 <ul>
-                    <li><code>ffmpeg.exe</code> (für die Normalisierung und Analyse)</li>
-                    <li><code>ffplay.exe</code> (für die Audio-Vorschau)</li>
-                    <li><code>ffprobe.exe</code> (um die Titeldauer für die Zeitanzeige des Players auszulesen)</li>
+                    <li><code>ffmpeg.exe</code> (Normalisierung und Analyse)</li>
+                    <li><code>ffplay.exe</code> (Audio-Vorschau)</li>
+                    <li><code>ffprobe.exe</code> (Titeldauer und technische Audio-Informationen)</li>
                 </ul>
             </li>
-            <li>Du kannst die neuesten Builds von <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">hier herunterladen</a>. Für Windows-Nutzer empfehle ich eine Datei wie <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
-            <li>Nach dem Entpacken musst du den Pfad zum `bin`-Ordner (welcher die .exe-Dateien enthält) in den Optionen des Programms angeben.</li>
+            <li>Du kannst die neuesten Builds von <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">hier herunterladen</a>. Empfohlen: <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
+            <li>Stelle sicher, dass der Pfad zum `bin`-Ordner in den Programm-Optionen korrekt hinterlegt ist.</li>
         </ul>
 
-        <h2 id="schritte-gui">Anleitung (Version 3)</h2>
+        <h2 id="schritte-gui">Anleitung (Version 3.1.0)</h2>
         <ol>
-            <li>Starte die Anwendung (`AudioNormalizer.exe`). Wenn du das Programm zum ersten Mal verwendest, gehe zu "Datei" -> "Optionen" und stelle den Pfad zu deinem FFmpeg-`bin`-Ordner ein.</li>
-            <li>Nutze die <span class="highlight">"Dateien hinzufügen"</span> oder <span class="highlight">"Ordner hinzufügen"</span> Buttons, um die Liste auf der linken Seite mit den zu verarbeitenden Audiodateien zu füllen.</li>
-            <li>(Optional) Um einen Titel vorzuhören, wähle ihn in der Liste aus und drücke den <span class="highlight">"▶"</span> (Play) Button. Mit den "«" und "»" Buttons kannst du wie in einer Playlist durch die gesamte Dateiliste navigieren.</li>
-            <li>Wähle auf der rechten Seite dein gewünschtes <span class="highlight">LUFS-Preset</span> und <span class="highlight">True-Peak-Preset</span>. Wähle "Benutzerdefiniert", um eigene Werte einzugeben.</li>
-            <li>Wähle das <span class="highlight">Ausgabeformat</span> (z.B. WAV, MP3). Eine Info-Box zeigt dir die technischen Details der Ausgabe an.</li>
-            <li>Klicke auf <span class="highlight">"Normalisierung starten"</span>, um die Verarbeitung aller Dateien in der Liste zu beginnen. Falls eine Ausgabedatei bereits existiert, wirst du gefragt, ob du diese überschreiben möchtest.</li>
-            <li>Die Fortschrittsanzeige und das Prozessprotokoll am unteren Rand zeigen den Echtzeit-Status der Stapelverarbeitung an.</li>
-            <li>Die normalisierten Dateien werden im selben Ordner wie ihre Quelldateien gespeichert, wobei "-Normalized" an den Dateinamen angehängt wird.</li>
+            <li>Starte die Anwendung. Stelle sicher, dass der FFmpeg-Pfad unter "Datei" -> "Optionen" korrekt eingestellt ist.</li>
+            <li>Füge Dateien über <span class="highlight">"Dateien hinzufügen"</span> oder ganze Verzeichnisse über <span class="highlight">"Ordner hinzufügen"</span> zur Liste hinzu.</li>
+            <li>(Optional) Nutze den Player unter der Liste, um Titel vorzuhören und durch deine Playlist zu navigieren.</li>
+            <li>Wähle auf der rechten Seite dein <span class="highlight">LUFS-Preset</span> und <span class="highlight">True-Peak-Preset</span>.</li>
+            <li><span class="highlight">Neu in v3.1:</span> Wähle den passenden <strong>Normalisierungs-Modus</strong> (Linear oder Dynamisch). Details dazu findest du im nächsten Abschnitt.</li>
+            <li>Wähle das <span class="highlight">Ausgabeformat</span> (WAV, MP3, FLAC, AAC, OGG).</li>
+            <li>Klicke auf <span class="highlight">"Normalisierung starten"</span>. Die Dateien werden nacheinander verarbeitet, Fortschritt und Details siehst du im Log-Fenster.</li>
         </ol>
 
-        <h2 id="zusatzliche-hinweise">Zusätzliche Hinweise</h2>
-        <p><strong>Informationen zu den LUFS- und True Peak Presets:</strong></p>
+        <h2 id="normalisierungs-modi">Normalisierungs-Modi</h2>
+        <div class="mode-box">
+            <strong>Linear (2 Durchgänge) - Empfohlen für Musik:</strong><br>
+            Dieser Modus analysiert die Datei im ersten Durchgang komplett und berechnet eine feste Verstärkung. Die Dynamik des Stücks bleibt vollständig erhalten. Ideal für Mastering und hochwertiges Archivieren.
+        </div>
+        <div class="mode-box">
+            <strong>Dynamisch (1 Durchgang) - Radio-Stil:</strong><br>
+            Die Lautstärke wird während des Prozesses "live" angepasst. Dies gleicht starke Lautstärkeunterschiede innerhalb einer Datei aus. Ideal für Podcasts, Sprachaufnahmen oder Radio-Streams.
+        </div>
+
+        <h2 id="zusatzliche-hinweise">Qualität & Metadaten</h2>
+        <p><strong>Erhalt der Audioqualität (WAV & FLAC):</strong></p>
         <ul>
-            <li><strong>LUFS-Presets:</strong> Dies sind vordefinierte Lautheits-Zielwerte, die für verschiedene Plattformen optimiert sind. "-14 LUFS" ist ein gängiger Standard für viele Streaming-Dienste wie YouTube und Spotify, während "-23 LUFS" der EBU R128-Standard für den Rundfunk ist.</li>
-            <li><strong>True-Peak-Presets:</strong> Diese setzen eine Obergrenze für das Audiosignal, um Übersteuerungen (Clipping) nach der Konvertierung zu verhindern. "-1.0 dBTP" ist ein sicherer Standard für die meisten digitalen Audioformate.</li>
+            <li>Bei der Wahl von WAV oder FLAC behält das Programm automatisch die <span class="highlight">Original-Samplerate</span> (z.B. 96 kHz) und die <span class="highlight">Bit-Tiefe</span> (z.B. 24-Bit) der Quelldatei bei. Es findet kein unnötiges Downsampling statt.</li>
         </ul>
 
-        <p><strong>'Einzelner Logeintrag' Option (in den Optionen):</strong></p>
+        <p><strong>Metadaten & Tags:</strong></p>
         <ul>
-            <li><strong>Standardmäßig aktiviert:</strong> Jedes Mal, wenn du einen neuen Stapelprozess startest, wird die vorherige Log-Datei geleert. So bleibt die Log-Datei sauber und auf den letzten Vorgang bezogen.</li>
-            <li><strong>Bei Deaktivierung:</strong> Jeder Prozess wird an die Log-Datei angehängt, wodurch eine laufende Historie all deiner Normalisierungen und Analysen entsteht.</li>
+            <li>Alle Metadaten (Interpret, Album, Titel, Jahr etc.) werden von der Quelldatei in die neue, normalisierte Datei übernommen.</li>
+            <li>Bei MP3-Dateien wird automatisch der ID3v2.3 Standard genutzt, um maximale Kompatibilität mit Windows und externen Playern zu gewährleisten.</li>
+        </ul>
+
+        <p><strong>Automatisches Aufräumen:</strong></p>
+        <ul>
+            <li>Sollte ein Prozess abgebrochen werden oder ein Fehler auftreten, löscht das Programm automatisch alle temporären Arbeitsdateien (<code>.temp</code>), um deinen Ordner sauber zu halten.</li>
         </ul>
 
         <h2 id="uber-diese-datei">Über diese Datei</h2>
-        <p>Dieses Programm wurde von melcom (Andreas Thomas Urban) erstellt und ist <span class="highlight">Open-Source-Software</span> unter der <span class="highlight">MIT-Lizenz</span>. Du darfst es frei verwenden, verändern und weitergeben. Alle Details findest du in der Datei `LICENSE.txt`.</p>
-        <p>Bei Fragen kannst du mich gerne über das <a href="http://melcom-creations.github.io/melcom-music/contact.html" target="_blank" rel="noopener">Kontaktformular</a> erreichen.</p>
+        <p>Dieses Programm wurde von melcom (Andreas Thomas Urban) erstellt und ist <span class="highlight">Open-Source-Software</span> unter der <span class="highlight">MIT-Lizenz</span>.</p>
+        <p>Besuche die Webseite für Updates: <a href="http://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">melcom-music.de</a></p>
     </div>
 </body>
 </html>

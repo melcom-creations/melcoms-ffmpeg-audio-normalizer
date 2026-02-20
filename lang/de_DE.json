@@ -37,6 +37,9 @@
   "target_lufs_label_custom_short": "LUFS:",
   "true_peak_label": "dBTP:",
   "preset_custom": "Benutzerdefiniert",
+  "mode_selection_group": "Normalisierungs-Modus",
+  "mode_dynamic": "Dynamisch (1 Durchgang) - Passt Lautstärke live an (Radio-Style)",
+  "mode_linear": "Linear (2 Durchgänge) - Erhält Dynamik (Empfohlen für Musik)",
   "output_format_group": "Ausgabeformat",
   "output_format_file_format_label": "Format:",
   "process_information_group": "Prozess-Log",
@@ -90,16 +93,16 @@
   "normalization_overwrite_message": "Die Ausgabedatei '{file}' existiert bereits. Möchten Sie sie überschreiben? \n\n(Wenn Sie 'Nein' wählen, wird diese Datei übersprungen.)",
   "output_format_details": {
     "WAV": {
-      "specs": "Spez.: 32-Bit Float, 48 kHz, Stereo",
-      "description": "Unkomprimiert und verlustfrei. Der professionelle Standard für Mastering, Archivierung und als hochwertige Quelle zur Weiterverarbeitung."
+      "specs": "Spez.: Original Samplerate & Bit-Tiefe",
+      "description": "Unkomprimiert und verlustfrei. Behält die originale Samplerate und Bit-Tiefe der Quelldatei bei (z.B. 24-Bit/96kHz)."
     },
     "MP3": {
       "specs": "Spez.: 320 kbps CBR, 48 kHz, Stereo",
       "description": "Erstellt eine MP3-Datei mit der maximalen Standard-Bitrate. Dies sichert exzellente Audioqualität bei höchster Kompatibilität."
     },
     "FLAC": {
-      "specs": "Spez.: Verlustfrei, 48 kHz, Stereo, Kompr.-Stufe 5",
-      "description": "Reduziert die Dateigröße erheblich im Vergleich zu WAV, jedoch ohne jeglichen Informationsverlust. Die erste Wahl zur Archivierung."
+      "specs": "Spez.: Verlustfrei, Original Samplerate, Kompr.-Stufe 5",
+      "description": "Reduziert die Dateigröße erheblich im Vergleich zu WAV ohne Informationsverlust. Behält Samplerate der Quelle bei."
     },
     "AAC": {
       "specs": "Spez.: 256 kbps, 48 kHz, Stereo",

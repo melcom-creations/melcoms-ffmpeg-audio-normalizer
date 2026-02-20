@@ -37,6 +37,9 @@
   "target_lufs_label_custom_short": "LUFS:",
   "true_peak_label": "dBTP:",
   "preset_custom": "Własny",
+  "mode_selection_group": "Tryb normalizacji",
+  "mode_dynamic": "Dynamiczny (1 przebieg) - Dostosowuje głośność na bieżąco (Radio)",
+  "mode_linear": "Liniowy (2 przebiegi) - Zachowuje dynamikę (Zalecane dla muzyki)",
   "output_format_group": "Format wyjściowy",
   "output_format_file_format_label": "Format:",
   "process_information_group": "Dziennik procesu",
@@ -90,16 +93,16 @@
   "normalization_overwrite_message": "Plik wyjściowy '{file}' już istnieje. Czy chcesz go nadpisać? \n\n(Jeśli wybierzesz 'Nie', ten plik zostanie pominięty.)",
   "output_format_details": {
     "WAV": {
-      "specs": "Spec.: 32-bit Float, 48 kHz, Stereo",
-      "description": "Nieskompresowany i bezstratny. Profesjonalny standard do masteringu, archiwizacji i jako wysokiej jakości źródło do dalszej obróbki."
+      "specs": "Spec.: Oryginalne Próbkowanie & Głębia",
+      "description": "Nieskompresowany i bezstratny. Zachowuje oryginalną częstotliwość próbkowania i głębię bitową pliku źródłowego."
     },
     "MP3": {
       "specs": "Spec.: 320 kbps CBR, 48 kHz, Stereo",
       "description": "Tworzy plik MP3 o maksymalnej standardowej przepływności, zapewniając doskonałą jakość dźwięku przy najwyższej kompatybilności."
     },
     "FLAC": {
-      "specs": "Spec.: Bezstratny, 48 kHz, Stereo, Poziom komp. 5",
-      "description": "Znacząco zmniejsza rozmiar pliku w porównaniu do WAV, ale bez utraty informacji o dźwięku. Pierwszy wybór do archiwizacji."
+      "specs": "Spec.: Bezstratny, Oryginalne Próbk., Poziom komp. 5",
+      "description": "Znacząco zmniejsza rozmiar pliku w porównaniu do WAV, ale bez utraty informacji o dźwięku. Zachowuje próbkowanie źródła."
     },
     "AAC": {
       "specs": "Spec.: 256 kbps, 48 kHz, Stereo",

@@ -1,43 +1,40 @@
-**melcom's FFmpeg Audio Normalizer v3.0.0 (Halloween Edition)**
+**melcom's FFmpeg Audio Normalizer v3.1.0 (Feierabend Edition)**
 
-Za pomocą tego programu możesz łatwo normalizować głośność swoich plików audio, pojedynczo lub w partiach, używając FFmpeg.
-Znormalizowane pliki są automatycznie zapisywane w tym samym folderze, co pliki oryginalne.
+Za pomocą tego programu możesz profesjonalnie normalizować głośność swoich plików audio, pojedynczo lub wsadowo, używając FFmpeg. Znormalizowane pliki są automatycznie zapisywane w tym samym folderze, co pliki źródłowe.
 
 **Szybki przewodnik dla Ciebie:**
 
 1. **Zainstaluj pakiet FFmpeg:**
    - Ten program wymaga darmowych narzędzi wiersza poleceń: `ffmpeg.exe`, `ffplay.exe` i `ffprobe.exe`.
-   - Pobierz narzędzia z zaufanej strony internetowej. Dla użytkowników systemu Windows polecamy kompilacje "essentials" lub "full" ze strony https://github.com/BtbN/FFmpeg-Builds/releases. Szukaj pliku o nazwie `ffmpeg-master-latest-win64-gpl.zip`.
-   - Rozpakuj archiwum i umieść folder zawierający pliki `.exe` na swoim komputerze.
+   - Pobierz narzędzia z zaufanej strony internetowej. Polecamy kompilacje ze strony https://github.com/BtbN/FFmpeg-Builds/releases (np. `ffmpeg-master-latest-win64-gpl.zip`).
+   - Rozpakuj archiwum i upewnij się, że ścieżka do folderu `bin` jest poprawnie ustawiona w opcjach programu.
 
-2. **Uruchom program i ustaw ścieżkę FFmpeg:**
+2. **Uruchom program i skonfiguruj:**
    - Uruchom `AudioNormalizer.exe`.
-   - W programie przejdź do "Plik" -> "Opcje".
-   - W polu "Ścieżka FFmpeg" wskaż folder, w którym znajdują się `ffmpeg.exe`, `ffplay.exe` i `ffprobe.exe`. Jest to kluczowe do działania programu.
+   - Przejdź do "Plik" -> "Opcje" i wskaż folder zawierający pliki wykonywalne FFmpeg.
 
-3. **Znormalizuj swoje pliki audio:**
-   - W oknie głównym użyj przycisków "Dodaj pliki" lub "Dodaj folder", aby stworzyć listę plików audio do przetworzenia.
-   - Dostosuj "Preset LUFS" i "Format wyjściowy" po prawej stronie do swoich potrzeb.
-   - Kliknij "Start Normalizacji".
-   - Postęp całego procesu wsadowego będzie wyświetlany, a znormalizowane pliki zostaną utworzone automatycznie.
+3. **Znormalizuj swoje pliki audio (Nowość w v3.1):**
+   - Dodaj pliki lub całe foldery do listy przetwarzania.
+   - Po prawej stronie wybierz presety LUFS i True Peak.
+   - **Wybierz tryb:** 
+     - *Liniowy (2 przebiegi):* Zalecany dla muzyki. Zachowuje pełny zakres dynamiki.
+     - *Dynamiczny (1 przebieg):* Zalecany dla mowy/radia. Dostosowuje głośność na bieżąco.
+   - Wybierz format wyjściowy i kliknij "Start Normalizacji".
 
 4. **Podgląd audio:**
-   - Aby odsłuchać plik, po prostu kliknij go na liście i naciśnij przycisk "▶" (Odtwarzaj).
-   - Użyj przycisków "«" i "»", aby nawigować po liście plików jak po playliście.
+   - Użyj zintegrowanego odtwarzacza pod listą, aby odsłuchać utwory i nawigować po swojej playliście.
 
-5. **Opcje (Ustawienia):**
-   - W menu "Plik" -> "Opcje" możesz zmienić ścieżkę do FFmpeg, wybrać język programu i dostosować ustawienia pliku logu.
+**Ważne Highlights i Wskazówki dla Ciebie:**
 
-**Ważne Wskazówki dla Ciebie:**
-
-* **Ścieżka pakietu FFmpeg:** Upewnij się, że ścieżka do folderu zawierającego `ffmpeg.exe`, `ffplay.exe` i `ffprobe.exe` jest poprawnie ustawiona w opcjach, w przeciwnym razie program nie będzie działać.
-*   **`ffprobe.exe`:** Ten plik jest wymagany do wyświetlania czasu w odtwarzaczu audio. Jeśli go brakuje, odtwarzanie nadal będzie działać, ale bez informacji o czasie.
-* **Presety LUFS:** Presety pomagają wybrać odpowiednią głośność dla różnych platform (np. YouTube, Spotify). Możesz także wprowadzić własne wartości.
-* **Format wyjściowy:** Pole informacyjne pod wyborem formatu dostarcza szczegółów na temat specyfikacji technicznych pliku wyjściowego.
+*   **Najwyższa jakość:** Przy eksporcie do WAV lub FLAC program automatycznie zachowuje oryginalną częstotliwość próbkowania (np. 96 kHz) i głębię bitową (np. 24-bit) pliku źródłowego. Brak niepotrzebnego downsamplingu.
+*   **Metadane:** Twoje tagi (Artysta, Tytuł, Album itp.) są zachowywane i przenoszone do nowego pliku. Pliki MP3 korzystają ze standardu ID3v2.3 dla najlepszej kompatybilności z systemem Windows i odtwarzaczami zewnętrznymi.
+*   **Tryb Liniowy:** Nowy tryb 2-przebiegowy zapewnia precyzję na poziomie masteringu, najpierw analizując plik, a następnie idealnie go peglując bez niszczenia dynamiki.
+*   **Automatyczne czyszczenie:** Program automatycznie usuwa tymczasowe pliki robocze (`.temp`), nawet jeśli proces zostanie przerwany lub wystąpi błąd.
+*   **Ścieżka FFmpeg:** Program nie może funkcjonować bez poprawnej ścieżki do plików `ffmpeg.exe`, `ffplay.exe` i `ffprobe.exe` w Opcjach.
 
 To oprogramowanie jest Open-Source (Licencja MIT). Zobacz `LICENSE.txt` po szczegóły.
 
-Miłej zabawy z programem!
+Miłego korzystania z Feierabend Edition!
 
 Z poważaniem,
 melcom

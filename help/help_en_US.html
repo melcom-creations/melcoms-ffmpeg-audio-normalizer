@@ -41,6 +41,12 @@
             color: #87cefa;
             font-weight: bold;
         }
+        .mode-box {
+            background-color: #333333;
+            border-left: 4px solid #87cefa;
+            padding: 10px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -49,52 +55,66 @@
         <h2>Table of Contents</h2>
         <ul>
             <li><a href="#requirements">Requirements</a></li>
-            <li><a href="#steps-gui">Steps for Using Version 3</a></li>
-            <li><a href="#additional-notes">Additional Notes</a></li>
+            <li><a href="#steps-gui">Steps for Using Version 3.1.0</a></li>
+            <li><a href="#normalization-modes">Normalization Modes</a></li>
+            <li><a href="#quality-metadata">Quality & Metadata</a></li>
             <li><a href="#about-this-file">About This File</a></li>
         </ul>
 
         <h2 id="requirements">Requirements</h2>
         <ul>
-            <li>To use <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, you need the complete FFmpeg suite. This includes:
+            <li>To use <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, you need the complete FFmpeg suite:
                 <ul>
-                    <li><code>ffmpeg.exe</code> (for normalization and analysis)</li>
-                    <li><code>ffplay.exe</code> (for the audio preview feature)</li>
-                    <li><code>ffprobe.exe</code> (to read track duration for the player's time display)</li>
+                    <li><code>ffmpeg.exe</code> (Normalization and analysis)</li>
+                    <li><code>ffplay.exe</code> (Audio preview feature)</li>
+                    <li><code>ffprobe.exe</code> (Extracting track duration and technical audio properties)</li>
                 </ul>
             </li>
-            <li>You can download the latest builds from <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">here</a>. For Windows, we recommend a file like <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
-            <li>After unzipping, you must specify the path to the `bin` folder (which contains the executables) in the program's options.</li>
+            <li>Download the latest builds from <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">here</a>. Recommended: <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
+            <li>Ensure the path to the `bin` folder is correctly set in the program's Options.</li>
         </ul>
 
-        <h2 id="steps-gui">Steps for Using Version 3</h2>
+        <h2 id="steps-gui">Steps for Using Version 3.1.0</h2>
         <ol>
-            <li>Start the application (`AudioNormalizer.exe`). If it's your first time, go to "File" -> "Options" and set the path to your FFmpeg `bin` folder.</li>
-            <li>Use the <span class="highlight">"Add Files"</span> or <span class="highlight">"Add Folder"</span> buttons to populate the list on the left with the audio files you want to process.</li>
-            <li>(Optional) To preview a track, select it in the list and press the <span class="highlight">"▶"</span> (Play) button. You can use the "«" and "»" buttons to navigate through the entire list like a playlist.</li>
-            <li>On the right side, select your desired <span class="highlight">LUFS Preset</span> and <span class="highlight">True Peak Preset</span>. Choose "Custom" to enter your own values.</li>
-            <li>Select the <span class="highlight">Output Format</span> (e.g., WAV, MP3). An info box will show you the technical details of the output.</li>
-            <li>Click <span class="highlight">"Start Normalization"</span> to begin processing all files in the list. If an output file already exists, you will be asked if you want to overwrite it.</li>
-            <li>The progress bar and the process log at the bottom will show the real-time status of the batch operation.</li>
-            <li>The normalized files will be saved in the same folder as their original source files, with "-Normalized" added to the filename.</li>
+            <li>Start the application. Verify your FFmpeg path under "File" -> "Options".</li>
+            <li>Use <span class="highlight">"Add Files"</span> or <span class="highlight">"Add Folder"</span> to populate the processing list.</li>
+            <li>(Optional) Use the player below the list to preview tracks and navigate through your batch.</li>
+            <li>Select your desired <span class="highlight">LUFS Preset</span> and <span class="highlight">True Peak Preset</span>.</li>
+            <li><span class="highlight">New in v3.1:</span> Choose the appropriate <strong>Normalization Mode</strong> (Linear or Dynamic). See details in the next section.</li>
+            <li>Select your <span class="highlight">Output Format</span> (WAV, MP3, FLAC, AAC, OGG).</li>
+            <li>Click <span class="highlight">"Start Normalization"</span>. Files will be processed sequentially; progress and details are shown in the log window.</li>
         </ol>
 
-        <h2 id="additional-notes">Additional Notes</h2>
-        <p><strong>About the LUFS and True Peak Presets:</strong></p>
+        <h2 id="normalization-modes">Normalization Modes</h2>
+        <div class="mode-box">
+            <strong>Linear (2 Passes) - Recommended for Music:</strong><br>
+            This mode analyzes the file completely in the first pass and calculates a fixed gain. The dynamic range of the track remains fully intact. Ideal for mastering and high-quality archival.
+        </div>
+        <div class="mode-box">
+            <strong>Dynamic (1 Pass) - Radio Style:</strong><br>
+            Volume is adjusted "on the fly" during the process. This levels out large volume differences within a single file. Ideal for podcasts, voice recordings, or radio streams.
+        </div>
+
+        <h2 id="quality-metadata">Quality & Metadata</h2>
+        <p><strong>Audio Quality Preservation (WAV & FLAC):</strong></p>
         <ul>
-            <li><strong>LUFS Presets:</strong> These are predefined loudness targets optimized for various platforms. "-14 LUFS" is a common standard for many streaming services like YouTube and Spotify, while "-23 LUFS" is the EBU R128 standard for broadcast.</li>
-            <li><strong>True Peak Presets:</strong> These set a ceiling for the audio signal to prevent clipping after conversion. "-1.0 dBTP" is a safe standard for most digital audio.</li>
+            <li>When selecting WAV or FLAC, the program automatically preserves the <span class="highlight">original sample rate</span> (e.g., 96 kHz) and <span class="highlight">bit depth</span> (e.g., 24-bit) of the source file. No unnecessary downsampling occurs.</li>
         </ul>
 
-        <p><strong>'Single Log Entry' Option (in Options):</strong></p>
+        <p><strong>Metadata & Tags:</strong></p>
         <ul>
-            <li><strong>Enabled by default:</strong> Each time you start a new batch process, the previous log file is cleared. This keeps the log clean and relevant to the last operation.</li>
-            <li><strong>When disabled:</strong> Every process is appended to the log file, creating a running history of all your normalizations and analyses.</li>
+            <li>All metadata (Artist, Album, Title, Year, etc.) is preserved and transferred from the source file to the normalized output file.</li>
+            <li>MP3 files automatically use the ID3v2.3 standard to ensure maximum compatibility with Windows Explorer and external hardware players.</li>
+        </ul>
+
+        <p><strong>Automatic Cleanup:</strong></p>
+        <ul>
+            <li>If a process is cancelled or an error occurs, the program automatically deletes all temporary work files (<code>.temp</code>) to keep your folders clean.</li>
         </ul>
 
         <h2 id="about-this-file">About This File</h2>
-        <p>This program was created by melcom (Andreas Thomas Urban) and is <span class="highlight">open-source software</span>, licensed under the <span class="highlight">MIT License</span>. You are free to use, modify, and distribute it. For full details, see the `LICENSE.txt` file.</p>
-        <p>If you have questions, feel free to get in touch via the <a href="http://melcom-creations.github.io/melcom-music/contact.html" target="_blank" rel="noopener">contact form</a>.</p>
+        <p>This program was created by melcom (Andreas Thomas Urban) and is <span class="highlight">open-source software</span> licensed under the <span class="highlight">MIT License</span>.</p>
+        <p>Visit the website for updates: <a href="http://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">melcom-music.de</a></p>
     </div>
 </body>
 </html>
