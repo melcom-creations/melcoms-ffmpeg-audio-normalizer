@@ -69,9 +69,10 @@ For a detailed history of all changes, please see the [CHANGELOG.md](CHANGELOG.m
 
 ## License
 
-This software is open-source and released under the MIT License. See the [License.txt](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/License.txt) file for details.
+This software is open-source and released under the MIT License. See the [License.txt](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/LICENSE.txt) file for details.
 
 ---
 
 Cheers,<br>
+
 melcom
