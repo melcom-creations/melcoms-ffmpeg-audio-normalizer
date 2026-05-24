@@ -1,40 +1,121 @@
-**melcom's FFmpeg Audio Normalizer v3.1.0 (Feierabend Edition)**
+melcom's FFmpeg Audio Normalizer v3.2.0 - Nachtschicht Edition
 
-Mit diesem Programm kannst Du die Lautstärke Deiner Audiodateien, einzeln oder stapelweise, professionell mit FFmpeg normalisieren. Die normalisierten Dateien werden automatisch im gleichen Ordner wie die Originaldateien gespeichert.
+Open-Source Audio-Normalisierung mit FFmpeg sowie LUFS- und True-Peak-Unterstützung.
 
-**Kurzanleitung für Dich:**
+Mit diesem Programm kannst Du die Lautstärke Deiner Audiodateien - einzeln oder stapelweise - komfortabel mit FFmpeg normalisieren. Die fertigen Dateien werden automatisch im gleichen Ordner wie die Originaldateien gespeichert.
 
-1. **FFmpeg-Suite installieren:**
-   - Für dieses Programm benötigst Du die kostenlosen Kommandozeilen-Tools `ffmpeg.exe`, `ffplay.exe` und `ffprobe.exe`.
-   - Lade die Tools von einer vertrauenswürdigen Webseite herunter. Wir empfehlen die Builds von https://github.com/BtbN/FFmpeg-Builds/releases (z.B. `ffmpeg-master-latest-win64-gpl.zip`).
-   - Entpacke das Archiv und stelle sicher, dass der Pfad zum `bin`-Ordner in den Programm-Optionen hinterlegt ist.
 
-2. **Programm starten und einrichten:**
-   - Starte `AudioNormalizer.exe`.
-   - Gehe zu "Datei" -> "Optionen" und gib den Pfad zu Deinem FFmpeg-Ordner an.
+========================================
+SCHNELLSTART
+========================================
 
-3. **Audiodateien normalisieren (Neu in v3.1):**
-   - Füge Dateien oder ganze Ordner zur Liste hinzu.
-   - Wähle rechts Dein LUFS- und True-Peak-Preset.
-   - **Wähle den Modus:** 
-     - *Linear (2 Durchgänge):* Empfohlen für Musik. Erhält die volle Dynamik.
-     - *Dynamisch (1 Durchgang):* Empfohlen für Sprache/Radio. Passt die Lautstärke live an.
-   - Wähle das Ausgabeformat und klicke auf "Normalisierung starten".
+1. FFmpeg-Suite installieren
 
-4. **Audio-Vorschau:**
-   - Nutze den integrierten Player unter der Liste, um Titel vorzuhören und durch Deine Playlist zu navigieren.
+Für dieses Programm benötigst Du die kostenlosen Kommandozeilen-Tools:
 
-**Wichtige Highlights & Hinweise für Dich:**
+- ffmpeg.exe
+- ffplay.exe
+- ffprobe.exe
 
-*   **Höchste Qualität:** Bei der Ausgabe als WAV oder FLAC behält das Programm automatisch die originale Samplerate (z.B. 96 kHz) und Bit-Tiefe (z.B. 24-Bit) der Quelldatei bei.
-*   **Metadaten:** Deine Tags (Interpret, Titel, Album etc.) bleiben erhalten und werden in die neue Datei übernommen. MP3s nutzen den ID3v2.3 Standard für beste Kompatibilität.
-*   **Linearer Modus:** Der neue 2-Pass-Modus (Linear) sorgt für echtes Mastering-Niveau, indem er die Datei erst analysiert und dann perfekt pegelt, ohne die Dynamik zu verändern.
-*   **Automatisches Cleanup:** Das Programm löscht temporäre Arbeitsdateien (`.temp`) automatisch, auch wenn ein Vorgang abgebrochen wird.
-*   **FFmpeg-Pfad:** Ohne den korrekten Pfad zu `ffmpeg.exe`, `ffplay.exe` und `ffprobe.exe` in den Optionen kann das Programm nicht arbeiten.
+Empfohlene Downloadquelle:
+https://github.com/BtbN/FFmpeg-Builds/releases
 
-Diese Software ist Open-Source (MIT Lizenz). Siehe `LICENSE.txt` für Details.
+Für Windows empfehlen sich die "essentials" oder "full" Builds.
+Halte Ausschau nach einer Datei wie:
 
-Viel Spaß mit der Feierabend Edition!
+ffmpeg-master-latest-win64-gpl.zip
 
-Mit freundlichen Grüßen,
+Entpacke das Archiv anschließend an einen beliebigen Ort auf Deinem Computer.
+
+
+2. Programm starten und FFmpeg-Pfad festlegen
+
+- Starte AudioNormalizer.exe
+- Öffne im Menü: Datei -> Optionen
+- Wähle den Ordner aus, der ffmpeg.exe, ffplay.exe und ffprobe.exe enthält
+
+Wichtig:
+Ohne korrekt gesetzten FFmpeg-Pfad kann das Programm nicht arbeiten.
+
+
+3. Audiodateien normalisieren
+
+- Nutze "Dateien hinzufügen" oder "Ordner hinzufügen"
+- Stelle rechts Dein gewünschtes LUFS-Preset ein
+- Wähle das Ausgabeformat
+- Klicke auf "Normalisierung starten"
+
+Der Fortschritt der Stapelverarbeitung wird live angezeigt.
+Die fertigen Dateien werden automatisch erstellt.
+
+
+4. Audio-Vorschau
+
+- Datei in der Liste markieren
+- Den "▶" Button drücken
+
+Mit den "«" und "»" Buttons kannst Du wie in einer Playlist durch Deine Dateiliste springen.
+
+
+5. Optionen und Einstellungen
+
+Unter:
+Datei -> Optionen
+
+kannst Du:
+
+- den FFmpeg-Pfad ändern
+- die Programmsprache wechseln
+- Logdatei-Einstellungen anpassen
+
+
+========================================
+MASTERING-CHARAKTER-PRESETS
+========================================
+
+Transparent
+Nur Lautheitsnormalisierung ohne zusätzliche Klangbearbeitung.
+
+Kohäsiv
+Sanfte Breitbandkompression mit subtiler Softclip-Kante für mehr Zusammenhalt.
+
+Punchy
+Mehr Präsenz und Druck durch stärkere Kompression.
+
+Aggressiv
+Die intensivste Variante für dichtes und kantiges Material.
+
+
+========================================
+WICHTIGE HINWEISE
+========================================
+
+FFmpeg-Pfad
+Der Pfad zu ffmpeg.exe, ffplay.exe und ffprobe.exe muss korrekt gesetzt sein.
+
+ffprobe.exe
+Diese Datei wird für die Zeitanzeige im Audio-Player verwendet.
+Fehlt sie, funktioniert die Wiedergabe trotzdem - jedoch ohne Zeitdarstellung.
+
+LUFS-Presets
+Die Presets helfen Dir bei der Auswahl geeigneter Lautheitswerte für verschiedene Plattformen.
+Eigene Werte können selbstverständlich ebenfalls verwendet werden.
+
+Ausgabeformat
+Die Info-Box unter der Formatauswahl zeigt technische Details zum aktuell gewählten Ausgabeformat.
+
+
+========================================
+LIZENZ
+========================================
+
+Diese Software ist Open-Source und steht unter der MIT-Lizenz.
+Weitere Informationen findest Du in der Datei:
+
+LICENSE.txt
+
+
+Viel Spaß mit melcom's FFmpeg Audio Normalizer!
+
+Mit freundlichen Grüßen
 melcom
