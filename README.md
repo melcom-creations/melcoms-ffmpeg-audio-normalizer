@@ -2,7 +2,7 @@
 
 A professional yet user-friendly GUI for Windows to batch-normalize audio files using the power of FFmpeg's EBU R128 loudness normalization filter.
 
-Version 3.1.0 ("Feierabend Edition") introduces professional Two-Pass Linear normalization, making it a powerful tool for music mastering and archival.
+Version 3.2.0-dev09 ("Nachtschicht Edition") expands the professional Two-Pass Linear normalization engine with improved mastering behavior, scene-oriented character processing, and refined loudness handling for music production and archival workflows.
 
 ![Main application window of FFmpeg Audio Normalizer v3](images/creations-ffmpeg-main.png?raw=true)
 
@@ -10,14 +10,16 @@ Version 3.1.0 ("Feierabend Edition") introduces professional Two-Pass Linear nor
 
 *   **Batch Processing:** Add multiple files or entire folders to the queue and process them all in one go.
 *   **Two Normalization Modes:**
-    *   **Linear (2-Pass):** Professional mode that preserves full dynamic range. Recommended for music and mastering.
-    *   **Dynamic (1-Pass):** Adjusts volume on the fly. Ideal for podcasts, voice, and radio-style streams.
-*   **Quality Preservation:** Automatically maintains the **original sample rate** and **bit depth** for WAV and FLAC outputs (supporting high-res audio up to 96kHz/24-bit and beyond).
+    *   **Linear (2-Pass):** Professional mastering-grade normalization using FFmpeg's EBU R128 analysis workflow. Preserves dynamics while achieving highly accurate LUFS and True Peak targets.
+    *   **Dynamic (1-Pass):** Faster real-time normalization mode ideal for podcasts, speech, streaming, and broadcast-style workflows.
+*   **Scene Mastering Engine:** Includes optional mastering character chains such as "Scene Punch" and "Scene Glue Light" for more cohesive, tracker-inspired sound shaping before normalization.
+*   **Quality Preservation:** Automatically maintains the original sample rate and bit depth for WAV and FLAC outputs (supporting high-resolution audio up to 96kHz/24-bit and beyond).
 *   **Metadata & Tags:** All ID3 tags and metadata (Artist, Title, Album, etc.) are preserved and transferred to the normalized files.
 *   **Integrated Audio Player:** Preview your tracks before processing with simple playlist controls (Play, Stop, Next, Previous).
-*   **Platform Presets:** Includes presets for popular platforms like YouTube, Spotify, Apple Music, and broadcast standards (EBU R128).
+*   **Platform Presets:** Includes presets for popular platforms like YouTube, Spotify, Apple Music, EBU R128 broadcast standards, and scene-oriented mastering workflows.
 *   **Multiple Output Formats:** Save your files in WAV, MP3, FLAC, AAC, or OGG format.
 *   **Automatic Cleanup:** Automatically removes temporary work files (`.temp`) if a process is cancelled or an error occurs.
+*   **Portable Application:** The application is fully portable and does not modify the Windows registry.
 *   **Multi-Language Support:** Available in English, German, and Polish.
 
 <p align="center">
@@ -26,53 +28,112 @@ Version 3.1.0 ("Feierabend Edition") introduces professional Two-Pass Linear nor
 
 ## 📥 Download & Installation
 
-You can download the latest version from the **[Releases Page](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/releases/latest)**.
+You can download the latest stable or development builds from the **[Releases Page](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/releases/latest)**.
 
 No installation is required. Simply unzip the archive and run `AudioNormalizer.exe`.
+
+The application is fully portable and does not modify the Windows registry.
 
 ## 🚀 How to Use
 
 #### 1. Prerequisite: Get the FFmpeg Suite
-This program requires the complete FFmpeg suite to function:
-*   `ffmpeg.exe` (for normalization and analysis)
-*   `ffplay.exe` (for the audio player)
-*   `ffprobe.exe` (for time display and audio quality detection)
 
-Download the latest FFmpeg package from: **[BtbN's FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest)**. For Windows, look for a `.zip` file named something like `ffmpeg-master-latest-win64-gpl.zip`. The required `.exe` files are inside the `bin` subfolder.
+This program requires the complete FFmpeg suite to function:
+
+*   `ffmpeg.exe` - normalization, mastering, and analysis
+*   `ffplay.exe` - integrated audio player
+*   `ffprobe.exe` - duration, bitrate, and audio quality detection
+
+Download the latest FFmpeg package from:
+
+**[BtbN's FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases/tag/latest)**
+
+For Windows, look for a `.zip` file named similar to:
+
+`ffmpeg-master-latest-win64-gpl.zip`
+
+The required `.exe` files are located inside the `bin` subfolder.
 
 #### 2. Configure the Program
-*   Start `AudioNormalizer.exe`.
-*   Go to the menu `File` -> `Options`.
-*   Under "FFmpeg Path", select the folder where your FFmpeg `.exe` files are located.
+
+*   Start `AudioNormalizer.exe`
+*   Open `File -> Options`
+*   Under "FFmpeg Path", select the folder containing the FFmpeg executables
 
 #### 3. Process Your Files
-*   Use **"Add Files"** or **"Add Folder"** to populate the list.
-*   Select your desired **LUFS** and **True Peak** presets.
-*   Choose the **Normalization Mode** (Linear is highly recommended for music to preserve dynamics).
-*   Select your **Output Format** and click **"Start Normalization"**.
 
-The normalized files will be saved in the same folder as the source files with a "-Normalized" suffix.
+*   Use **"Add Files"** or **"Add Folder"** to populate the queue
+*   Select your desired **LUFS** and **True Peak** presets
+*   Choose the **Normalization Mode**
+*   Select the desired **Output Format**
+*   Click **"Start Normalization"**
 
-## 💬 Support & Feedback
-
-Please note that the GitHub "Issues" feature has been disabled for this project.
-
-If you find a bug, have a feature request, or need help, please use the **[contact form on my website](http://melcom-creations.github.io/melcom-music/contact.html)**.
-
-## 📖 Detailed Help
-
-For more detailed information, please refer to the help files included in the package: `help_de_DE.html` (German), `help_en_US.html` (English), or `help_pl_PL.html` (Polish).
-
-## 📜 Changelog
-
-For a detailed history of all changes, please see the [CHANGELOG.md](CHANGELOG.md) file.
-
-## License
-
-This software is open-source and released under the MIT License. See the [License.txt](https://github.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/blob/main/LICENSE.txt) file for details.
+The normalized files will be saved in the same directory as the source files with a `-Normalized` suffix.
 
 ---
 
-Cheers,<br>
+## 🎛 Recommended Workflow
 
+### For Music / Scene Releases
+
+Recommended settings:
+
+*   Mode: `Linear (2-Pass)`
+*   Target Loudness: `-12 LUFS`
+*   True Peak: `-1 dBTP`
+*   Mastering Preset: `Scene Glue Light`
+
+This configuration preserves punch and dynamics while providing a cohesive and scene-friendly master.
+
+### For Streaming / Podcasts
+
+Recommended settings:
+
+*   Mode: `Dynamic (1-Pass)`
+*   Target Loudness: `-14 LUFS`
+*   True Peak: `-1 dBTP`
+
+---
+
+## 💬 Support & Feedback
+
+Please note that GitHub Issues are intentionally disabled to keep development and support centralized.
+
+If you find a bug, have a feature request, or need help, please use the contact form on my website:
+
+**http://melcom-creations.github.io/melcom-music/contact.html**
+
+---
+
+## 📖 Detailed Help
+
+For more detailed information, please refer to the included help files:
+
+*   `help_de_DE.html`
+*   `help_en_US.html`
+*   `help_pl_PL.html`
+
+---
+
+## 📜 Changelog
+
+For a detailed history of all changes, please see:
+
+`CHANGELOG.md`
+
+---
+
+## ⚖ License
+
+This software is open-source and released under the MIT License.
+
+See:
+
+`LICENSE.txt`
+
+for details.
+
+---
+
+Greetings from the nightshift,<br>
 melcom
