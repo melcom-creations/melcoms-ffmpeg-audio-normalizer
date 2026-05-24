@@ -30,9 +30,9 @@ import re
 import sys
 
 # --- Metadata ---
-VERSION = "3.1.0-dev09"
-EDITION_NAME = "Feierabend Edition"
-BUILD_DATE = "2026-02-20"
+VERSION = "3.2.0-dev.17"
+EDITION_NAME = "Nachtschicht Edition"
+BUILD_DATE = "2026-05-24"
 AUTHOR = "melcom (Andreas Thomas Urban)"
 
 # --- GUI Layout Constants ---
@@ -40,8 +40,8 @@ GUI_PADX = 10
 GUI_PADY = 5
 GUI_ENTRY_WIDTH_FILE = 58
 GUI_ENTRY_WIDTH_LUFS_TP = 10
-GUI_COMBOBOX_WIDTH_LUFS_PRESET = 28
-GUI_COMBOBOX_WIDTH_TP_PRESET = 30
+GUI_COMBOBOX_WIDTH_LUFS_PRESET = 34
+GUI_COMBOBOX_WIDTH_TP_PRESET = 42
 DIALOG_PADX_OPTIONS = 10
 DIALOG_PADY_OPTIONS = 5
 
@@ -109,6 +109,183 @@ LUFS_PRESETS = {}
 TRUE_PEAK_PRESETS = {}
 LUFS_PRESET_NAMES = []
 TRUE_PEAK_PRESET_NAMES = []
+
+# --- Mastering Presets ---
+
+MASTERING_PRESETS = {
+    "Transparent": {
+        "enabled": False,
+    },
+    "Cohesive": {
+        "enabled": True,
+        "compressor": {
+            "threshold": "-16dB",
+            "ratio": 1.7,
+            "attack": 30,
+            "release": 350,
+            "makeup": 1.0,
+        },
+        "softclip": {
+            "type": "tanh",
+            "threshold": 0.985,
+            "output": 0.98,
+        },
+    },
+    "Punchy": {
+        "enabled": True,
+        "compressor": {
+            "threshold": "-18dB",
+            "ratio": 2.5,
+            "attack": 20,
+            "release": 250,
+            "makeup": 1.5,
+        },
+        "softclip": {
+            "type": "tanh",
+            "threshold": 0.96,
+            "output": 0.98,
+        },
+    },
+    "Aggressive": {
+        "enabled": True,
+        "compressor": {
+            "threshold": "-22dB",
+            "ratio": 3.5,
+            "attack": 10,
+            "release": 180,
+            "makeup": 2.0,
+        },
+        "softclip": {
+            "type": "cubic",
+            "threshold": 0.94,
+            "output": 0.97,
+        },
+    },
+}
+
+DEFAULT_MASTERING_PRESET = "Transparent"
+MASTERING_PRESET_NAMES = list(MASTERING_PRESETS.keys())
+MASTERING_PRESET_DISPLAY_NAMES = []
+MASTERING_PRESET_DISPLAY_TO_INTERNAL = {}
+
+MASTERING_HELP_FALLBACKS = {
+    "Transparent": "Pure loudness normalization without additional coloration.",
+    "Cohesive": "Adds gentle glue and smoothness with subtle compression and soft clipping.",
+    "Punchy": "Enhances punch and energy with stronger compression and a tighter transient response.",
+    "Aggressive": "Adds heavy compression and stronger saturation for a louder, denser sound.",
+}
+
+
+def _ensure_language_data_loaded():
+    """Loads the current language once before localized helpers need it."""
+    if not language_data:
+        load_language(current_language)
+
+
+def _refresh_mastering_display_mappings():
+    """Builds display names and lookup mappings for the current language."""
+    global MASTERING_PRESET_DISPLAY_NAMES, MASTERING_PRESET_DISPLAY_TO_INTERNAL
+    MASTERING_PRESET_DISPLAY_NAMES = [
+        get_text(f"mastering_character_preset_{preset_name.lower().replace(' ', '_')}")
+        for preset_name in MASTERING_PRESET_NAMES
+    ]
+    MASTERING_PRESET_DISPLAY_TO_INTERNAL = dict(zip(MASTERING_PRESET_DISPLAY_NAMES, MASTERING_PRESET_NAMES))
+
+
+def get_mastering_preset_name_from_display(mastering_preset_name):
+    """Maps a localized display label back to the internal preset key."""
+    if not mastering_preset_name:
+        return DEFAULT_MASTERING_PRESET
+
+    if mastering_preset_name in MASTERING_PRESETS:
+        return mastering_preset_name
+
+    _ensure_language_data_loaded()
+    return MASTERING_PRESET_DISPLAY_TO_INTERNAL.get(mastering_preset_name, DEFAULT_MASTERING_PRESET)
+
+
+def get_mastering_preset_display_name(mastering_preset_name):
+    """Returns the localized display label for a mastering preset key."""
+    preset_name = get_mastering_preset_name_from_display(mastering_preset_name)
+    _ensure_language_data_loaded()
+    display_name = get_text(f"mastering_character_preset_{preset_name.lower().replace(' ', '_')}")
+    if display_name.startswith("[") and display_name.endswith("]"):
+        return preset_name
+    return display_name
+
+
+def get_mastering_help_text(mastering_preset_name):
+    """Returns the localized help text for a mastering preset."""
+    preset_name = get_mastering_preset_name_from_display(mastering_preset_name)
+    key = f"mastering_character_help_{preset_name.lower().replace(' ', '_')}"
+    text = get_text(key)
+
+    if text.startswith("[") and text.endswith("]"):
+        return MASTERING_HELP_FALLBACKS.get(preset_name, "")
+
+    return text
+
+
+def _build_compressor_filter(compressor_settings):
+    """Builds an FFmpeg acompressor filter string from a preset dictionary."""
+    if not isinstance(compressor_settings, dict):
+        return ""
+
+    parameters = []
+    for key in ("threshold", "ratio", "attack", "release", "makeup"):
+        if key in compressor_settings and compressor_settings[key] is not None:
+            parameters.append(f"{key}={compressor_settings[key]}")
+
+    if not parameters:
+        return ""
+
+    return "acompressor=" + ":".join(parameters)
+
+
+def _build_softclip_filter(softclip_settings):
+    """Builds an FFmpeg asoftclip filter string from a preset dictionary."""
+    if not isinstance(softclip_settings, dict):
+        return ""
+
+    parameters = []
+    for key in ("type", "threshold", "output"):
+        if key in softclip_settings and softclip_settings[key] is not None:
+            parameters.append(f"{key}={softclip_settings[key]}")
+
+    if not parameters:
+        return ""
+
+    return "asoftclip=" + ":".join(parameters)
+
+
+def _build_volume_filter(gain_value):
+    """Builds an FFmpeg volume filter string from a preset gain value."""
+    if gain_value is None:
+        return ""
+
+    return f"volume={gain_value}"
+
+
+def build_mastering_filter_chain(mastering_preset_name):
+    """Builds the pre-loudnorm mastering filter chain for a preset."""
+    preset = MASTERING_PRESETS.get(mastering_preset_name)
+    if not preset or not preset.get("enabled", False):
+        return ""
+
+    filter_parts = []
+    for filter_key in ("pre_gain", "compressor", "softclip", "post_gain"):
+        filter_value = preset.get(filter_key)
+        if filter_value is None:
+            continue
+
+        if filter_key == "compressor":
+            filter_parts.append(_build_compressor_filter(filter_value))
+        elif filter_key == "softclip":
+            filter_parts.append(_build_softclip_filter(filter_value))
+        else:
+            filter_parts.append(_build_volume_filter(filter_value))
+
+    return ",".join([part for part in filter_parts if part])
 
 
 # --- Utility Functions ---
@@ -244,7 +421,7 @@ class FFMpegProcessor:
         command = [self.ffmpeg_path, "-i", file_path, "-af", "loudnorm=print_format=json", "-f", "null", "-"]
         return self._run_process(command)
 
-    def normalize(self, input_file, output_file, lufs, tp, codec, options, mode="linear", output_format_name=""):
+    def normalize(self, input_file, output_file, lufs, tp, codec, options, mode="linear", output_format_name="", mastering_preset=DEFAULT_MASTERING_PRESET):
         """
         Main normalization logic.
         
@@ -253,46 +430,79 @@ class FFMpegProcessor:
                 'linear'  - Two-Pass mode. Analyzes first, then applies calculated gain/limiting.
                 'dynamic' - One-Pass mode. Uses loudnorm's dynamic adjustment.
             output_format_name (str): Used to determine special handling for WAV/FLAC.
+            mastering_preset (str): Name of the selected mastering preset.
         """
         temp_file = os.path.splitext(output_file)[0] + TEMP_FILE_EXTENSION + os.path.splitext(output_file)[1]
-        
-        af_filter_string = ""
+
+        # --------------------------------------------------
+        # Mastering / Character Processing
+        # --------------------------------------------------
+
+        filter_chain = []
+        mastering_chain = build_mastering_filter_chain(mastering_preset or DEFAULT_MASTERING_PRESET)
+        if mastering_chain:
+            filter_chain.append(mastering_chain)
 
         if mode == "linear":
             # --- Pass 1: Analysis ---
-            self.update_callback(f"--> Phase 1/2: Analyzing dynamics for {os.path.basename(input_file)}...\n")
+            self.update_callback(
+                f"--> Phase 1/2: Analyzing dynamics for "
+                f"{os.path.basename(input_file)}...\n"
+            )
+
             ret_code, stderr = self.analyze(input_file)
+
             if ret_code != 0:
                 return ret_code, stderr
-            
+
             try:
-                # Extract JSON data from FFmpeg stderr.
                 json_match = re.search(r'\{.*\}', stderr, re.DOTALL)
+
                 if not json_match:
                     return -1, "Error: Could not parse loudnorm analysis data."
-                
-                m = json.loads(json_match.group(0)) # Measured values
-                
-                # Construct filter string with measured input values for linear processing.
-                af_filter_string = (
+
+                m = json.loads(json_match.group(0))
+
+                loudnorm_chain = (
                     f"loudnorm=I={lufs}:TP={tp}:LRA=11:"
                     f"measured_I={m['input_i']}:"
                     f"measured_TP={m['input_tp']}:"
                     f"measured_LRA={m['input_lra']}:"
                     f"measured_thresh={m['input_thresh']}:"
                     f"offset={m['target_offset']}:"
-                    f"linear=true:print_format=summary"
+                    f"linear=true:"
+                    f"print_format=summary"
                 )
-                
-                self.update_callback(f"--> Analysis Result: Input {m['input_i']} LUFS, Peak {m['input_tp']} dBTP\n")
-                self.update_callback(f"--> Phase 2/2: Applying Professional 2-Pass Normalization...\n")
-                
+
+                self.update_callback(
+                    f"--> Analysis Result: "
+                    f"Input {m['input_i']} LUFS, "
+                    f"Peak {m['input_tp']} dBTP\n"
+                )
+
+                self.update_callback(
+                    "--> Phase 2/2: "
+                    f"Applying {mastering_preset or DEFAULT_MASTERING_PRESET} + 2-Pass Normalization...\n"
+                )
+
             except Exception as e:
                 return -1, f"Error parsing analysis: {str(e)}"
 
         else:
-            # --- One-Pass (Dynamic) Mode ---
-            af_filter_string = f"loudnorm=I={lufs}:TP={tp}:print_format=summary"
+
+            loudnorm_chain = (
+                f"loudnorm=I={lufs}:TP={tp}:print_format=summary"
+            )
+
+            self.update_callback(
+                "--> Phase 1/1: "
+                f"Applying {mastering_preset or DEFAULT_MASTERING_PRESET} + 1-Pass Normalization...\n"
+            )
+
+        # Final filter chain assembly
+        filter_chain.append(loudnorm_chain)
+
+        af_filter_string = ",".join(filter_chain)
 
         # --- Output Format Configuration ---
         # Default settings for compressed formats (MP3, AAC, etc.)
@@ -378,6 +588,7 @@ def load_language(language_code):
         TRUE_PEAK_PRESETS = language_data.get("true_peak_presets", {})
         LUFS_PRESET_NAMES = list(LUFS_PRESETS.keys())
         TRUE_PEAK_PRESET_NAMES = list(TRUE_PEAK_PRESETS.keys())
+        _refresh_mastering_display_mappings()
     except (FileNotFoundError, json.JSONDecodeError):
         # Fallback to default language if selected language fails.
         if language_code != DEFAULT_LANGUAGE_CODE:
@@ -487,8 +698,8 @@ class AudioNormalizerApp:
     def create_widgets(self):
         """Initializes and places all GUI widgets."""
         self.root.title(f"{get_text('app_title')} v{VERSION}")
-        self.root.geometry("900x740") 
-        self.root.minsize(900, 720)
+        self.root.geometry("980x740") 
+        self.root.minsize(960, 720)
         
         self.main_frame = ttk.Frame(self.root, padding=GUI_PADY, style="TFrame")
         self.main_frame.pack(fill=tk.BOTH, expand=True)
@@ -567,6 +778,7 @@ class AudioNormalizerApp:
         
         self.lufs_preset_var = tk.StringVar()
         self.true_peak_preset_var = tk.StringVar()
+        self.mastering_preset_var = tk.StringVar(value=DEFAULT_MASTERING_PRESET)
         
         ttk.Label(loudness_frame, text=get_text("lufs_preset_label"), style="TLabel").grid(row=0, column=0, sticky="w", padx=GUI_PADX, pady=GUI_PADY)
         self.lufs_combobox = ttk.Combobox(loudness_frame, textvariable=self.lufs_preset_var, state="readonly", width=GUI_COMBOBOX_WIDTH_LUFS_PRESET)
@@ -577,6 +789,26 @@ class AudioNormalizerApp:
         self.tp_combobox = ttk.Combobox(loudness_frame, textvariable=self.true_peak_preset_var, state="readonly", width=GUI_COMBOBOX_WIDTH_TP_PRESET)
         self.tp_combobox.grid(row=1, column=1, sticky="ew", padx=GUI_PADX, pady=GUI_PADY)
         self.tp_combobox.bind("<<ComboboxSelected>>", self.update_entry_states)
+
+        ttk.Label(loudness_frame, text=get_text("mastering_character_label"), style="TLabel").grid(row=2, column=0, sticky="w", padx=GUI_PADX, pady=GUI_PADY)
+        self.mastering_combobox = ttk.Combobox(
+            loudness_frame,
+            textvariable=self.mastering_preset_var,
+            values=MASTERING_PRESET_NAMES,
+            state="readonly",
+            width=GUI_COMBOBOX_WIDTH_LUFS_PRESET,
+        )
+        self.mastering_combobox.grid(row=2, column=1, sticky="ew", padx=GUI_PADX, pady=GUI_PADY)
+        self.mastering_combobox.bind("<<ComboboxSelected>>", self.update_mastering_help_text)
+        self.mastering_help_label = ttk.Label(
+            loudness_frame,
+            text="",
+            style="TLabel",
+            justify=tk.LEFT,
+            wraplength=520,
+            anchor="w",
+        )
+        self.mastering_help_label.grid(row=3, column=0, columnspan=4, sticky="we", padx=GUI_PADX, pady=(0, GUI_PADY))
 
         self.lufs_entry_var = tk.StringVar()
         self.tp_entry_var = tk.StringVar()
@@ -725,6 +957,9 @@ class AudioNormalizerApp:
         self.lufs_combobox.set(LUFS_PRESET_NAMES[0] if LUFS_PRESET_NAMES else "")
         self.tp_combobox.config(values=TRUE_PEAK_PRESET_NAMES)
         self.tp_combobox.set(TRUE_PEAK_PRESET_NAMES[0] if TRUE_PEAK_PRESET_NAMES else "")
+        self.mastering_combobox.config(values=MASTERING_PRESET_DISPLAY_NAMES)
+        self.mastering_combobox.set(get_mastering_preset_display_name(self.mastering_preset_var.get()))
+        self.update_mastering_help_text()
         self.analyze_button.config(text=get_text("analyze_audio_button"))
         self.start_button.config(text=get_text("start_normalization_button"))
         self.cancel_button.config(text=get_text("cancel_normalization_button"))
@@ -838,6 +1073,13 @@ class AudioNormalizerApp:
             self.output_desc_label.config(text="")
             self.output_info_frame.grid_remove()
 
+    def update_mastering_help_text(self, event=None):
+        """Updates the descriptive help text for the current mastering preset."""
+        if not hasattr(self, "mastering_help_label"):
+            return
+
+        self.mastering_help_label.config(text=get_mastering_help_text(self.mastering_preset_var.get()))
+
     def toggle_controls(self, enable=True, for_playback=False):
         """Enables or disables GUI controls during processing or playback."""
         state = tk.NORMAL if enable else "disabled"
@@ -848,7 +1090,7 @@ class AudioNormalizerApp:
         self.remove_files_button.config(state=state)
         self.analyze_button.config(state=state)
         self.start_button.config(state=state)
-        for combo in [self.lufs_combobox, self.tp_combobox, self.output_combobox]:
+        for combo in [self.lufs_combobox, self.tp_combobox, self.mastering_combobox, self.output_combobox]:
             combo.config(state=readonly_state)
             
         self.radio_linear.config(state=state)
@@ -1022,7 +1264,13 @@ class AudioNormalizerApp:
         self.is_cancelled = False
         self.toggle_controls(enable=False)
         self.process_info.config(state=tk.NORMAL); self.process_info.delete("1.0", tk.END); self.process_info.config(state=tk.DISABLED)
-        self.progressbar.config(value=0, maximum=len(files_to_process))
+
+        if len(files_to_process) == 1:
+            self.progressbar.config(mode='indeterminate', value=0)
+            self.progressbar.start(12)
+        else:
+            self.progressbar.stop()
+            self.progressbar.config(mode='determinate', value=0, maximum=len(files_to_process))
         
         base_path = get_base_path()
         log_filename = ANALYSIS_LOG_FILE_NAME if task_type == "analyze" else LOG_FILE_NAME
@@ -1034,11 +1282,15 @@ class AudioNormalizerApp:
 
         processor = FFMpegProcessor(config.ffmpeg_path, lambda msg: gui_queue.put(("info", msg)))
         mode = self.mode_var.get()
-        task_thread = threading.Thread(target=self.task_runner, args=(task_type, files_to_process, processor, lufs, tp, mode))
+        mastering_preset = get_mastering_preset_name_from_display(self.mastering_preset_var.get()) or DEFAULT_MASTERING_PRESET
+        task_thread = threading.Thread(
+            target=self.task_runner,
+            args=(task_type, files_to_process, processor, lufs, tp, mode, mastering_preset),
+        )
         task_thread.daemon = True
         task_thread.start()
 
-    def task_runner(self, task_type, files, processor, lufs, tp, mode):
+    def task_runner(self, task_type, files, processor, lufs, tp, mode, mastering_preset):
         """Worker thread that executes the processing loop."""
         was_cancelled = False
         for i, file_path in enumerate(files):
@@ -1061,7 +1313,17 @@ class AudioNormalizerApp:
                 output_file = os.path.splitext(file_path)[0] + "-Normalized" + output_ext
                 
                 # Pass mode and output format for specific handling.
-                return_code, stderr = processor.normalize(file_path, output_file, lufs, tp, codec, options, mode, output_format)
+                return_code, stderr = processor.normalize(
+                    file_path,
+                    output_file,
+                    lufs,
+                    tp,
+                    codec,
+                    options,
+                    mode,
+                    output_format,
+                    mastering_preset,
+                )
             
             log_content = f"\n--- File: {file_path} ---\n{stderr}\n"
             gui_queue.put(("log", (log_file, log_content, "a")))
@@ -1119,7 +1381,8 @@ class AudioNormalizerApp:
     def task_finished(self, status, message=None):
         """Handles completion state of the batch process."""
         self.toggle_controls(enable=True)
-        self.progressbar.config(value=0)
+        self.progressbar.stop()
+        self.progressbar.config(mode='determinate', value=0)
         global normalization_process
         normalization_process = None
 

@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-05-24
+### Nachtschicht Edition
+
+### Added
+- **Mastering Character Selector**
+    - Added a dedicated combo box for mastering character selection.
+    - The help text below the selector updates dynamically for the selected preset.
+- **Professional Mastering Character Presets**
+    - Added internal mastering presets for different electronic music workflows.
+    - The UI now shows these presets using the current professional labels in each supported language: `Transparent`, `Cohesive`, `Punchy`, and `Aggressive`.
+    - The internal preset key remains `Clean`; the visible default is `Transparent`.
+- **Expanded Loudness Presets**
+    - Added clearer LUFS presets for streaming, podcast, gaming/dynamic music, and broadcast workflows.
+    - Added separate podcast presets for stereo (`-16 LUFS`) and mono/speech (`-19 LUFS`).
+- **Expanded True Peak Presets**
+    - Added clearer True Peak labels for streaming-safe, lossy-codec-safe, hot/CD-style, and risky no-limit workflows.
+
+### Changed
+- **Transparent is now the default displayed preset**
+    - The internal preset key remains `Clean`, but the default UI label is now `Transparent` and applies no extra character processing.
+- **Dynamic preset generation**
+    - The filter chain is now built from the preset definitions instead of hardcoded branches in the normalization workflow.
+- **Improved Progress Display**
+    - Single-file processing now uses an animated progress indicator so the user can clearly see that the application is working.
+    - Multi-file batch processing keeps the existing determinate file-by-file progress behavior.
+- **User Interface Layout**
+    - Slightly increased the main window width.
+    - Increased LUFS and True Peak preset dropdown widths to better fit the expanded preset names.
+    - Improved layout compatibility for longer preset names in English, German, and Polish.
+- **Localization**
+    - Updated English, German, and Polish LUFS, True Peak, and mastering-character labels.
+- **Documentation alignment**
+    - README and built-in help files were updated to reflect the current UI, defaults, and preset set.
+
+### Notes
+- The two-pass linear loudnorm workflow remains the main normalization path.
+- No automatic post-render loudness correction pass is applied.
+- No additional final limiter is added beyond the selected processing chain.
+- The workflow favors musicality and preserved dynamics over forcing loudness targets at any cost.
+
 ## [3.1.0] - 2026-02-20
 ### "Feierabend Edition"
 
