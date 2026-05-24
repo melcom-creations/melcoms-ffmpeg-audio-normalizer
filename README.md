@@ -146,5 +146,5 @@ for details.
 
 ---
 
-Greetings from the nightshift,<br>
+Greetings from the Nachtschicht,<br>
 melcom
