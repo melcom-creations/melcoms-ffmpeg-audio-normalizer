@@ -1,120 +1,227 @@
 <!DOCTYPE html>
 <html lang="pl-PL">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>melcom's FFmpeg Audio Normalizer - Pomoc</title>
-    <style>
-        body {
-            background-color: #292929;
-            color: #e0e0e0;
-            font-family: 'PT Sans', sans-serif, Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        h1, h2 {
-            color: #f5f5f5;
-            border-bottom: 1px solid #3c3c3c;
-            padding-bottom: 10px;
-        }
-        a {
-            color: #87cefa;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        code {
-            background-color: #333333;
-            border: 1px solid #3c3c3c;
-            border-radius: 4px;
-            color: #e0e0e0;
-            padding: 2px 6px;
-            font-family: monospace, monospace;
-        }
-        .highlight {
-            color: #87cefa;
-            font-weight: bold;
-        }
-        .mode-box {
-            background-color: #333333;
-            border-left: 4px solid #87cefa;
-            padding: 10px;
-            margin: 10px 0;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>melcom's FFmpeg Audio Normalizer - Pomoc</title>
+	<style>
+	body {
+		background: #1f1f1f;
+		color: #e4e4e4;
+		font-family: "Segoe UI", Arial, sans-serif;
+		line-height: 1.75;
+		margin: 0;
+		padding: 0;
+	}
+	
+	.container {
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 40px 24px 80px;
+	}
+	
+	h1 {
+		font-size: 2.3rem;
+		color: #ffffff;
+		margin-bottom: 10px;
+	}
+	
+	h2 {
+		margin-top: 55px;
+		padding-bottom: 10px;
+		border-bottom: 1px solid #3d3d3d;
+		color: #ffffff;
+	}
+	
+	h3 {
+		color: #f0f0f0;
+		margin-top: 35px;
+	}
+	
+	p {
+		color: #d0d0d0;
+	}
+	
+	ul,
+	ol {
+		padding-left: 24px;
+	}
+	
+	li {
+		margin-bottom: 10px;
+	}
+	
+	a {
+		color: #8ed0ff;
+		text-decoration: none;
+	}
+	
+	a:hover {
+		text-decoration: underline;
+	}
+	
+	code {
+		background: #2e2e2e;
+		border: 1px solid #404040;
+		border-radius: 4px;
+		padding: 2px 6px;
+		color: #ffffff;
+	}
+	
+	.hero-box {
+		background: linear-gradient(145deg, #2c2c2c, #242424);
+		border: 1px solid #3a3a3a;
+		border-left: 5px solid #8ed0ff;
+		border-radius: 10px;
+		padding: 28px;
+		margin-bottom: 40px;
+	}
+	
+	.hero-box p {
+		margin-bottom: 0;
+	}
+	
+	.highlight {
+		color: #8ed0ff;
+		font-weight: bold;
+	}
+	
+	.toc {
+		background: #262626;
+		border: 1px solid #373737;
+		border-radius: 10px;
+		padding: 20px 24px;
+		margin-top: 30px;
+	}
+	
+	.info-box {
+		background: #2b2b2b;
+		border-left: 4px solid #8ed0ff;
+		padding: 18px;
+		margin: 18px 0;
+		border-radius: 6px;
+	}
+	
+	.preset-box {
+		background: #262626;
+		border: 1px solid #3a3a3a;
+		border-radius: 10px;
+		padding: 18px;
+		margin-top: 16px;
+	}
+	
+	.footer {
+		margin-top: 70px;
+		padding-top: 25px;
+		border-top: 1px solid #3b3b3b;
+		color: #b8b8b8;
+		font-size: 0.95rem;
+	}
+	
+	.small {
+		font-size: 0.95rem;
+		color: #bbbbbb;
+	}
+	</style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>melcom's FFmpeg Audio Normalizer - Pomoc</h1>
-        <h2>Spis Treści</h2>
-        <ul>
-            <li><a href="#wymagania">Wymagania</a></li>
-            <li><a href="#kroki-gui">Instrukcja obsługi (Wersja 3.1.0)</a></li>
-            <li><a href="#tryby-normalizacji">Tryby Normalizacji</a></li>
-            <li><a href="#jakosc-metadane">Jakość i Metadane</a></li>
-            <li><a href="#o-tym-pliku">O tym pliku</a></li>
-        </ul>
-
-        <h2 id="wymagania">Wymagania</h2>
-        <ul>
-            <li>Aby używać <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, potrzebujesz pełnego pakietu FFmpeg:
-                <ul>
-                    <li><code>ffmpeg.exe</code> (do normalizacji i analizy)</li>
-                    <li><code>ffplay.exe</code> (do funkcji podglądu audio)</li>
-                    <li><code>ffprobe.exe</code> (do odczytu czasu trwania oraz parametrów technicznych audio)</li>
-                </ul>
-            </li>
-            <li>Najnowsze kompilacje można pobrać z <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">tej strony</a>. Zalecamy plik <span class="highlight">ffmpeg-master-latest-win64-gpl.zip</span>.</li>
-            <li>Upewnij się, że ścieżka do folderu `bin` jest poprawnie ustawiona w Opcjach programu.</li>
-        </ul>
-
-        <h2 id="kroki-gui">Instrukcja obsługi (Wersja 3.1.0)</h2>
-        <ol>
-            <li>Uruchom aplikację. Sprawdź ścieżkę do FFmpeg w menu "Plik" -> "Opcje".</li>
-            <li>Dodaj pliki za pomocą <span class="highlight">"Dodaj pliki"</span> lub całe foldery przez <span class="highlight">"Dodaj folder"</span>.</li>
-            <li>(Opcjonalnie) Użyj odtwarzacza pod listą, aby odsłuchać utwory i poruszać się po liście.</li>
-            <li>Po prawej stronie wybierz <span class="highlight">Preset LUFS</span> oraz <span class="highlight">Preset True Peak</span>.</li>
-            <li><span class="highlight">Nowość w v3.1:</span> Wybierz odpowiedni <strong>Tryb Normalizacji</strong> (Liniowy lub Dynamiczny). Szczegóły znajdziesz w następnej sekcji.</li>
-            <li>Wybierz <span class="highlight">Format wyjściowy</span> (WAV, MP3, FLAC, AAC, OGG).</li>
-            <li>Kliknij <span class="highlight">"Rozpocznij normalizację"</span>. Pliki będą przetwarzane kolejno; postęp i szczegóły zobaczysz w oknie logu.</li>
-        </ol>
-
-        <h2 id="tryby-normalizacji">Tryby Normalizacji</h2>
-        <div class="mode-box">
-            <strong>Liniowy (2 przebiegi) - Zalecane dla muzyki:</strong><br>
-            W tym trybie program najpierw analizuje cały plik, a w drugim przebiegu stosuje stałe wzmocnienie. Dynamika utworu pozostaje całkowicie nienaruszona. Idealny do masteringu i wysokiej jakości archiwizacji.
-        </div>
-        <div class="mode-box">
-            <strong>Dynamiczny (1 przebieg) - Styl radiowy:</strong><br>
-            Głośność jest dostosowywana "na żywo" w trakcie procesu. Niweluje to duże różnice głośności wewnątrz jednego pliku. Idealny dla podcastów, nagrań głosowych lub strumieni radiowych.
-        </div>
-
-        <h2 id="jakosc-metadane">Jakość i Metadane</h2>
-        <p><strong>Zachowanie jakości dźwięku (WAV i FLAC):</strong></p>
-        <ul>
-            <li>Przy wyborze formatu WAV lub FLAC, program automatycznie zachowuje <span class="highlight">oryginalną częstotliwość próbkowania</span> (np. 96 kHz) oraz <span class="highlight">głębię bitową</span> (np. 24-bit) pliku źródłowego. Nie dochodzi do niepotrzebnego downsamplingu.</li>
-        </ul>
-
-        <p><strong>Metadane i Tagi:</strong></p>
-        <ul>
-            <li>Wszystkie metadane (Artysta, Album, Tytuł, Rok itp.) są zachowywane i przenoszone z pliku źródłowego do znormalizowanego pliku wyjściowego.</li>
-            <li>Pliki MP3 automatycznie korzystają ze standardu ID3v2.3, co zapewnia maksymalną kompatybilność z Eksploratorem Windows i zewnętrznymi odtwarzaczami sprzętowymi.</li>
-        </ul>
-
-        <p><strong>Automatyczne czyszczenie:</strong></p>
-        <ul>
-            <li>Jeśli proces zostanie anulowany lub wystąpi błąd, program automatycznie usuwa wszystkie tymczasowe pliki robocze (<code>.temp</code>), aby zachować porządek w Twoich folderach.</li>
-        </ul>
-
-        <h2 id="o-tym-pliku">O tym pliku</h2>
-        <p>Ten program został stworzony przez melcom (Andreas Thomas Urban) i jest <span class="highlight">oprogramowaniem open-source</span> na <span class="highlight">licencji MIT</span>.</p>
-        <p>Sprawdź aktualizacje na stronie: <a href="http://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">melcom-music.de</a></p>
-    </div>
+	<div class="container">
+		<div class="hero-box">
+			<h1>melcom's FFmpeg Audio Normalizer</h1>
+			<p> Open-source'owe narzędzie do normalizacji audio oparte na FFmpeg, LUFS i True Peak. Stworzone do muzyki, podcastów, audio gamingowego oraz dużych batch-workflow - bez potrzeby używania linii poleceń. </p>
+		</div>
+		<div class="toc">
+			<h2>Spis Treści</h2>
+			<ul>
+				<li><a href="#wymagania">Wymagania</a></li>
+				<li><a href="#pierwsze-kroki">Pierwsze Kroki</a></li>
+				<li><a href="#tryby">Tryby Normalizacji</a></li>
+				<li><a href="#presety">Presety i Charakter Audio</a></li>
+				<li><a href="#jakosc">Jakość i Metadane</a></li>
+				<li><a href="#uwagi">Dodatkowe Uwagi</a></li>
+				<li><a href="#about">O Tym Pliku</a></li>
+			</ul>
+		</div>
+		<h2 id="wymagania">Wymagania</h2>
+		<p> Aby korzystać z <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, wymagany jest pełny pakiet FFmpeg: </p>
+		<ul>
+			<li><code>ffmpeg.exe</code> - analiza i normalizacja audio</li>
+			<li><code>ffplay.exe</code> - podgląd audio</li>
+			<li><code>ffprobe.exe</code> - odczyt parametrów technicznych audio</li>
+		</ul>
+		<div class="info-box"> Zalecany download:
+			<br>
+			<br> <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">
+            github.com/BtbN/FFmpeg-Builds/releases
+        </a>
+			<br>
+			<br> Zalecany pakiet:
+			<br> <code>ffmpeg-master-latest-win64-gpl.zip</code> </div>
+		<p> Po rozpakowaniu FFmpeg ustaw ścieżkę do folderu FFmpeg w opcjach programu. </p>
+		<h2 id="pierwsze-kroki">Pierwsze Kroki</h2>
+		<ol>
+			<li>Uruchom <code>AudioNormalizer.exe</code>.</li>
+			<li> Otwórz:
+				<br> <code>Plik -> Opcje</code> </li>
+			<li> Wybierz folder zawierający:
+				<br> <code>ffmpeg.exe</code>, <code>ffplay.exe</code> oraz <code>ffprobe.exe</code> </li>
+			<li> Użyj "Dodaj pliki" lub "Dodaj folder", aby dodać pliki audio do kolejki. </li>
+			<li> Wybierz preset LUFS, limit True Peak oraz format wyjściowy. </li>
+			<li> Wybierz preset charakteru audio. <span class="highlight">Transparent</span> jest ustawieniem domyślnym i nie dodaje dodatkowego koloryzowania dźwięku. </li>
+			<li> Kliknij:
+				<br> <span class="highlight">"Rozpocznij normalizację"</span> </li>
+		</ol>
+		<div class="info-box"> Podczas przetwarzania okno logów pokazuje status procesu, komunikaty FFmpeg oraz postęp normalizacji w czasie rzeczywistym. </div>
+		<h2 id="tryby">Tryby Normalizacji</h2>
+		<div class="preset-box">
+			<h3>Liniowy (2 przebiegi)</h3>
+			<p> Zalecany do muzyki, masteringu i archiwizacji. Plik audio jest najpierw analizowany, a następnie normalizowany ze stałym gainem. Pozwala to zachować oryginalną dynamikę możliwie najdokładniej. </p>
+		</div>
+		<div class="preset-box">
+			<h3>Dynamiczny (1 przebieg)</h3>
+			<p> Zalecany do mowy, podcastów, streamów i broadcastu. Różnice głośności są aktywnie wyrównywane podczas procesu. </p>
+		</div>
+		<h2 id="presety">Presety i Charakter Audio</h2>
+		<h3>Presety LUFS i True Peak</h3>
+		<ul>
+			<li> Wersja 3.2.0 wprowadza nowocześniejsze i bardziej przejrzyste nazwy presetów. </li>
+			<li> <span class="highlight">Streaming Safe (-1.0 dBTP)</span> to świetne ustawienie domyślne dla większości platform streamingowych. </li>
+			<li> <span class="highlight">Lossy Codec Safe (-2.0 dBTP)</span> zapewnia dodatkowy headroom dla eksportów MP3, AAC i OGG. </li>
+			<li> <span class="highlight">0.0 dBTP</span> powinno być używane tylko wtedy, gdy docelowy format wyraźnie to dopuszcza. </li>
+		</ul>
+		<h3>Charakter Masteringu</h3>
+		<div class="preset-box"> <strong>Transparent</strong>
+			<p> Czysta normalizacja głośności bez dodatkowego przetwarzania dźwięku. </p>
+		</div>
+		<div class="preset-box"> <strong>Cohesive</strong>
+			<p> Dodaje delikatną kompresję i subtelny soft clipping dla bardziej spójnego miksu. </p>
+		</div>
+		<div class="preset-box"> <strong>Punchy</strong>
+			<p> Zapewnia więcej energii, mocniejszy punch i wyraźniejsze przetwarzanie dynamiki. </p>
+		</div>
+		<div class="preset-box"> <strong>Aggressive</strong>
+			<p> Najmocniejszy preset przeznaczony do ostrzejszych i bardziej agresywnych materiałów elektronicznych. </p>
+		</div>
+		<h2 id="jakosc">Jakość i Metadane</h2>
+		<h3>Zachowanie jakości audio</h3>
+		<p> Podczas eksportu do WAV lub FLAC zachowywana jest oryginalna częstotliwość próbkowania oraz głębia bitowa. Program nie wykonuje niepotrzebnego downsamplingu. </p>
+		<h3>Metadane i Tagi</h3>
+		<p> Artysta, album, tytuł, rok oraz inne metadane są automatycznie kopiowane do znormalizowanego pliku wyjściowego. </p>
+		<p> Pliki MP3 automatycznie używają standardu ID3v2.3 dla maksymalnej kompatybilności z Eksploratorem Windows i sprzętowymi odtwarzaczami audio. </p>
+		<h2 id="uwagi">Dodatkowe Uwagi</h2>
+		<div class="info-box"> Jeśli proces zostanie przerwany lub wystąpi błąd, wszystkie tymczasowe pliki robocze są automatycznie usuwane. </div>
+		<div class="info-box"> Brak <code>ffprobe.exe</code> nie wpływa na samą normalizację, ale wyłącza odczyt informacji technicznych i długości plików audio. </div>
+		<h2 id="about">O Tym Pliku</h2>
+		<p> Projekt został stworzony przez melcom i wydany na licencji MIT. </p>
+		<p> Strona projektu:
+			<br> <a href="https://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">
+            melcom-creations.github.io/melcom-music
+        </a> </p>
+		<div class="footer">
+			<p class="small"> melcom's FFmpeg Audio Normalizer v3.2.0 - Nachtschicht Edition </p>
+		</div>
+	</div>
 </body>
 </html>
