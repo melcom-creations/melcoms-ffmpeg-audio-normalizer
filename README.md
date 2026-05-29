@@ -5,11 +5,11 @@ A professional yet easy-to-use Windows GUI for batch-normalizing audio files wit
 Version 4.0.2 ("Läderlappen Edition 🦇") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic flat-style themes, and the `Transparent` default preset.
 
 <p align="center">
-  <img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="800">
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-before-after.png"><img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="800"></a>
 </p>
 
 <p align="center">
-  <img src="images/creations-ffmpeg-start_2026-05-29_211653.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="800">
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-29_211653.png"><img src="images/creations-ffmpeg-start_2026-05-29_211653.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="800"></a>
 </p>
 
 ## ✨ Features
