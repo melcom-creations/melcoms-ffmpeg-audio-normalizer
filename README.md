@@ -2,9 +2,15 @@
 
 A professional yet easy-to-use Windows GUI for batch-normalizing audio files with FFmpeg's EBU R128 loudness workflow.
 
-Version 3.2.0 ("Nachtschicht Edition") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic help text, and the `Transparent` default preset.
+Version 4.0.2 ("Läderlappen Edition 🦇") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic flat-style themes, and the `Transparent` default preset.
 
-![Main application window of FFmpeg Audio Normalizer v3](images/creations-ffmpeg-main.png?raw=true)
+<p align="center">
+  <img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="800">
+</p>
+
+<p align="center">
+  <img src="images/creations-ffmpeg-start_2026-05-29_211653.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="800">
+</p>
 
 ## ✨ Features
 
@@ -13,6 +19,7 @@ Version 3.2.0 ("Nachtschicht Edition") reflects the current GUI and preset workf
     *   **Linear (2-Pass):** Professional mastering-grade normalization using FFmpeg's EBU R128 analysis workflow. This preserves dynamics while achieving accurate LUFS and True Peak targets.
     *   **Dynamic (1-Pass):** Faster one-pass normalization for podcasts, speech, streaming, and radio-style workflows.
 *   **Mastering Character Selector:** Choose from `Transparent`, `Cohesive`, `Punchy`, and `Aggressive`, and read the matching help text directly below the selector.
+*   **Multiple Dynamic Themes:** Switch on the fly between various flat-style dark and light themes, including *Läderlappen* (default dark), *Melcom*, *Midnight*, *Modernlight*, *Aquamarine & Blue* (classic tracker style), and classic *Light*.
 *   **Dynamic Preset Processing:** The selected preset defines the mastering filter chain, so the processing path stays clear and easy to extend.
 *   **Quality Preservation:** Automatically keeps the original sample rate and bit depth for WAV and FLAC outputs, including high-resolution sources.
 *   **Metadata & Tags:** Preserves artist, title, album, and other tags and carries them into the normalized files.
@@ -21,11 +28,26 @@ Version 3.2.0 ("Nachtschicht Edition") reflects the current GUI and preset workf
 *   **Multiple Output Formats:** Save your files in WAV, MP3, FLAC, AAC, or OGG format.
 *   **Automatic Cleanup:** Removes temporary `.temp` files when a process is cancelled or fails.
 *   **Portable Application:** Runs without installation and does not modify the Windows registry.
-*   **Multi-Language Support:** Available in English, German, and Polish.
+*   **Multi-Language Support:** Available in English, German, Polish, and Swedish.
+
+---
+
+## 📸 Screenshots Gallery
+
+*Click on any image to view it in full size.*
 
 <p align="center">
-  <img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="600">
+  <a href="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true"><img src="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true" width="32%" alt="LUFS Preset Selection"></a>
+  <a href="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true"><img src="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true" width="32%" alt="True Peak Preset Selection"></a>
+  <a href="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true"><img src="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true" width="32%" alt="Mastering Character Selection"></a>
 </p>
+<p align="center">
+  <a href="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true"><img src="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true" width="32%" alt="Output Format Information"></a>
+  <a href="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true"><img src="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true" width="32%" alt="Language Options"></a>
+  <a href="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true"><img src="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true" width="32%" alt="Theme Options"></a>
+</p>
+
+---
 
 ## 📥 Download & Installation
 
@@ -123,6 +145,7 @@ For more detailed information, please refer to the included help files:
 *   `help_de_DE.html`
 *   `help_en_US.html`
 *   `help_pl_PL.html`
+*   `help_sv_SE.html`
 
 ---
 
@@ -146,5 +169,5 @@ for details.
 
 ---
 
-Greetings from the Nachtschicht,<br>
+Greetings from the shadows 🦇,<br>
 melcom
