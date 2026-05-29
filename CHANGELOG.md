@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.2] - 2026-05-28
+### Läderlappen Edition 🦇
+
+### Added
+- **Modern Flat UI & Theming Engine**
+  - Introduced a complete visual overhaul with a sleek, flat-style design, replacing legacy 3D frames with modern, clean geometries.
+  - Added true dynamic theme support allowing users to switch themes on the fly without restarting.
+  - Included multiple new handcrafted themes: "Midnight", "Modernlight", "Melcom", "Aquamarine & Blue" (Classic Tracker Style), and the namesake "Läderlappen" dark mode.
+- **Swedish Localization**
+  - Added full Swedish (`sv_SE`) language support, properly honoring the "Läderlappen" edition name.
+- **Thread-Safe Log Engine**
+  - Implemented a new, dedicated `AppLogger` with automatic disk rotation (`RotatingFileHandler`). This replaces the legacy RAM-heavy log method, making long batch processes much safer and more efficient.
+
+### Changed
+- **Modular Architecture Overhaul (Under the Hood)**
+  - Completely refactored the monolithic script into a modern, decoupled multi-file structure (`main.py`, `gui.py`, `core.py`, `theme.py`, `audio.py`, `i18n.py`, `constants.py`). This drastically improves maximum stability, future maintainability, and resource management.
+- **Refined Workspace Layout**
+  - Optimized the Options menu by placing the "Language" and "App Theme" dropdowns side-by-side, reducing vertical height.
+  - Rebalanced the main window layout. Adjusted vertical spacing for the file list and process log to keep the progress bar permanently visible without requiring manual window resizing.
+  - Styled the "Start Normalization" button with a prominent Accent color to improve the visual workflow hierarchy.
+- **State Management & GUI Queue**
+  - Fully encapsulated background execution states. Improved threading communication to prevent UI freezes and eliminate background log spam during idle states.
+
+### Fixed
+- **Orphaned Subprocess & Zombie Prevention**
+  - Overhauled task cancellation. The app now cleanly targets and forcefully terminates active FFmpeg process trees on Windows, preventing audio file lockouts and background memory leaks.
+- **Dynamic Theme Switching Glitches**
+  - Built a custom Combobox Cache-Clearing Engine to fix persistent visual bugs where dropdown menus would render with inverted colors after switching themes. 
+  - Fixed an issue where switching from Dark to Light theme would leave residual dark backgrounds on checkbuttons.
+- **Window Management Stability**
+  - Implemented a single-instance tracking system for all dialogs (Options, About). This prevents application crashes and race conditions if a user clicks menu items too rapidly.
+- **Translation Mappings**
+  - Fixed a missing key mapping issue where raw translation keys (e.g., `[mastering_character_preset_transparent]`) were shown in the Mastering Character dropdown instead of the actual localized text.
+
+---
+
 ## [3.2.0] - 2026-05-24
 ### Nachtschicht Edition
 
@@ -45,6 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - No additional final limiter is added beyond the selected processing chain.
 - The workflow favors musicality and preserved dynamics over forcing loudness targets at any cost.
 
+---
+
 ## [3.1.0] - 2026-02-20
 ### "Feierabend Edition"
 
@@ -71,6 +109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **About Dialog Bug:** Fixed a variable reference error in the "About" window that could cause issues when closing the dialog.
 - **Process Robustness:** Improved the error handling during the Two-Pass analysis phase to prevent crashes on malformed audio files.
 
+---
+
 ## [3.0.1] - 2025-11-03
 
 ### Fixed
@@ -78,6 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Fixed a critical issue where language files and other resources (e.g., options.ini, logs) would fail to load when the application was launched from the Windows Start Menu search.
     - The program now correctly determines its own location, ensuring that all necessary files are found regardless of how or from where it is started.
     - This enhances stability and provides a consistent user experience across all versions of Windows.
+
+---
 
 ## [3.0.0] - 2025-10-24
 
@@ -121,6 +163,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where disabled dropdown menus (Comboboxes) would turn bright white during processing. They now blend seamlessly into the background as intended.
 - Fixed an issue where closing the application via the "X" button would not terminate a running audio preview. All child processes are now properly closed.
 
+---
+
 ## [2.2.2] - 2025-10-03
 
 ### Added
@@ -137,6 +181,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated "Check for Updates" Link: The URL for checking for updates in the "Info" menu has been updated to the new project website.
 - GUI Layout Adjustments: The default window width has been slightly increased to better accommodate the new preview buttons.
 
+---
+
 ## [2.2.1] - 2025-08-29
 
 ### Changed
@@ -145,6 +191,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Improved OGG Vorbis Output Encoding:**
     - OGG Vorbis encoding now uses a target bitrate of 500k (managed mode). This replaces the previous quality-scale setting (`-qscale:a 10`), providing more explicit control over the output file size and quality.
 - Updated Build Date: The application's build date has been updated to 2025-08-29.
+
+---
 
 ## [2.2.0] - 2025-08-29
 
@@ -159,6 +207,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Presets Updated: The "Default" preset in the LUFS preset selection now reflects the -14 LUFS target.
 - **Improved GUI Styling for Options Dialog**
     - The Options dialog window now features the same visual style and color scheme as the main application window.
+
+---
 
 ## [2.1.0]
 
@@ -188,10 +238,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Incorrect error message "Unexpected Error!" on cancel has been fixed.
 
+---
+
 ## [2.0.5]
 
 ### Fixed
 - Bug Fixes and Stability Improvements.
+
+---
 
 ## [2.0.1]
 
@@ -204,6 +258,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Default FFmpeg Path in Options Dialog**
     - Shows the program path on first start and loads any saved path on subsequent starts.
+
+---
 
 ## [2.0.0]
 
@@ -227,6 +283,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Message boxes for results and completion.
 - Version number is now displayed in the window title.
 - Improved error handling with more detailed messages.
+
+---
 
 ## [1.0.0 - 1.4.0]
 
