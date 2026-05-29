@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="sv-SE">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>melcom's FFmpeg Audio Normalizer - Hjälp</title>
+	<style>
+		body { background-color: #1e1e1e; background-image: radial-gradient(#2a2a2a 1px, transparent 1px); background-size: 20px 20px; color: #d0d0d0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; line-height: 1.6; margin: 0; }
+		.container { max-width: 900px; margin: 0 auto; background-color: #2b2b2b; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #3a3a3a; }
+		h1, h2, h3 { color: #00b7ff; font-weight: 600; margin-top: 30px; }
+		h1 { border-bottom: 2px solid #00b7ff; padding-bottom: 10px; margin-top: 0; font-size: 2.2em; }
+		h2 { border-bottom: 1px solid #3a3a3a; padding-bottom: 8px; margin-top: 40px; }
+		a { color: #4bd1ca; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		code { background-color: #111111; color: #4bd1ca; padding: 3px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; border: 1px solid #333; }
+		ul, ol { padding-left: 24px; }
+		li { margin-bottom: 10px; }
+		.highlight { color: #00b7ff; font-weight: bold; }
+		.hero-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 25px; margin-bottom: 30px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+		.hero-box h1 { border-bottom: none; margin-bottom: 15px; }
+		.hero-box p { margin: 0; font-size: 1.1em; }
+		.toc { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 20px 24px; margin-top: 30px; margin-bottom: 30px; }
+		.toc h2 { margin-top: 0; border-bottom: none; }
+		.info-box, .preset-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 20px; margin-bottom: 20px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+		.preset-box h3, .preset-box strong { color: #00b7ff; font-size: 1.2em; margin-top: 0; display: block; margin-bottom: 8px; font-weight: 600; }
+		.preset-box p { margin: 0; }
+		.footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #3a3a3a; text-align: center; color: #888; font-size: 0.9em; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="hero-box">
+			<h1>melcom's FFmpeg Audio Normalizer</h1>
+			<p>Ljudnormalisering med öppen källkod som drivs av FFmpeg, LUFS- och True Peak-bearbetning. Byggd för musikproduktion, podcaster, spelljud och stora batch-arbetsflöden - helt utan krav på kommandoradskunskap.</p>
+		</div>
+		<div class="toc">
+			<h2>Innehållsförteckning</h2>
+			<ul>
+				<li><a href="#krav">Krav</a></li>
+				<li><a href="#komma-igang">Komma igång</a></li>
+				<li><a href="#normalisering">Normaliseringslägen</a></li>
+				<li><a href="#presets">Förinställningar & Ljudkaraktär</a></li>
+				<li><a href="#kvalitet">Kvalitet & Metadata</a></li>
+				<li><a href="#anmarkningar">Ytterligare anmärkningar</a></li>
+				<li><a href="#about">Om denna hjälpfil</a></li>
+			</ul>
+		</div>
+		<h2 id="krav">Krav</h2>
+		<p>För att använda <span class="highlight">melcom's FFmpeg Audio Normalizer</span> krävs hela FFmpeg-paketet:</p>
+		<ul>
+			<li><code>ffmpeg.exe</code> - Ljudanalys och normalisering</li>
+			<li><code>ffplay.exe</code> - Ljuduppspelning för förhandsgranskning</li>
+			<li><code>ffprobe.exe</code> - Läsa teknisk ljudinformation</li>
+		</ul>
+		<div class="info-box">
+			<strong>Rekommenderad nedladdning:</strong><br><br>
+			<a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">github.com/BtbN/FFmpeg-Builds/releases</a><br><br>
+			Rekommenderat paket:<br><code>ffmpeg-master-latest-win64-gpl.zip</code>
+		</div>
+		<p>Efter att du har packat upp FFmpeg, konfigurera sökvägen till FFmpeg-mappen i programmets alternativmeny.</p>
+		
+		<h2 id="komma-igang">Komma igång</h2>
+		<ol>
+			<li>Starta <code>AudioNormalizer.exe</code>.</li>
+			<li>Öppna: <br><code>Arkiv -> Alternativ</code></li>
+			<li>Välj mappen som innehåller: <br><code>ffmpeg.exe</code>, <code>ffplay.exe</code> och <code>ffprobe.exe</code></li>
+			<li>Använd "Lägg till filer" eller "Lägg till mapp" för att fylla bearbetningskön.</li>
+			<li>Välj önskad LUFS-förinställning, True Peak-gräns och utdataformat.</li>
+			<li>Välj en förinställning för mastering-karaktär. <span class="highlight">Transparent</span> är standard och lägger inte till någon extra färgning av ljudet.</li>
+			<li>Klicka på: <br><span class="highlight">"Starta normalisering"</span></li>
+		</ol>
+		<div class="info-box">Under bearbetningen visar loggfönstret aktuell status, FFmpeg-utdata och bearbetningsförlopp i realtid.</div>
+		
+		<h2 id="normalisering">Normaliseringslägen</h2>
+		<div class="preset-box">
+			<h3>Linjär (2 pass)</h3>
+			<p>Rekommenderas för musikproduktion, mastering och arkivering. Ljudfilen analyseras under det första passet och normaliseras med en fast förstärkning under det andra passet. Detta bevarar den ursprungliga dynamiken så troget som möjligt.</p>
+		</div>
+		<div class="preset-box">
+			<h3>Dynamisk (1 pass)</h3>
+			<p>Rekommenderas för tal, podcaster, strömmar och sändningsmaterial. Skillnader i ljudstyrka utjämnas aktivt under bearbetningen.</p>
+		</div>
+		
+		<h2 id="presets">Förinställningar & Ljudkaraktär</h2>
+		<h3>LUFS & True Peak-förinställningar</h3>
+		<ul>
+			<li>Appen erbjuder tydliga, moderna och lättförståeliga förinställningsprofiler för alla vanliga riktlinjer för streaming och sändning.</li>
+			<li><span class="highlight">Standard / Streaming Säker (-1.0 dBTP)</span> är ett starkt standardval för de flesta strömmande plattformar.</li>
+			<li><span class="highlight">Förlustkomprimerad codec säker (-2.0 dBTP)</span> ger extra takhöjd (headroom) för MP3-, AAC- och OGG-exporter.</li>
+			<li><span class="highlight">Ingen gräns / Riskabelt (0.0 dBTP)</span> bör endast användas när målformatet uttryckligen tillåter det.</li>
+		</ul>
+		<h3>Mastering-karaktär</h3>
+		<div class="preset-box">
+			<strong>Transparent</strong>
+			<p>Ren normalisering av ljudstyrka utan extra ljudformning.</p>
+		</div>
+		<div class="preset-box">
+			<strong>Cohesive</strong>
+			<p>Lägger till mild komprimering och subtil soft clipping för en tätare övergripande mix.</p>
+		</div>
+		<div class="preset-box">
+			<strong>Punchy</strong>
+			<p>Levererar starkare slagkraft, mer energi och mer märkbar dynamisk bearbetning.</p>
+		</div>
+		<div class="preset-box">
+			<strong>Aggressive</strong>
+			<p>Det starkaste bearbetningsläget för tätt, skarpt eller aggressivt elektroniskt material.</p>
+		</div>
+		
+		<h2 id="kvalitet">Kvalitet & Metadata</h2>
+		<h3>Bevarande av ljudkvalitet</h3>
+		<p>Vid export till WAV eller FLAC bevaras den ursprungliga samplingsfrekvensen och bitdjupet automatiskt. Ingen onödig nedsampling utförs.</p>
+		<h3>Metadata & taggar</h3>
+		<p>Artist, album, titel, år och ytterligare metadata kopieras automatiskt till den normaliserade utdatafilen.</p>
+		<p>MP3-filer använder automatiskt standarden ID3v2.3 för maximal kompatibilitet med Utforskaren i Windows och hårdvaru-spelare.</p>
+		
+		<h2 id="anmarkningar">Ytterligare anmärkningar</h2>
+		<div class="info-box">Om en process avbryts eller ett fel inträffar tas tillfälliga arbetsfiler bort automatiskt.</div>
+		<div class="info-box">Om <code>ffprobe.exe</code> saknas påverkas inte själva normaliseringen, men det inaktiverar teknisk ljudinformation och detektering av varaktighet.</div>
+		
+		<h2 id="about">Om denna hjälpfil</h2>
+		<p>Detta projekt skapades av melcom och släpptes under MIT-licensen.</p>
+		<p>Projektets webbplats:<br><a href="https://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">melcom-creations.github.io/melcom-music</a></p>
+		
+		<div class="footer">
+			<p>melcom's FFmpeg Audio Normalizer v4.0.2 - Läderlappen Edition 🦇</p>
+		</div>
+	</div>
+</body>
+</html>

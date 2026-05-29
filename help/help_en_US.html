@@ -1,136 +1,37 @@
 <!DOCTYPE html>
 <html lang="en-US">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>melcom's FFmpeg Audio Normalizer - Help</title>
 	<style>
-	body {
-		background: #1f1f1f;
-		color: #e4e4e4;
-		font-family: "Segoe UI", Arial, sans-serif;
-		line-height: 1.75;
-		margin: 0;
-		padding: 0;
-	}
-	
-	.container {
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 40px 24px 80px;
-	}
-	
-	h1 {
-		font-size: 2.3rem;
-		color: #ffffff;
-		margin-bottom: 10px;
-	}
-	
-	h2 {
-		margin-top: 55px;
-		padding-bottom: 10px;
-		border-bottom: 1px solid #3d3d3d;
-		color: #ffffff;
-	}
-	
-	h3 {
-		color: #f0f0f0;
-		margin-top: 35px;
-	}
-	
-	p {
-		color: #d0d0d0;
-	}
-	
-	ul,
-	ol {
-		padding-left: 24px;
-	}
-	
-	li {
-		margin-bottom: 10px;
-	}
-	
-	a {
-		color: #8ed0ff;
-		text-decoration: none;
-	}
-	
-	a:hover {
-		text-decoration: underline;
-	}
-	
-	code {
-		background: #2e2e2e;
-		border: 1px solid #404040;
-		border-radius: 4px;
-		padding: 2px 6px;
-		color: #ffffff;
-	}
-	
-	.hero-box {
-		background: linear-gradient(145deg, #2c2c2c, #242424);
-		border: 1px solid #3a3a3a;
-		border-left: 5px solid #8ed0ff;
-		border-radius: 10px;
-		padding: 28px;
-		margin-bottom: 40px;
-	}
-	
-	.hero-box p {
-		margin-bottom: 0;
-	}
-	
-	.highlight {
-		color: #8ed0ff;
-		font-weight: bold;
-	}
-	
-	.toc {
-		background: #262626;
-		border: 1px solid #373737;
-		border-radius: 10px;
-		padding: 20px 24px;
-		margin-top: 30px;
-	}
-	
-	.info-box {
-		background: #2b2b2b;
-		border-left: 4px solid #8ed0ff;
-		padding: 18px;
-		margin: 18px 0;
-		border-radius: 6px;
-	}
-	
-	.preset-box {
-		background: #262626;
-		border: 1px solid #3a3a3a;
-		border-radius: 10px;
-		padding: 18px;
-		margin-top: 16px;
-	}
-	
-	.footer {
-		margin-top: 70px;
-		padding-top: 25px;
-		border-top: 1px solid #3b3b3b;
-		color: #b8b8b8;
-		font-size: 0.95rem;
-	}
-	
-	.small {
-		font-size: 0.95rem;
-		color: #bbbbbb;
-	}
+		body { background-color: #1e1e1e; background-image: radial-gradient(#2a2a2a 1px, transparent 1px); background-size: 20px 20px; color: #d0d0d0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; line-height: 1.6; margin: 0; }
+		.container { max-width: 900px; margin: 0 auto; background-color: #2b2b2b; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #3a3a3a; }
+		h1, h2, h3 { color: #00b7ff; font-weight: 600; margin-top: 30px; }
+		h1 { border-bottom: 2px solid #00b7ff; padding-bottom: 10px; margin-top: 0; font-size: 2.2em; }
+		h2 { border-bottom: 1px solid #3a3a3a; padding-bottom: 8px; margin-top: 40px; }
+		a { color: #4bd1ca; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		code { background-color: #111111; color: #4bd1ca; padding: 3px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; border: 1px solid #333; }
+		ul, ol { padding-left: 24px; }
+		li { margin-bottom: 10px; }
+		.highlight { color: #00b7ff; font-weight: bold; }
+		.hero-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 25px; margin-bottom: 30px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+		.hero-box h1 { border-bottom: none; margin-bottom: 15px; }
+		.hero-box p { margin: 0; font-size: 1.1em; }
+		.toc { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 20px 24px; margin-top: 30px; margin-bottom: 30px; }
+		.toc h2 { margin-top: 0; border-bottom: none; }
+		.info-box, .preset-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 20px; margin-bottom: 20px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+		.preset-box h3, .preset-box strong { color: #00b7ff; font-size: 1.2em; margin-top: 0; display: block; margin-bottom: 8px; font-weight: 600; }
+		.preset-box p { margin: 0; }
+		.footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #3a3a3a; text-align: center; color: #888; font-size: 0.9em; }
 	</style>
 </head>
-
 <body>
 	<div class="container">
 		<div class="hero-box">
 			<h1>melcom's FFmpeg Audio Normalizer</h1>
-			<p> Open-source audio normalization powered by FFmpeg, LUFS and True Peak processing. Built for music production, podcasts, gaming audio and large batch workflows - without requiring command-line knowledge. </p>
+			<p>Open-source audio normalization powered by FFmpeg, LUFS and True Peak processing. Built for music production, podcasts, gaming audio and large batch workflows - without requiring command-line knowledge.</p>
 		</div>
 		<div class="toc">
 			<h2>Table of Contents</h2>
@@ -145,82 +46,84 @@
 			</ul>
 		</div>
 		<h2 id="requirements">Requirements</h2>
-		<p> To use <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, the complete FFmpeg suite is required: </p>
+		<p>To use <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, the complete FFmpeg suite is required:</p>
 		<ul>
 			<li><code>ffmpeg.exe</code> - Audio analysis and normalization</li>
 			<li><code>ffplay.exe</code> - Audio preview playback</li>
 			<li><code>ffprobe.exe</code> - Reading technical audio information</li>
 		</ul>
-		<div class="info-box"> Recommended download:
-			<br>
-			<br> <a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">
-            github.com/BtbN/FFmpeg-Builds/releases
-        </a>
-			<br>
-			<br> Recommended package:
-			<br> <code>ffmpeg-master-latest-win64-gpl.zip</code> </div>
-		<p> After extracting FFmpeg, configure the path to the FFmpeg folder inside the application's options menu. </p>
+		<div class="info-box">
+			<strong>Recommended download:</strong><br><br>
+			<a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">github.com/BtbN/FFmpeg-Builds/releases</a><br><br>
+			Recommended package:<br><code>ffmpeg-master-latest-win64-gpl.zip</code>
+		</div>
+		<p>After extracting FFmpeg, configure the path to the FFmpeg folder inside the application's options menu.</p>
+		
 		<h2 id="getting-started">Getting Started</h2>
 		<ol>
 			<li>Launch <code>AudioNormalizer.exe</code>.</li>
-			<li> Open:
-				<br> <code>File -> Options</code> </li>
-			<li> Select the folder containing:
-				<br> <code>ffmpeg.exe</code>, <code>ffplay.exe</code> and <code>ffprobe.exe</code> </li>
-			<li> Use "Add Files" or "Add Folder" to populate the processing queue. </li>
-			<li> Select your desired LUFS preset, True Peak limit and output format. </li>
-			<li> Choose an audio character preset. <span class="highlight">Transparent</span> is the default and applies no additional coloration. </li>
-			<li> Click:
-				<br> <span class="highlight">"Start Normalization"</span> </li>
+			<li>Open: <br><code>File -> Options</code></li>
+			<li>Select the folder containing: <br><code>ffmpeg.exe</code>, <code>ffplay.exe</code> and <code>ffprobe.exe</code></li>
+			<li>Use "Add Files" or "Add Folder" to populate the processing queue.</li>
+			<li>Select your desired LUFS preset, True Peak limit and output format.</li>
+			<li>Choose an audio character preset. <span class="highlight">Transparent</span> is the default and applies no additional coloration.</li>
+			<li>Click: <br><span class="highlight">"Start Normalization"</span></li>
 		</ol>
-		<div class="info-box"> During processing, the log window displays the current status, FFmpeg output and processing progress in real time. </div>
+		<div class="info-box">During processing, the log window displays the current status, FFmpeg output and processing progress in real time.</div>
+		
 		<h2 id="normalization">Normalization Modes</h2>
 		<div class="preset-box">
 			<h3>Linear (2 Passes)</h3>
-			<p> Recommended for music production, mastering and archival work. The audio file is analyzed during the first pass and normalized with a fixed gain during the second pass. This preserves the original dynamics as accurately as possible. </p>
+			<p>Recommended for music production, mastering and archival work. The audio file is analyzed during the first pass and normalized with a fixed gain during the second pass. This preserves the original dynamics as accurately as possible.</p>
 		</div>
 		<div class="preset-box">
 			<h3>Dynamic (1 Pass)</h3>
-			<p> Recommended for speech, podcasts, streams and broadcast material. Loudness differences are actively balanced during processing. </p>
+			<p>Recommended for speech, podcasts, streams and broadcast material. Loudness differences are actively balanced during processing.</p>
 		</div>
+		
 		<h2 id="presets">Presets & Audio Character</h2>
 		<h3>LUFS & True Peak Presets</h3>
 		<ul>
-			<li> Version 3.2.0 introduces clearer and more modern preset naming. </li>
-			<li> <span class="highlight">Streaming Safe (-1.0 dBTP)</span> is a strong default choice for most streaming platforms. </li>
-			<li> <span class="highlight">Lossy Codec Safe (-2.0 dBTP)</span> provides additional headroom for MP3, AAC and OGG exports. </li>
-			<li> <span class="highlight">0.0 dBTP</span> should only be used when the destination format explicitly allows it. </li>
+			<li>The application features clear, modern, and easily understandable preset profiles for all common streaming and broadcast guidelines.</li>
+			<li><span class="highlight">Default / Streaming Safe (-1.0 dBTP)</span> is a strong default choice for most streaming platforms.</li>
+			<li><span class="highlight">Lossy Codec Safe (-2.0 dBTP)</span> provides additional headroom for MP3, AAC and OGG exports.</li>
+			<li><span class="highlight">No Limit / Risky (0.0 dBTP)</span> should only be used when the destination format explicitly allows it.</li>
 		</ul>
 		<h3>Mastering Character</h3>
-		<div class="preset-box"> <strong>Transparent</strong>
-			<p> Pure loudness normalization without additional sound shaping. </p>
+		<div class="preset-box">
+			<strong>Transparent</strong>
+			<p>Pure loudness normalization without additional sound shaping.</p>
 		</div>
-		<div class="preset-box"> <strong>Cohesive</strong>
-			<p> Adds gentle compression and subtle soft clipping for a tighter overall mix. </p>
+		<div class="preset-box">
+			<strong>Cohesive</strong>
+			<p>Adds gentle compression and subtle soft clipping for a tighter overall mix.</p>
 		</div>
-		<div class="preset-box"> <strong>Punchy</strong>
-			<p> Delivers stronger impact, more energy and more noticeable dynamic processing. </p>
+		<div class="preset-box">
+			<strong>Punchy</strong>
+			<p>Delivers stronger impact, more energy and more noticeable dynamic processing.</p>
 		</div>
-		<div class="preset-box"> <strong>Aggressive</strong>
-			<p> The strongest processing mode for dense, sharp or aggressive electronic material. </p>
+		<div class="preset-box">
+			<strong>Aggressive</strong>
+			<p>The strongest processing mode for dense, sharp or aggressive electronic material.</p>
 		</div>
+		
 		<h2 id="quality">Quality & Metadata</h2>
 		<h3>Audio Quality Preservation</h3>
-		<p> When exporting to WAV or FLAC, the original sample rate and bit depth are preserved automatically. No unnecessary downsampling is performed. </p>
+		<p>When exporting to WAV or FLAC, the original sample rate and bit depth are preserved automatically. No unnecessary downsampling is performed.</p>
 		<h3>Metadata & Tags</h3>
-		<p> Artist, album, title, year and additional metadata are copied automatically to the normalized output file. </p>
-		<p> MP3 files automatically use the ID3v2.3 standard for maximum compatibility with Windows Explorer and hardware players. </p>
+		<p>Artist, album, title, year and additional metadata are copied automatically to the normalized output file.</p>
+		<p>MP3 files automatically use the ID3v2.3 standard for maximum compatibility with Windows Explorer and hardware players.</p>
+		
 		<h2 id="notes">Additional Notes</h2>
-		<div class="info-box"> If a process is interrupted or an error occurs, temporary working files are automatically removed. </div>
-		<div class="info-box"> Missing <code>ffprobe.exe</code> does not affect normalization itself, but disables technical audio information and duration detection. </div>
+		<div class="info-box">If a process is interrupted or an error occurs, temporary working files are automatically removed.</div>
+		<div class="info-box">Missing <code>ffprobe.exe</code> does not affect normalization itself, but disables technical audio information and duration detection.</div>
+		
 		<h2 id="about">About This Help File</h2>
-		<p> This project was created by melcom and released under the MIT License. </p>
-		<p> Project website:
-			<br> <a href="https://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">
-            melcom-creations.github.io/melcom-music
-        </a> </p>
+		<p>This project was created by melcom and released under the MIT License.</p>
+		<p>Project website:<br><a href="https://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">melcom-creations.github.io/melcom-music</a></p>
+		
 		<div class="footer">
-			<p class="small"> melcom's FFmpeg Audio Normalizer v3.2.0 - Nachtschicht Edition </p>
+			<p>melcom's FFmpeg Audio Normalizer v4.0.2 - Läderlappen Edition 🦇</p>
 		</div>
 	</div>
 </body>
