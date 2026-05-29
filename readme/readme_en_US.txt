@@ -1,4 +1,4 @@
-melcom's FFmpeg Audio Normalizer v3.2.0 - Nachtschicht Edition
+melcom's FFmpeg Audio Normalizer v4.0.2 - Läderlappen Edition 🦇
 
 Open-source audio normalization using FFmpeg with LUFS and True Peak support.
 
@@ -66,6 +66,7 @@ you can:
 
 - change the FFmpeg path
 - switch the program language
+- switch the App theme
 - configure log file settings
 
 
