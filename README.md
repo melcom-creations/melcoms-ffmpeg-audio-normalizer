@@ -37,14 +37,14 @@ Version 4.0.2 ("Läderlappen Edition 🦇") reflects the current GUI and preset 
 *Click on any image to view it in full size (opens in a new tab to bypass GitHub loading errors).*
 
 <p align="center">
-  <a href="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true" target="_blank" rel="noopener noreferrer"><img src="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true" width="32%" alt="LUFS Preset Selection"></a>
-  <a href="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true" target="_blank" rel="noopener noreferrer"><img src="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true" width="32%" alt="True Peak Preset Selection"></a>
-  <a href="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true" target="_blank" rel="noopener noreferrer"><img src="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true" width="32%" alt="Mastering Character Selection"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-lufs_2026-05-29_211451.png"><img src="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true" width="32%" alt="LUFS Preset Selection"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-tp_2026-05-29_211457.png"><img src="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true" width="32%" alt="True Peak Preset Selection"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-mastering_2026-05-29_211501.png"><img src="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true" width="32%" alt="Mastering Character Selection"></a>
 </p>
 <p align="center">
-  <a href="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true" target="_blank" rel="noopener noreferrer"><img src="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true" width="32%" alt="Output Format Information"></a>
-  <a href="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true" target="_blank" rel="noopener noreferrer"><img src="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true" width="32%" alt="Language Options"></a>
-  <a href="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true" target="_blank" rel="noopener noreferrer"><img src="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true" width="32%" alt="Theme Options"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-format_2026-05-29_211513.png"><img src="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true" width="32%" alt="Output Format Information"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-lang_2026-05-29_212154.png"><img src="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true" width="32%" alt="Language Options"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-theme_2026-05-29_212213.png"><img src="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true" width="32%" alt="Theme Options"></a>
 </p>
 
 ---
