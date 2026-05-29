@@ -9,7 +9,7 @@ Version 4.0.3 ("Läderlappen Edition 🦇") reflects the current GUI and preset 
 </p>
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-29_211653.png"><img src="images/creations-ffmpeg-start_2026-05-29_211653.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="800"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-30_015717.png"><img src="images/creations-ffmpeg-start_2026-05-30_015717.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="800"></a>
 </p>
 
 ## ✨ Features
