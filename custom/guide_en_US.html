@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modding Guide: Custom Themes & Languages</title>
+    <style>
+        body { background-color: #1e1e1e; background-image: radial-gradient(#2a2a2a 1px, transparent 1px); background-size: 20px 20px; color: #d0d0d0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; line-height: 1.6; margin: 0; }
+        .container { max-width: 900px; margin: 0 auto; background-color: #2b2b2b; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #3a3a3a; }
+        h1, h2, h3 { color: #00b7ff; font-weight: 600; margin-top: 30px; }
+        h1 { border-bottom: 2px solid #00b7ff; padding-bottom: 10px; margin-top: 0; }
+        .intro { font-size: 1.1em; margin-bottom: 30px; }
+        .step-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 20px; margin-bottom: 20px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+        .prereq-box { background-color: #2c2519; border-left: 4px solid #CB850C; padding: 20px; margin-bottom: 30px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.3); }
+        .prereq-box h3 { color: #CB850C; margin-top: 0; }
+        .prereq-box a { color: #CB850C; text-decoration: none; font-weight: bold; }
+        .prereq-box a:hover { text-decoration: underline; }
+        code { background-color: #111111; color: #4bd1ca; padding: 3px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; border: 1px solid #333; }
+        pre { background-color: #111111; color: #d7f7ff; padding: 15px; border-radius: 6px; overflow-x: auto; border: 1px solid #333; font-family: 'Consolas', monospace; font-size: 0.95em; }
+        .warning { color: #ff5c5c; font-weight: bold; }
+        hr { border: 0; height: 1px; background: #3a3a3a; margin: 40px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎨 Modding Guide: Custom Themes & Languages</h1>
+    <p class="intro">Welcome! This guide is aimed at advanced users and modding enthusiasts who want to customize <strong>melcom's FFmpeg Audio Normalizer</strong>. While you don't need to write complex code, basic knowledge of running Python scripts and using a text editor (like Notepad++) is required.</p>
+
+    <div class="prereq-box">
+        <h3>⚠️ Prerequisite: Source Code & Python</h3>
+        <p>This guide is intended for advanced hobbyists and modders. Since the default colors and language lists are hardcoded into the final application, customizations must be made directly within the source files.</p>
+        <p><strong>How to do it:</strong> Extract the <code>AudioNormalizer-Source_Code.7z</code> file from the <code>source_code</code> folder of this release. To work with these files, <strong>Python</strong> must be installed on your system.</p>
+        <p>After making your modifications, you have two ways to run them:</p>
+        <ul>
+            <li><strong>Run directly:</strong> Simply launch your modified application directly using the <code>main.py</code> file (requires Python to be installed).</li>
+            <li><strong>Compile your own .exe:</strong> If you know your way around compilers, you can easily package your customized source code back into a fresh, custom <code>AudioNormalizer.exe</code> (e.g., using PyInstaller).</li>
+        </ul>
+        <p>If you don't have Python installed yet, you can download it here for free:<br>
+        <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">» www.python.org/downloads</a></p>
+    </div>
+
+    <hr>
+
+    <h2>🌍 Part 1: Adding a New Language</h2>
+    <p>Want to use the program in French, Spanish, or a made-up language? No problem!</p>
+
+    <div class="step-box">
+        <h3>Step 1: Copy a Language File</h3>
+        <p>Go to the extracted Source Code folder, then into the <code>lang</code> directory. Copy an existing file, e.g., <code>en_US.json</code>, and rename it (e.g., to <code>fr_FR.json</code> for French).</p>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 2: Translate</h3>
+        <p>Open your new file in a text editor. You will see lines like this:</p>
+        <pre>"app_title": "melcom's FFmpeg Audio Normalizer",</pre>
+        <p><span class="warning">IMPORTANT:</span> <strong>Only</strong> change the text on the <strong>right</strong> side of the colon! The left side (e.g., <code>"app_title"</code>) must remain exactly as it is, otherwise the program won't find the text.</p>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 3: Tell the Program About the Language</h3>
+        <p>Open the file <code>constants.py</code> in the Source Code folder. Look for this entry (near the top):</p>
+        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE"]</pre>
+        <p>Simply add your new language to the end of the list. Don't forget the quotes and the comma:</p>
+        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE", "fr_FR"]</pre>
+        <p>Save it, start the program via <code>main.py</code>, and you can now select your language in the options!</p>
+    </div>
+
+    <hr>
+
+    <h2>🖌️ Part 2: Creating a Custom Theme (Colors)</h2>
+    <p>The program comes with several themes out of the box. Prefer bright pink or neon green? Let's do it:</p>
+
+    <div class="step-box">
+        <h3>Step 1: Define Your Colors</h3>
+        <p>Open the file <code>theme.py</code>. Copy an existing color block, e.g., <code>MIDNIGHT_PALETTE</code>, paste it below, and rename it to something like <code>MY_AWESOME_PALETTE</code>. Adjust the colors using Hex codes (e.g., <code>#FF0000</code> for red):</p>
+        <pre>MY_AWESOME_PALETTE = {
+    "bg": "#111111",           # Main window background
+    "fg": "#ffffff",           # Normal text color
+    "info_bg": "#222222",      # Background for text areas
+    "separator": "#ff00ff",    # Borders and dividers
+    "entry_bg": "#222222",     # Text input fields (e.g. LUFS)
+    "disabled_fg": "#666666",  # Grayed-out text
+    "error_bg": "#ff0000",     # Color for invalid input
+    "button_bg": "#333333",    # Button background
+    "button_hover": "#444444", # Button color on hover
+    "text_relief": "flat",     # 'flat' or 'sunken' (3D)
+    "accent": "#00ff00",       # Main accent color (Start Button!)
+    "tree_selected": "#00ff00",# Selected row in file list
+    "tree_selected_fg": "#000" # Text color of selected row
+}</pre>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 2: Register the Theme in the Code</h3>
+        <p>Scroll down to the bottom of <code>theme.py</code> to the function <code>def apply_theme(...)</code>. Add your theme to the <code>if / elif</code> list:</p>
+        <pre>    elif mode == "my awesome theme":
+        colors = MY_AWESOME_PALETTE</pre>
+    </div>
+
+    <div class="step-box">
+        <h3>Step 3: Make the Theme Visible in the Menu</h3>
+        <p>Open <code>constants.py</code> again. Search for:</p>
+        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight"]</pre>
+        <p>Insert the exact name (from Step 2) into the list:</p>
+        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight", "my awesome theme"]</pre>
+        <p>Done! Start the program via <code>main.py</code> and select your new theme in the options.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
