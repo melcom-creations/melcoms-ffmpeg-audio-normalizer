@@ -1,4 +1,4 @@
-melcom's FFmpeg Audio Normalizer v4.0.2 - Läderlappen Edition 🦇
+melcom's FFmpeg Audio Normalizer v4.0.3 - Läderlappen Edition 🦇
 
 Open-Source Audio-Normalisierung mit FFmpeg sowie LUFS- und True-Peak-Unterstützung.
 
