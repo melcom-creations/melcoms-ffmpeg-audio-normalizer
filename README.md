@@ -2,14 +2,15 @@
 
 A professional yet easy-to-use Windows GUI for batch-normalizing audio files with FFmpeg's EBU R128 loudness workflow.
 
-Version 4.0.2 ("Läderlappen Edition 🦇") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic flat-style themes, and the `Transparent` default preset.
+Version 4.0.3 ("Läderlappen Edition 🦇") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic flat-style themes, and the `Transparent` default preset.
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-before-after.png"><img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="800"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/melcoms_ffmpeg_audio_normalizer_-_image_30._mai_2026,_03_36_51-2560x2560.jpg"><img src="images/melcoms_ffmpeg_audio_normalizer_-_image_30._mai_2026,_03_36_51-2560x2560.jpg?raw=true" alt="melcom's FFmpeg Audio Normalizer Cover" width="600"></a>
 </p>
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-29_211653.png"><img src="images/creations-ffmpeg-start_2026-05-29_211653.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="800"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-before-after.png"><img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="49%"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-30_015717.png"><img src="images/creations-ffmpeg-start_2026-05-30_015717.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="49%"></a>
 </p>
 
 ## ✨ Features
