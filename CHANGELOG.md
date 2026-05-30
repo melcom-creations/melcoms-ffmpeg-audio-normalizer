@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.0.2] - 2026-05-28
+## [4.0.3] - 2026-05-30
 ### Läderlappen Edition 🦇
 
 ### Added
@@ -38,6 +38,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented a single-instance tracking system for all dialogs (Options, About). This prevents application crashes and race conditions if a user clicks menu items too rapidly.
 - **Translation Mappings**
   - Fixed a missing key mapping issue where raw translation keys (e.g., `[mastering_character_preset_transparent]`) were shown in the Mastering Character dropdown instead of the actual localized text.
+
+### Fixed
+- **Progress Bar Rendering Bug**
+  - Fixed an issue where the progress bar would not display or would flimmer when normalizing multiple tracks sequentially.
+  - Ensured proper initialization and reset of the progress bar for each normalization task.
+  - Background thread handling improved to prevent old queue messages from affecting new normalization runs.
+- **Multi-Track Normalization Stability**
+  - Selecting a new track mid-process no longer causes the progress bar to flicker.
+  - Canceling one track now safely terminates the FFmpeg process without impacting subsequent tracks.
 
 ---
 
