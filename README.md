@@ -1,38 +1,32 @@
 # melcom's FFmpeg Audio Normalizer
 
-Welcome to the **Kontrollraum Edition** - where raw audio signals meet absolute **Kontrolle**. If you are tired of wrestling with clunky command-line arguments, cryptic parameters, or clipping nightmares, you have just entered your new audio command center.
+A professional yet easy-to-use Windows GUI for batch-normalizing audio files with FFmpeg's EBU R128 loudness workflow.
 
-melcom's FFmpeg Audio Normalizer is a professional, high-fidelity Windows GUI designed to give you complete control over batch audio normalization workflows using FFmpeg's industry-standard EBU R128 loudness algorithm.
-
-Version 4.0.6 introduces the new **Audio Properties Inspector** featuring a lossless metadata editor, album artwork manager, advanced signal statistics, and a bulletproof FFmpeg diagnostic engine.
+Version 4.0.3 ("Läderlappen Edition 🦇") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic flat-style themes, and the `Transparent` default preset.
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/melcoms_ffmpeg_audio_normalizer_-_image__4__juni_2026,_23_41_47-2560x2560.jpg"><img src="images/melcoms_ffmpeg_audio_normalizer_-_image__4__juni_2026,_23_41_47-2560x2560.jpg?raw=true" alt="melcom's FFmpeg Audio Normalizer Cover" width="600"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/melcoms_ffmpeg_audio_normalizer_-_image_30._mai_2026,_03_36_51-2560x2560.jpg"><img src="images/melcoms_ffmpeg_audio_normalizer_-_image_30._mai_2026,_03_36_51-2560x2560.jpg?raw=true" alt="melcom's FFmpeg Audio Normalizer Cover" width="600"></a>
 </p>
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-before-after.png"><img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="49%"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/02-creations-ffmpeg-screenshot_2026-06-05_115552.png"><img src="images/02-creations-ffmpeg-screenshot_2026-06-05_115552.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="49%"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-30_015717.png"><img src="images/creations-ffmpeg-start_2026-05-30_015717.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="49%"></a>
 </p>
 
 ## ✨ Features
 
-*   **Audio Properties Inspector:** View comprehensive file details, exact audio streams, and a newly integrated nominal **Bitrate** indicator at a glance. Bit depths for lossy formats are dynamically displayed as `N/A` for professional standard precision.
-*   **Lossless Metadata & Artwork Editor:** Edit metadata tags (Artist, Album, Compilation, etc.) and manage album covers without re-encoding the audio stream.
-*   **Advanced Loudness Statistics:** Analyze Integrated Loudness, True Peak, LRA, Crest Factor, RMS Power, and DC Offset using EBU R128 standards.
-*   **Smart Diagnostics:** Translates cryptic FFmpeg console errors into clear, actionable advice, and proactively checks for folder write-permissions and Windows MAX_PATH limits.
 *   **Batch Processing:** Add multiple files or entire folders to the queue and process them all in one go.
 *   **Two Normalization Modes:**
     *   **Linear (2-Pass):** Professional mastering-grade normalization using FFmpeg's EBU R128 analysis workflow. This preserves dynamics while achieving accurate LUFS and True Peak targets.
     *   **Dynamic (1-Pass):** Faster one-pass normalization for podcasts, speech, streaming, and radio-style workflows.
 *   **Mastering Character Selector:** Choose from `Transparent`, `Cohesive`, `Punchy`, and `Aggressive`, and read the matching help text directly below the selector.
 *   **Multiple Dynamic Themes:** Switch on the fly between various flat-style dark and light themes, including *Läderlappen* (default dark), *Melcom*, *Midnight*, *Modernlight*, *Aquamarine & Blue* (classic tracker style), and classic *Light*.
+*   **Dynamic Preset Processing:** The selected preset defines the mastering filter chain, so the processing path stays clear and easy to extend.
 *   **Quality Preservation:** Automatically keeps the original sample rate and bit depth for WAV and FLAC outputs, including high-resolution sources.
-*   **Integrated Audio Player:** Preview tracks before processing with simple playlist controls, interactive click-to-seek timeline progress bar, and Windows-native playback pause (⏸) with zero CPU usage.
-*   **Optional Treeview Columns:** Toggleable list columns (Duration, Format, Sample Rate) that scan and populate asynchronously in the background, keeping the main interface completely fluid.
+*   **Metadata & Tags:** Preserves artist, title, album, and other tags and carries them into the normalized files.
+*   **Integrated Audio Player:** Preview tracks before processing with simple playlist controls.
 *   **Common Platform Presets:** Includes presets for streaming, podcast, gaming/dynamic music, broadcast, and custom target values.
-*   **Multiple Output Formats:** Save your files in WAV, MP3, FLAC, M4A, or OGG format, now featuring fully customizable Sample Rates (up to 192 kHz), linear/floating-point Bit Depths for lossless containers, and flexible Constant (CBR) or Variable (VBR) bitrate profiles for lossy targets.
-*   **Interactive Real-Time Progress Spinner:** Features an integrated status-bar activity indicator (⏳ / ⌛) that animates dynamically during quiet background processes to prevent a "frozen" appearance during multi-track analysis.
+*   **Multiple Output Formats:** Save your files in WAV, MP3, FLAC, AAC, or OGG format.
 *   **Automatic Cleanup:** Removes temporary `.temp` files when a process is cancelled or fails.
 *   **Portable Application:** Runs without installation and does not modify the Windows registry.
 *   **Multi-Language Support:** Available in English, German, Polish, and Swedish.
@@ -44,15 +38,14 @@ Version 4.0.6 introduces the new **Audio Properties Inspector** featuring a loss
 *Click on any image to view it in full size (opens in a new tab to bypass GitHub loading errors).*
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/03-creations-ffmpeg-screenshot_2026-06-05_115929.png"><img src="images/03-creations-ffmpeg-screenshot_2026-06-05_115929.png?raw=true" width="32%" alt="General Tab"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/04-creations-ffmpeg-screenshot_2026-06-05_115938.png"><img src="images/04-creations-ffmpeg-screenshot_2026-06-05_115938.png?raw=true" width="32%" alt="Metadata Editor"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/05-creations-ffmpeg-screenshot_2026-06-05_115943.png"><img src="images/05-creations-ffmpeg-screenshot_2026-06-05_115943.png?raw=true" width="32%" alt="Artwork Manager"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-lufs_2026-05-29_211451.png"><img src="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true" width="32%" alt="LUFS Preset Selection"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-tp_2026-05-29_211457.png"><img src="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true" width="32%" alt="True Peak Preset Selection"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-mastering_2026-05-29_211501.png"><img src="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true" width="32%" alt="Mastering Character Selection"></a>
 </p>
-
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/06-creations-ffmpeg-screenshot_2026-06-05_120000.png"><img src="images/06-creations-ffmpeg-screenshot_2026-06-05_120000.png?raw=true" width="32%" alt="Statistics"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/07-creations-ffmpeg-screenshot_2026-06-05_115750.png"><img src="images/07-creations-ffmpeg-screenshot_2026-06-05_115750.png?raw=true" width="32%" alt="Export Controls"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/08-creations-ffmpeg-screenshot_2026-06-05_115948.png"><img src="images/08-creations-ffmpeg-screenshot_2026-06-05_115948.png?raw=true" width="32%" alt="File Management"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-format_2026-05-29_211513.png"><img src="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true" width="32%" alt="Output Format Information"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-lang_2026-05-29_212154.png"><img src="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true" width="32%" alt="Language Options"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-theme_2026-05-29_212213.png"><img src="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true" width="32%" alt="Theme Options"></a>
 </p>
 
 ---
