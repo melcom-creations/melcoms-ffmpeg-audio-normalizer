@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modding Guide: Własne Motywy i Języki</title>
+    <title>Poradnik modderski: Własne motywy i języki</title>
     <style>
         body { background-color: #1e1e1e; background-image: radial-gradient(#2a2a2a 1px, transparent 1px); background-size: 20px 20px; color: #d0d0d0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; line-height: 1.6; margin: 0; }
         .container { max-width: 900px; margin: 0 auto; background-color: #2b2b2b; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #3a3a3a; }
@@ -24,88 +24,86 @@
 <body>
 
 <div class="container">
-    <h1>🎨 Modding Guide: Własne Motywy i Języki</h1>
-    <p class="intro">Witaj! Ten przewodnik jest przeznaczony dla zaawansowanych użytkowników i fanów moddowania, którzy chcą dostosować <strong>melcom's FFmpeg Audio Normalizer</strong>. Choć nie musisz pisać skomplikowanego kodu, wymagana jest podstawowa wiedza na temat uruchamiania skryptów Python i korzystania z edytora tekstu (np. Notepad++).</p>
+    <h1>🎨 Poradnik modderski: Własne motywy i języki</h1>
+    <h2>🌍 Część 1: Super prosto - dodaj język</h2>
+<p class="intro">Ten poradnik jest dla każdego, kto chce samodzielnie zmieniać języki. Nie potrzebujesz Pythona ani umiejętności programowania. Wystarczy zwykły edytor tekstu. Dzięki niemu możesz zmieniać istniejące pliki językowe albo tworzyć nowe.</p>
 
-    <div class="prereq-box">
-        <h3>?? Wymg: Kod ?rd?owy i Python</h3>
-        <p>Ten poradnik jest przeznaczony dla zaawansowanych hobbystw i modderw. Poniewa? domy?lne kolory i listy j?zykw s? na sta?e wbudowane w gotow? aplikacj?, dostosowania nale?y wprowadza? bezpo?rednio w plikach ?rd?owych.</p>
-        <p><strong>Jak to zrobi?:</strong> Rozpakuj plik <code>AudioNormalizer-Source_Code.7z</code> z folderu <code>source_code</code> w tym wydaniu. Aby pracowa? z tymi plikami, w Twoim systemie musi by? zainstalowany <strong>Python</strong>.</p>
-        <p>Po wprowadzeniu modyfikacji mo?esz je uruchomi? na dwa sposoby:</p>
-        <ul>
-            <li><strong>Uruchom bezpo?rednio:</strong> Po prostu uruchom zmodyfikowan? aplikacj? bezpo?rednio za pomoc? pliku <code>main.py</code> (wymaga zainstalowanego Pythona).</li>
-            <li><strong>Skompiluj w?asny plik .exe:</strong> Je?li wiesz, jak radzi? sobie z kompilatorami, mo?esz ?atwo spakowa? swj dostosowany kod ?rd?owy z powrotem do nowego, niestandardowego pliku <code>AudioNormalizer.exe</code> (np. przy u?yciu PyInstaller).</li>
-        </ul>
-        <p>Je?li nie masz jeszcze zainstalowanego Pythona, mo?esz go pobra? za darmo tutaj:<br>
-        <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">? www.python.org/downloads</a></p>
-    </div>
+<div class="prereq-box">
+    <h3>✅ Wystarczy zwykły edytor tekstu</h3>
+    <p>Otwórz plik językowy w folderze <code>lang</code> w zwykłym edytorze tekstu. Możesz go poprawić, skopiować albo utworzyć nowy plik - nic więcej nie jest potrzebne.</p>
+    <p>To znaczy, że możesz zmienić istniejący język albo dodać nowy. Bez żadnego kodu źródłowego.</p>
+</div>
 
-    <hr>
+<div class="step-box">
+    <h3>Krok 1: Skopiuj plik</h3>
+    <p>Otwórz folder <code>lang</code> i skopiuj jeden z istniejących plików językowych. Potem zmień nazwę kopii, na przykład na <code>fr_FR.json</code>, <code>es_ES.json</code>, <code>it_IT.json</code>, <code>nl_NL.json</code> albo <code>pt_BR.json</code>.</p>
+</div>
 
-    <h2>🌍 Część 1: Dodawanie Nowego Języka</h2>
-    <p>Chcesz używać programu w języku francuskim, hiszpańskim, a może wymyślonym? Nie ma problemu!</p>
+<div class="step-box">
+    <h3>Krok 2: Zmieniaj tylko tekst po prawej stronie</h3>
+    <p>Bardzo ważne: po lewej stronie jest klucz, a po prawej tekst. Tłumaczysz tylko tekst za dwukropkiem. Lewa część musi zostać dokładnie taka sama.</p>
+    <pre>
+Poprawnie:
+"save": "Zapisz"
+"cancel": "Anuluj"
+"open": "Otwórz"
 
-    <div class="step-box">
-        <h3>Krok 1: Skopiuj plik językowy</h3>
-        <p>Przejdź do rozpakowanego folderu z kodem źródłowym, a następnie do katalogu <code>lang</code>. Skopiuj istniejący plik, np. <code>en_US.json</code>, i zmień jego nazwę (np. na <code>fr_FR.json</code> dla francuskiego).</p>
-    </div>
+Błędnie:
+"save": "save"
+"Zapisz": "Anuluj"
+    </pre>
+    <p>Po lewej stronie nazwa zostaje taka sama. Tłumaczenie trafia po prawej stronie. Dzięki temu program czyta plik poprawnie.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Krok 2: Tłumaczenie</h3>
-        <p>Otwórz nowy plik w edytorze tekstu. Zobaczysz tam linie takie jak ta:</p>
-        <pre>"app_title": "melcom's FFmpeg Audio Normalizer",</pre>
-        <p><span class="warning">WAŻNE:</span> Zmieniaj <strong>tylko</strong> tekst po <strong>prawej</strong> stronie dwukropka! Lewa strona (np. <code>"app_title"</code>) musi pozostać dokładnie taka sama, w przeciwnym razie program nie znajdzie tekstu.</p>
-    </div>
+<div class="step-box">
+    <h3>Krok 3: Możesz też użyć AI</h3>
+    <p>Możesz też poprosić AI o zrobienie tłumaczenia. Wklej plik językowy do ChatGPT albo innego narzędzia AI i napisz: tłumacz tylko tekst po prawej stronie, ale nie zmieniaj nazw po lewej.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Krok 3: Poinformuj program o nowym języku</h3>
-        <p>Otwórz plik <code>constants.py</code> w folderze kodu źródłowego. Poszukaj tego wpisu (blisko góry):</p>
-        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE"]</pre>
-        <p>Po prostu dodaj swój nowy język na końcu listy. Nie zapomnij o cudzysłowach i przecinku:</p>
-        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE", "fr_FR"]</pre>
-        <p>Zapisz, uruchom program przez <code>main.py</code>, a teraz możesz wybrać swój język w opcjach!</p>
-    </div>
+<div class="step-box">
+    <h3>Krok 4: Zapisz i uruchom ponownie</h3>
+    <p>Zapisz plik w folderze <code>lang</code> i uruchom program ponownie. Nowy język pojawi się potem automatycznie na liście.</p>
+</div>
 
-    <hr>
+<hr>
 
-    <h2>🖌?Część 2: Tworzenie Niestandardowego Motywu (Kolory)</h2>
-    <p>Program posiada wiele wbudowanych motywów. Wolisz jaskrawy różowy lub neonową zieleń? Zróbmy to:</p>
+<h2>🖌?Część 2: Tworzenie własnego motywu</h2>
+<p>Od wersji 4.1.0 motywy są przechowywane jako zewnętrzne pliki JSON w folderze <code>themes</code>. Nie trzeba już edytować plików Python.</p>
 
-    <div class="step-box">
-        <h3>Krok 1: Zdefiniuj swoje kolory</h3>
-        <p>Otwórz plik <code>theme.py</code>. Skopiuj istniejący blok kolorów, np. <code>MIDNIGHT_PALETTE</code>, wklej go poniżej i zmień jego nazwę na np. <code>MY_AWESOME_PALETTE</code>. Dostosuj kolory używając kodów Hex (np. <code>#FF0000</code> dla czerwonego):</p>
-        <pre>MY_AWESOME_PALETTE = {
-    "bg": "#111111",           # Tło głównego okna
-    "fg": "#ffffff",           # Zwykły kolor tekstu
-    "info_bg": "#222222",      # Tło dla obszarów tekstowych
-    "separator": "#ff00ff",    # Ramki i przegrody
-    "entry_bg": "#222222",     # Pola wprowadzania tekstu (np. LUFS)
-    "disabled_fg": "#666666",  # Wyszary tekst
-    "error_bg": "#ff0000",     # Kolor przy błędnym wejściu
-    "button_bg": "#333333",    # Tło przycisku
-    "button_hover": "#444444", # Kolor przycisku po najechaniu
-    "text_relief": "flat",     # 'flat' (płaskie) lub 'sunken' (wklęsłe 3D)
-    "accent": "#00ff00",       # Główny kolor akcentu (Przycisk Start!)
-    "tree_selected": "#00ff00",# Zaznaczony wiersz na liście
-    "tree_selected_fg": "#000" # Kolor tekstu w zaznaczonym wierszu
+<div class="step-box">
+<h3>Krok 1: Skopiuj istniejący motyw</h3>
+<p>Otwórz folder <code>themes</code> i skopiuj istniejący plik, np. <code>light.json</code>. Zmień nazwę kopii na przykład na <code>my_theme.json</code>.</p>
+</div>
+
+<div class="step-box">
+<h3>Krok 2: Zmień kolory</h3>
+
+<pre>{
+    "name": "my_theme",
+
+    "bg": "#E0E0E0",              // Główne tło aplikacji
+    "fg": "#000000",              // Główny kolor tekstu
+    "info_bg": "#ffffff",         // Pola tekstowe i dziennik procesu
+    "separator": "#808080",       // Obramowania i separatory
+    "entry_bg": "#ffffff",        // Pola wejściowe i listy rozwijane
+    "disabled_fg": "#6d6d6d",     // Tekst elementów wyłączonych
+    "error_bg": "#f2b8b5",        // Podświetlenie błędów
+    "button_bg": "#d3d1ce",       // Przyciski i nieaktywne karty
+    "button_hover": "#e4e0d8",    // Stan najechania i aktywny
+    "text_relief": "sunken",      // flat, sunken, ridge lub groove
+    "accent": "#0a64ad",          // Główny kolor akcentu
+    "tree_selected": "#0a64ad",   // Tło zaznaczonego wiersza pliku
+    "tree_selected_fg": "#ffffff",// Kolor tekstu zaznaczonego wiersza
+    "tree_row_alt": "#f7f7f7"     // Kolor naprzemiennych wierszy
 }</pre>
-    </div>
+<p>Zapisz plik. Program wykryje go automatycznie.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Krok 2: Zarejestruj motyw w kodzie</h3>
-        <p>Przewiń w dół pliku <code>theme.py</code> do funkcji <code>def apply_theme(...)</code>. Dodaj swój motyw do listy <code>if / elif</code>:</p>
-        <pre>    elif mode == "my awesome theme":
-        colors = MY_AWESOME_PALETTE</pre>
-    </div>
+<div class="step-box">
+<h3>Krok 3: Wybierz motyw</h3>
+<p>Uruchom program. Wszystkie poprawne motywy JSON znajdujące się w folderze <code>themes</code> pojawią się automatycznie na liście wyboru motywu.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Krok 3: Udostępnij motyw w menu</h3>
-        <p>Otwórz ponownie plik <code>constants.py</code>. Poszukaj:</p>
-        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight"]</pre>
-        <p>Wstaw dokładną nazwę (z Kroku 2) do listy:</p>
-        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight", "my awesome theme"]</pre>
-        <p>Gotowe! Uruchom program przez <code>main.py</code> i wybierz swój nowy motyw w opcjach.</p>
-    </div>
 
 </div>
 

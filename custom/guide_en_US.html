@@ -25,87 +25,85 @@
 
 <div class="container">
     <h1>🎨 Modding Guide: Custom Themes & Languages</h1>
-    <p class="intro">Welcome! This guide is aimed at advanced users and modding enthusiasts who want to customize <strong>melcom's FFmpeg Audio Normalizer</strong>. While you don't need to write complex code, basic knowledge of running Python scripts and using a text editor (like Notepad++) is required.</p>
+    <h2>🌍 Part 1: Super easy - add a language</h2>
+<p class="intro">This guide is for everyone who wants to change languages on their own. You do not need Python or coding skills. A normal text editor is enough. With it, you can edit existing language files or create new ones.</p>
 
-    <div class="prereq-box">
-        <h3>⚠️ Prerequisite: Source Code & Python</h3>
-        <p>This guide is intended for advanced hobbyists and modders. Since the default colors and language lists are hardcoded into the final application, customizations must be made directly within the source files.</p>
-        <p><strong>How to do it:</strong> Extract the <code>AudioNormalizer-Source_Code.7z</code> file from the <code>source_code</code> folder of this release. To work with these files, <strong>Python</strong> must be installed on your system.</p>
-        <p>After making your modifications, you have two ways to run them:</p>
-        <ul>
-            <li><strong>Run directly:</strong> Simply launch your modified application directly using the <code>main.py</code> file (requires Python to be installed).</li>
-            <li><strong>Compile your own .exe:</strong> If you know your way around compilers, you can easily package your customized source code back into a fresh, custom <code>AudioNormalizer.exe</code> (e.g., using PyInstaller).</li>
-        </ul>
-        <p>If you don't have Python installed yet, you can download it here for free:<br>
-        <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">» www.python.org/downloads</a></p>
-    </div>
+<div class="prereq-box">
+    <h3>✅ All you need is a text editor</h3>
+    <p>Open a language file in the <code>lang</code> folder with any normal text editor. You can edit it, copy it, or create a new file - nothing more is needed.</p>
+    <p>That means you can change an existing language or add a new one. No source code is needed.</p>
+</div>
 
-    <hr>
+<div class="step-box">
+    <h3>Step 1: Copy a file</h3>
+    <p>Open the <code>lang</code> folder and copy one of the existing language files. Then rename the copy, for example to <code>fr_FR.json</code>, <code>es_ES.json</code>, <code>it_IT.json</code>, <code>nl_NL.json</code>, or <code>pt_BR.json</code>.</p>
+</div>
 
-    <h2>🌍 Part 1: Adding a New Language</h2>
-    <p>Want to use the program in French, Spanish, or a made-up language? No problem!</p>
+<div class="step-box">
+    <h3>Step 2: Change only the text on the right</h3>
+    <p>Very important: the left side is the key, the right side is the text. Only the text after the colon is translated. The left part must stay exactly the same.</p>
+    <pre>
+Correct:
+"save": "Save"
+"cancel": "Cancel"
+"open": "Open"
 
-    <div class="step-box">
-        <h3>Step 1: Copy a Language File</h3>
-        <p>Go to the extracted Source Code folder, then into the <code>lang</code> directory. Copy an existing file, e.g., <code>en_US.json</code>, and rename it (e.g., to <code>fr_FR.json</code> for French).</p>
-    </div>
+Wrong:
+"save": "save"
+"Save": "Cancel"
+    </pre>
+    <p>The name on the left stays the same. The translation goes on the right. That is how the program reads the file correctly.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Step 2: Translate</h3>
-        <p>Open your new file in a text editor. You will see lines like this:</p>
-        <pre>"app_title": "melcom's FFmpeg Audio Normalizer",</pre>
-        <p><span class="warning">IMPORTANT:</span> <strong>Only</strong> change the text on the <strong>right</strong> side of the colon! The left side (e.g., <code>"app_title"</code>) must remain exactly as it is, otherwise the program won't find the text.</p>
-    </div>
+<div class="step-box">
+    <h3>Step 3: You can also use AI</h3>
+    <p>You can also let an AI do the translation. Paste the language file into ChatGPT or another AI tool and say: translate only the text on the right, but do not change the names on the left.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Step 3: Tell the Program About the Language</h3>
-        <p>Open the file <code>constants.py</code> in the Source Code folder. Look for this entry (near the top):</p>
-        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE"]</pre>
-        <p>Simply add your new language to the end of the list. Don't forget the quotes and the comma:</p>
-        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE", "fr_FR"]</pre>
-        <p>Save it, start the program via <code>main.py</code>, and you can now select your language in the options!</p>
-    </div>
+<div class="step-box">
+    <h3>Step 4: Save and restart</h3>
+    <p>Save the file in the <code>lang</code> folder and restart the program. The new language will then appear automatically in the list.</p>
+</div>
 
-    <hr>
+<hr>
 
-    <h2>🖌️ Part 2: Creating a Custom Theme (Colors)</h2>
-    <p>The program comes with several themes out of the box. Prefer bright pink or neon green? Let's do it:</p>
+<h2>🖌️ Part 2: Creating a Custom Theme</h2>
+<p>Since version 4.1.0, themes are fully managed through external JSON files inside the <code>themes</code> folder. No Python editing is required.</p>
 
-    <div class="step-box">
-        <h3>Step 1: Define Your Colors</h3>
-        <p>Open the file <code>theme.py</code>. Copy an existing color block, e.g., <code>MIDNIGHT_PALETTE</code>, paste it below, and rename it to something like <code>MY_AWESOME_PALETTE</code>. Adjust the colors using Hex codes (e.g., <code>#FF0000</code> for red):</p>
-        <pre>MY_AWESOME_PALETTE = {
-    "bg": "#111111",           # Main window background
-    "fg": "#ffffff",           # Normal text color
-    "info_bg": "#222222",      # Background for text areas
-    "separator": "#ff00ff",    # Borders and dividers
-    "entry_bg": "#222222",     # Text input fields (e.g. LUFS)
-    "disabled_fg": "#666666",  # Grayed-out text
-    "error_bg": "#ff0000",     # Color for invalid input
-    "button_bg": "#333333",    # Button background
-    "button_hover": "#444444", # Button color on hover
-    "text_relief": "flat",     # 'flat' or 'sunken' (3D)
-    "accent": "#00ff00",       # Main accent color (Start Button!)
-    "tree_selected": "#00ff00",# Selected row in file list
-    "tree_selected_fg": "#000" # Text color of selected row
+<div class="step-box">
+<h3>Step 1: Copy an Existing Theme</h3>
+<p>Open the <code>themes</code> folder and copy an existing file such as <code>light.json</code>. Rename the copy, for example <code>my_theme.json</code>.</p>
+</div>
+
+<div class="step-box">
+<h3>Step 2: Modify the Colors</h3>
+
+<pre>{
+    "name": "my_theme",
+
+    "bg": "#E0E0E0",              // Main application background
+    "fg": "#000000",              // Main text color
+    "info_bg": "#ffffff",         // Text areas and process log
+    "separator": "#808080",       // Borders and separators
+    "entry_bg": "#ffffff",        // Input fields and comboboxes
+    "disabled_fg": "#6d6d6d",     // Disabled text
+    "error_bg": "#f2b8b5",        // Error highlighting
+    "button_bg": "#d3d1ce",       // Buttons and inactive tabs
+    "button_hover": "#e4e0d8",    // Hover and active state
+    "text_relief": "sunken",      // flat, sunken, ridge, groove
+    "accent": "#0a64ad",          // Main accent color
+    "tree_selected": "#0a64ad",   // Selected file row background
+    "tree_selected_fg": "#ffffff",// Selected file row text
+    "tree_row_alt": "#f7f7f7"     // Alternate row color
 }</pre>
-    </div>
+<p>Save the file. The application will detect it automatically.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Step 2: Register the Theme in the Code</h3>
-        <p>Scroll down to the bottom of <code>theme.py</code> to the function <code>def apply_theme(...)</code>. Add your theme to the <code>if / elif</code> list:</p>
-        <pre>    elif mode == "my awesome theme":
-        colors = MY_AWESOME_PALETTE</pre>
-    </div>
+<div class="step-box">
+<h3>Step 3: Select the Theme</h3>
+<p>Start the application. Every valid JSON theme inside the <code>themes</code> folder will automatically appear in the App Theme selector.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Step 3: Make the Theme Visible in the Menu</h3>
-        <p>Open <code>constants.py</code> again. Search for:</p>
-        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight"]</pre>
-        <p>Insert the exact name (from Step 2) into the list:</p>
-        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight", "my awesome theme"]</pre>
-        <p>Done! Start the program via <code>main.py</code> and select your new theme in the options.</p>
-    </div>
 
 </div>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modding Guide: Anpassade Teman & Språk</title>
+    <title>Moddningsguide: Anpassade Teman & Språk</title>
     <style>
         body { background-color: #1e1e1e; background-image: radial-gradient(#2a2a2a 1px, transparent 1px); background-size: 20px 20px; color: #d0d0d0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; line-height: 1.6; margin: 0; }
         .container { max-width: 900px; margin: 0 auto; background-color: #2b2b2b; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #3a3a3a; }
@@ -24,88 +24,86 @@
 <body>
 
 <div class="container">
-    <h1>🎨 Modding Guide: Anpassade Teman & Språk</h1>
-    <p class="intro">Välkommen! Den här guiden riktar sig till avancerade användare och modding-entusiaster som vill anpassa <strong>melcom's FFmpeg Audio Normalizer</strong>. Även om du inte behöver skriva komplex kod, krävs grundläggande kunskaper om hur man kör Python-skript och använder en textredigerare (som Notepad++).</p>
+    <h1>🎨 Moddningsguide: Anpassade Teman & Språk</h1>
+    <h2>🌍 Del 1: Superenkelt - lägg till ett språk</h2>
+<p class="intro">Den här guiden är för alla som vill ändra språk själva. Du behöver inte Python eller programmeringskunskaper. En vanlig textredigerare räcker. Med den kan du ändra befintliga språkfiler eller skapa nya.</p>
 
-    <div class="prereq-box">
-        <h3>⚠️ Förutsättning: Källkod & Python</h3>
-        <p>Den här guiden är avsedd för avancerade hobbyister och moddare. Eftersom standardfärgerna och språkscheman är inbyggda i programmet, måste anpassningar göras direkt i källkodsfilerna.</p>
-        <p><strong>Hur man gör:</strong> Packa helt enkelt upp filen <code>AudioNormalizer-Source_Code.7z</code> från mappen <code>source_code</code> i detta release-paket. För att arbeta med dessa filer måste <strong>Python</strong> vara installerat på ditt system.</p>
-        <p>När du har gjort dina modifieringar har du två sätt att köra dem på:</p>
-        <ul>
-            <li><strong>Kör direkt:</strong> Starta helt enkelt det modifierade programmet direkt via filen <code>main.py</code> (kräver installerad Python).</li>
-            <li><strong>Kompilera din egen .exe:</strong> Om du vet hur man hanterar kompilatorer kan du enkelt paketera din anpassade källkod till en helt ny, skräddarsydd <code>AudioNormalizer.exe</code> (t.ex. med PyInstaller).</li>
-        </ul>
-        <p>Om du inte har Python installerat ännu kan du ladda ner det gratis här:<br>
-        <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">» www.python.org/downloads</a></p>
-    </div>
+<div class="prereq-box">
+    <h3>✅ Det enda du behöver är en textredigerare</h3>
+    <p>Öppna en språkfil i mappen <code>lang</code> med en vanlig textredigerare. Du kan ändra den, kopiera den eller skapa en ny fil - inget mer behövs.</p>
+    <p>Det betyder att du kan ändra ett befintligt språk eller lägga till ett nytt. Ingen källkod behövs.</p>
+</div>
 
-    <hr>
+<div class="step-box">
+    <h3>Steg 1: Kopiera en fil</h3>
+    <p>Öppna mappen <code>lang</code> och kopiera en av de befintliga språkfilerna. Byt sedan namn på kopian, till exempel till <code>fr_FR.json</code>, <code>es_ES.json</code>, <code>it_IT.json</code>, <code>nl_NL.json</code> eller <code>pt_BR.json</code>.</p>
+</div>
 
-    <h2>🌍 Del 1: Lägga till ett nytt språk</h2>
-    <p>Vill du använda programmet på franska, spanska eller ett helt påhittat språk? Inga problem!</p>
+<div class="step-box">
+    <h3>Steg 2: Ändra bara texten till höger</h3>
+    <p>Viktigt: vänster sida är nyckeln, höger sida är texten. Det är bara texten efter kolon som översätts. Den vänstra delen måste vara exakt densamma.</p>
+    <pre>
+Rätt:
+"save": "Spara"
+"cancel": "Avbryt"
+"open": "Öppna"
 
-    <div class="step-box">
-        <h3>Steg 1: Kopiera en språkfil</h3>
-        <p>Gå till den uppackade källkodsmappen och sedan till <code>lang</code>. Kopiera en befintlig fil, t.ex. <code>en_US.json</code>, och döp om den (t.ex. till <code>fr_FR.json</code> för franska).</p>
-    </div>
+Fel:
+"save": "save"
+"Spara": "Avbryt"
+    </pre>
+    <p>Namnet till vänster ska vara kvar. Översättningen skrivs till höger. Då kan programmet läsa filen rätt.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Steg 2: Översätt</h3>
-        <p>Öppna din nya fil i en textredigerare. Du kommer att se rader som denna:</p>
-        <pre>"app_title": "melcom's FFmpeg Audio Normalizer",</pre>
-        <p><span class="warning">VIKTIGT:</span> Ändra <strong>bara</strong> texten på <strong>höger</strong> sida om kolonet! Den vänstra sidan (t.ex. <code>"app_title"</code>) måste förbli exakt likadan, annars kan inte programmet hitta texten.</p>
-    </div>
+<div class="step-box">
+    <h3>Steg 3: Du kan också använda AI</h3>
+    <p>Du kan också låta en AI göra översättningen. Klistra in språkfilen i ChatGPT eller ett annat AI-verktyg och säg: översätt bara texten till höger, men ändra inte namnen till vänster.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Steg 3: Berätta för programmet om språket</h3>
-        <p>Öppna filen <code>constants.py</code> i din källkodsmapp. Leta efter den här posten (nära toppen):</p>
-        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE"]</pre>
-        <p>Lägg helt enkelt till ditt nya språk i slutet av listan. Glöm inte citattecknen och kommat:</p>
-        <pre>LANGUAGE_CODES_LIST = ["en_US", "de_DE", "pl_PL", "sv_SE", "fr_FR"]</pre>
-        <p>Spara den, starta programmet via <code>main.py</code>, så kan du nu välja ditt språk i alternativen!</p>
-    </div>
+<div class="step-box">
+    <h3>Steg 4: Spara och starta om</h3>
+    <p>Spara filen i mappen <code>lang</code> och starta programmet igen. Då visas det nya språket automatiskt i listan.</p>
+</div>
 
-    <hr>
+<hr>
 
-    <h2>🖌️ Del 2: Skapa ett eget tema (färger)</h2>
-    <p>Programmet levereras med flera inbyggda teman. Föredrar du knallrosa eller neongrönt? Så här gör du:</p>
+<h2>🖌️ Del 2: Skapa ett eget tema</h2>
+<p>Från och med version 4.1.0 hanteras teman via externa JSON-filer i mappen <code>themes</code>. Du behöver inte längre redigera Python-filer.</p>
 
-    <div class="step-box">
-        <h3>Steg 1: Definiera dina färgvärden</h3>
-        <p>Öppna filen <code>theme.py</code>. Kopiera ett befintligt färgblock, t.ex. <code>MIDNIGHT_PALETTE</code>, klistra in det nedanför och döp om det till t.ex. <code>MY_AWESOME_PALETTE</code>. Justera färgerna med Hex-koder (t.ex. <code>#FF0000</code> för rött):</p>
-        <pre>MY_AWESOME_PALETTE = {
-    "bg": "#111111",           # Huvudfönstrets bakgrund
-    "fg": "#ffffff",           # Normal textfärg
-    "info_bg": "#222222",      # Bakgrund för textområden
-    "separator": "#ff00ff",    # Ramar och avdelare
-    "entry_bg": "#222222",     # Textinmatningsfält (t.ex. LUFS)
-    "disabled_fg": "#666666",  # Utgråad text
-    "error_bg": "#ff0000",     # Färg vid ogiltig inmatning
-    "button_bg": "#333333",    # Knappbakgrund
-    "button_hover": "#444444", # Knappfärg vid hover
-    "text_relief": "flat",     # 'flat' (platt) eller 'sunken' (3D)
-    "accent": "#00ff00",       # Huvudaccentfärg (Start-knappen!)
-    "tree_selected": "#00ff00",# Vald rad i fillistan
-    "tree_selected_fg": "#000" # Textfärg på vald rad
+<div class="step-box">
+<h3>Steg 1: Kopiera ett befintligt tema</h3>
+<p>Öppna mappen <code>themes</code> och kopiera en befintlig fil, till exempel <code>light.json</code>. Döp om kopian till exempelvis <code>my_theme.json</code>.</p>
+</div>
+
+<div class="step-box">
+<h3>Steg 2: Anpassa färgerna</h3>
+
+<pre>{
+    "name": "my_theme",
+
+    "bg": "#E0E0E0",              // Programmets huvudsakliga bakgrund
+    "fg": "#000000",              // Huvudsaklig textfärg
+    "info_bg": "#ffffff",         // Textområden och processlogg
+    "separator": "#808080",       // Ramar och avgränsare
+    "entry_bg": "#ffffff",        // Inmatningsfält och kombinationsrutor
+    "disabled_fg": "#6d6d6d",     // Inaktiverad text
+    "error_bg": "#f2b8b5",        // Felmarkeringar
+    "button_bg": "#d3d1ce",       // Knappar och inaktiva flikar
+    "button_hover": "#e4e0d8",    // Hovrings- och aktivt läge
+    "text_relief": "sunken",      // flat, sunken, ridge eller groove
+    "accent": "#0a64ad",          // Primär accentfärg
+    "tree_selected": "#0a64ad",   // Bakgrund för markerad filrad
+    "tree_selected_fg": "#ffffff",// Textfärg för markerad filrad
+    "tree_row_alt": "#f7f7f7"     // Färg för varannan rad
 }</pre>
-    </div>
+<p>Spara filen. Programmet hittar den automatiskt.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Steg 2: Registrera temat i koden</h3>
-        <p>Skrolla ner till botten av <code>theme.py</code> till funktionen <code>def apply_theme(...)</code>. Lägg till ditt tema i <code>if / elif</code>-listan:</p>
-        <pre>    elif mode == "my awesome theme":
-        colors = MY_AWESOME_PALETTE</pre>
-    </div>
+<div class="step-box">
+<h3>Steg 3: Välj temat</h3>
+<p>Starta programmet. Alla giltiga JSON-teman i mappen <code>themes</code> visas automatiskt i temaväljaren.</p>
+</div>
 
-    <div class="step-box">
-        <h3>Steg 3: Gör temat synligt i menyn</h3>
-        <p>Öppna <code>constants.py</code> igen. Sök efter:</p>
-        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight"]</pre>
-        <p>Infoga det exakta namnet (från steg 2) i listan:</p>
-        <pre>THEME_MODES_LIST = ["light", "läderlappen", "melcom", "aquamarine & blue", "midnight", "modernlight", "my awesome theme"]</pre>
-        <p>Klart! Starta programmet via <code>main.py</code> och välj ditt nya tema i alternativen.</p>
-    </div>
 
 </div>
 
