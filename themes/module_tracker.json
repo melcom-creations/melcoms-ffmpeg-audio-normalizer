@@ -1,0 +1,17 @@
+{
+    "name": "module tracker",
+    "bg": "#BE9E78",
+    "fg": "#4A3732",
+    "info_bg": "#000000",
+    "separator": "#806551",
+    "entry_bg": "#B19172",
+    "disabled_fg": "#7A6655",
+    "error_bg": "#6F1F1F",
+    "button_bg": "#C3A282",
+    "button_hover": "#CCAE8F",
+    "text_relief": "flat",
+    "accent": "#3F2E2B",
+    "tree_selected": "#449848",
+    "tree_selected_fg": "#000000",
+    "tree_row_alt": "#B19172"
+}
