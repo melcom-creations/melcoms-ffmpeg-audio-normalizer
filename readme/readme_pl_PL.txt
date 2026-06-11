@@ -1,6 +1,6 @@
-melcom's FFmpeg Audio Normalizer v4.0.3 - Läderlappen Edition 🦇
+melcom's FFmpeg Audio Normalizer v4.1.0
 
-Open-source'owa normalizacja audio z użyciem FFmpeg oraz obsługą LUFS i True Peak.
+Normalizacja audio open source z użyciem FFmpeg oraz obsługą LUFS i True Peak.
 
 Za pomocą tego programu możesz łatwo normalizować głośność swoich plików audio - pojedynczo lub wsadowo - przy użyciu FFmpeg. Przetworzone pliki są automatycznie zapisywane w tym samym folderze co oryginały.
 

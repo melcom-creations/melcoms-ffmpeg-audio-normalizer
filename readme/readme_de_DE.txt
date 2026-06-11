@@ -1,4 +1,4 @@
-melcom's FFmpeg Audio Normalizer v4.0.3 - Läderlappen Edition 🦇
+melcom's FFmpeg Audio Normalizer v4.1.0
 
 Open-Source Audio-Normalisierung mit FFmpeg sowie LUFS- und True-Peak-Unterstützung.
 
@@ -84,7 +84,7 @@ Punchy
 Mehr Präsenz und Druck durch stärkere Kompression.
 
 Aggressiv
-Die intensivste Variante für dichtes und kantiges Material.
+Die intensivste Variante für harte, dichte oder aggressive Produktionen.
 
 
 ========================================

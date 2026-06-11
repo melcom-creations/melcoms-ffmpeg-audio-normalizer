@@ -1,4 +1,4 @@
-melcom's FFmpeg Audio Normalizer v4.0.3 - Läderlappen Edition 🦇
+melcom's FFmpeg Audio Normalizer v4.1.0
 
 Ljudnormalisering med öppen källkod som använder FFmpeg med stöd för LUFS och True Peak.
 
@@ -65,7 +65,7 @@ Arkiv -> Alternativ
 kan du:
 
 - ändra FFmpeg-sökväg
-- byta programsprak
+- byta programspråk
 - byta apptema
 - anpassa loggfilsinställningar
 
@@ -96,7 +96,7 @@ Se till att sökvägen till ffmpeg.exe, ffplay.exe och ffprobe.exe är korrekt k
 
 ffprobe.exe
 Denna fil används för tidsvisningen i ljudspelaren.
-Uppspelningen fungerar fortfarande utan den, men utan varaktighetsinformation.
+Uppspelningen fungerar fortfarande utan den, men utan information om speltid.
 
 LUFS-förinställningar
 Förinställningarna hjälper dig att välja lämpliga ljudstyrkemål för olika plattformar.
