@@ -1,51 +1,54 @@
 # melcom's FFmpeg Audio Normalizer
 
-A professional yet easy-to-use Windows GUI for batch-normalizing audio files with FFmpeg's EBU R128 loudness workflow.
+Welcome to the **Kontrollraum Edition** – where raw audio signals meet absolute **Kontrolle**. If you are tired of wrestling with clunky command-line arguments, cryptic parameters, or clipping nightmares, you have just entered your new audio command center.
 
-Version 4.0.3 ("Läderlappen Edition 🦇") reflects the current GUI and preset workflow, including the Mastering Character selector, dynamic flat-style themes, and the `Transparent` default preset.
+melcom's FFmpeg Audio Normalizer is a professional, high-fidelity Windows GUI designed to give you complete control over batch audio normalization workflows using FFmpeg's industry-standard EBU R128 loudness algorithm. 
+
+With Version 4.1.0, the project has evolved from a simple batch processor into a comprehensive audio workstation. If you're from the demoscene, you know how it is: no half-measures.
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/melcoms_ffmpeg_audio_normalizer_-_image_30._mai_2026,_03_36_51-2560x2560.jpg"><img src="images/melcoms_ffmpeg_audio_normalizer_-_image_30._mai_2026,_03_36_51-2560x2560.jpg?raw=true" alt="melcom's FFmpeg Audio Normalizer Cover" width="600"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/melcoms_ffmpeg_audio_normalizer_-_image_8._juni_2026,_07_56_24-2560x2560.jpg"><img src="images/melcoms_ffmpeg_audio_normalizer_-_image_8._juni_2026,_07_56_24-2560x2560.jpg?raw=true" alt="melcom's FFmpeg Audio Normalizer Cover" width="600"></a>
 </p>
 
 <p align="center">
   <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-before-after.png"><img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="49%"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-start_2026-05-30_015717.png"><img src="images/creations-ffmpeg-start_2026-05-30_015717.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="49%"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/02-creations-ffmpeg-screenshot_2026-06-08_130528.png"><img src="images/02-creations-ffmpeg-screenshot_2026-06-08_130528.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="49%"></a>
 </p>
 
-## ✨ Features
+## ✨ Core Features
 
-*   **Batch Processing:** Add multiple files or entire folders to the queue and process them all in one go.
+*   **Dynamic Live-Sync Inspector:** A completely redesigned, modeless Audio Properties window. It stays open and dynamically synchronizes to show the selected file's metadata, cover art, and real-time statistics as you navigate your queue.
+*   **Lossless Metadata & Artwork Editor:** Manage album covers and edit metadata tags (Artist, Album, Compilation, etc.) for MP3, FLAC, and M4A files *without* touching or re-encoding the original audio stream.
 *   **Two Normalization Modes:**
-    *   **Linear (2-Pass):** Professional mastering-grade normalization using FFmpeg's EBU R128 analysis workflow. This preserves dynamics while achieving accurate LUFS and True Peak targets.
+    *   **Linear (2-Pass):** Professional mastering-grade normalization using FFmpeg's EBU R128 analysis workflow. Preserves dynamics while hitting exact LUFS and True Peak targets.
     *   **Dynamic (1-Pass):** Faster one-pass normalization for podcasts, speech, streaming, and radio-style workflows.
-*   **Mastering Character Selector:** Choose from `Transparent`, `Cohesive`, `Punchy`, and `Aggressive`, and read the matching help text directly below the selector.
-*   **Multiple Dynamic Themes:** Switch on the fly between various flat-style dark and light themes, including *Läderlappen* (default dark), *Melcom*, *Midnight*, *Modernlight*, *Aquamarine & Blue* (classic tracker style), and classic *Light*.
-*   **Dynamic Preset Processing:** The selected preset defines the mastering filter chain, so the processing path stays clear and easy to extend.
-*   **Quality Preservation:** Automatically keeps the original sample rate and bit depth for WAV and FLAC outputs, including high-resolution sources.
-*   **Metadata & Tags:** Preserves artist, title, album, and other tags and carries them into the normalized files.
-*   **Integrated Audio Player:** Preview tracks before processing with simple playlist controls.
-*   **Common Platform Presets:** Includes presets for streaming, podcast, gaming/dynamic music, broadcast, and custom target values.
-*   **Multiple Output Formats:** Save your files in WAV, MP3, FLAC, AAC, or OGG format.
-*   **Automatic Cleanup:** Removes temporary `.temp` files when a process is cancelled or fails.
-*   **Portable Application:** Runs without installation and does not modify the Windows registry.
-*   **Multi-Language Support:** Available in English, German, Polish, and Swedish.
+*   **Advanced Loudness Statistics:** Analyze Integrated Loudness, True Peak, LRA, Crest Factor, RMS Power, and DC Offset using strict EBU R128 standards.
+*   **Nerd-Level Output Precision:** Total control over your exports. Select custom Sample Rates (up to 192kHz), floating-point bit depths for lossless containers, and exact CBR/VBR profiles for lossy targets.
+*   **Drag & Drop Workflow:** Drag single files, multiple selected tracks, or entire nested folders directly from Windows Explorer into the processing queue. Complete with automatic duplicate protection.
+*   **Modder-Friendly JSON Theming Engine:** Fully externalized UI styling. Drop a custom `.json` color palette into the `/themes/` folder, and the app dynamically loads it—even calculating the background's perceived luminance to automatically adjust text contrast.
+*   **FFmpeg Diagnostic Engine:** Cryptic FFmpeg console errors are intercepted and translated into human-readable advice. The app proactively checks for Windows MAX_PATH limits, missing encoders, and folder write permissions before FFmpeg even starts.
+*   **Integrated Audio Player & Equalizer:** Preview tracks natively before processing. Features an interactive click-to-seek timeline, a pulsing graphic equalizer, and Windows-native playback pausing (⏸) with zero CPU usage.
+*   **Mastering Character Selector:** Choose from `Transparent`, `Cohesive`, `Punchy`, and `Aggressive` presets to give your material the exact processing color it needs.
+*   **Quality Preservation by Default:** Automatically retains the original sample rate and bit depth for WAV and FLAC outputs. Your high-res source files are respected.
+*   **Portable & Clean:** Runs entirely without installation, does not modify your Windows registry, and features automatic cleanup of temporary files.
+*   **Multi-Language Support:** Fully localized in English, German, Polish, and Swedish via a dynamic language pack system.
 
 ---
 
 ## 📸 Screenshots Gallery
 
-*Click on any image to view it in full size (opens in a new tab to bypass GitHub loading errors).*
+*Click on any image to view it in full size (opens in a new tab).*
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-lufs_2026-05-29_211451.png"><img src="images/creations-ffmpeg-lufs_2026-05-29_211451.png?raw=true" width="32%" alt="LUFS Preset Selection"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-tp_2026-05-29_211457.png"><img src="images/creations-ffmpeg-tp_2026-05-29_211457.png?raw=true" width="32%" alt="True Peak Preset Selection"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-mastering_2026-05-29_211501.png"><img src="images/creations-ffmpeg-mastering_2026-05-29_211501.png?raw=true" width="32%" alt="Mastering Character Selection"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/03-creations-ffmpeg-screenshot_2026-06-08_130633.png"><img src="images/03-creations-ffmpeg-screenshot_2026-06-08_130633.png?raw=true" width="32%" alt="General Tab"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/04-creations-ffmpeg-screenshot_2026-06-08_130759.png"><img src="images/04-creations-ffmpeg-screenshot_2026-06-08_130759.png?raw=true" width="32%" alt="Metadata Editor"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/05-creations-ffmpeg-screenshot_2026-06-08_130830.png"><img src="images/05-creations-ffmpeg-screenshot_2026-06-08_130830.png?raw=true" width="32%" alt="Artwork Manager"></a>
 </p>
+
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-format_2026-05-29_211513.png"><img src="images/creations-ffmpeg-format_2026-05-29_211513.png?raw=true" width="32%" alt="Output Format Information"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-lang_2026-05-29_212154.png"><img src="images/creations-ffmpeg-lang_2026-05-29_212154.png?raw=true" width="32%" alt="Language Options"></a>
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-theme_2026-05-29_212213.png"><img src="images/creations-ffmpeg-theme_2026-05-29_212213.png?raw=true" width="32%" alt="Theme Options"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/06-creations-ffmpeg-screenshot_2026-06-08_130903.png"><img src="images/06-creations-ffmpeg-screenshot_2026-06-08_130903.png?raw=true" width="32%" alt="Statistics"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/07-creations-ffmpeg-screenshot_2026-06-08_130935.png"><img src="images/07-creations-ffmpeg-screenshot_2026-06-08_130935.png?raw=true" width="32%" alt="Export Controls"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/08-creations-ffmpeg-screenshot_2026-06-08_131001.png"><img src="images/08-creations-ffmpeg-screenshot_2026-06-08_131001.png?raw=true" width="32%" alt="File Management"></a>
 </p>
 
 ---
@@ -86,12 +89,12 @@ The required `.exe` files are located inside the `bin` subfolder.
 
 #### 3. Process Your Files
 
-*   Use **"Add Files"** or **"Add Folder"** to populate the queue
-*   Select your desired **LUFS** and **True Peak** presets
-*   Pick the **Mastering Character** (`Transparent` is the default)
-*   Choose the **Normalization Mode**
-*   Select the desired **Output Format**
-*   Click **"Start Normalization"**
+*   Use **"Add Files"**, **"Add Folder"**, or simply **Drag & Drop** your tracks into the queue.
+*   Select your desired **LUFS** and **True Peak** presets.
+*   Pick the **Mastering Character** (`Transparent` is the default).
+*   Choose the **Normalization Mode**.
+*   Select the desired **Output Format**.
+*   Click **"Start Normalization"**.
 
 The normalized files will be saved in the same directory as the source files with a `-Normalized` suffix.
 
@@ -131,11 +134,17 @@ Recommended settings:
 
 ## 💬 Support & Feedback
 
-Please note that GitHub Issues are intentionally disabled to keep development and support centralized.
+This project is developed and maintained by a single person.
 
-If you find a bug, have a feature request, or need help, please use the contact form on my website:
+Please note that I live with a chronic illness that can sometimes significantly limit my available time, energy, and ability to work on the project. Because of this, there may be periods where I am unable to respond quickly to bug reports, feature requests, or support inquiries.
 
-**http://melcom-creations.github.io/melcom-music/contact.html**
+To keep the project manageable during such times, GitHub Issues are intentionally not used as the primary support channel.
+
+If you encounter a bug, have a feature request, or would simply like to get in touch, you are very welcome to send me a message through my contact page:
+
+http://melcom-creations.github.io/melcom-music/contact.html
+
+Thank you for your understanding, patience, and support.
 
 ---
 
@@ -170,5 +179,5 @@ for details.
 
 ---
 
-Greetings from the shadows 🦇,<br>
+Greetings from the Kontrollraum 🖥️,<br>
 melcom
