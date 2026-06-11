@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 core.py
 Handles core application state, configurations, file paths, and logging.
@@ -11,6 +10,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import constants
 
+# --- Path Helpers ---
 def get_base_path():
     """Determines the root path of the application in both frozen and script states."""
     if getattr(sys, 'frozen', False):
@@ -18,17 +18,21 @@ def get_base_path():
     else:
         return os.path.dirname(os.path.abspath(__file__))
 
+
+# --- Logging ---
 class AppLogger:
     """Thread-safe logging manager with automatic file rotation to prevent excessive memory usage."""
-    
+
     def __init__(self, log_size_kb: int, single_entry: bool):
+        """Initializes the AppLogger."""
         self.max_bytes = log_size_kb * 1024
         self.single_entry = single_entry
         self._loggers = {}
 
     def log(self, filename: str, message: str, mode: str = "a") -> None:
+        """Writes a message to the configured log file."""
         log_path = os.path.join(get_base_path(), filename)
-        
+
         if self.single_entry and mode == "w":
             with open(log_path, "w", encoding="utf-8") as f:
                 f.write(message)
@@ -38,7 +42,7 @@ class AppLogger:
             logger = logging.getLogger(filename)
             logger.setLevel(logging.INFO)
             logger.propagate = False
-            
+
             if not logger.handlers:
                 handler = RotatingFileHandler(
                     log_path, maxBytes=self.max_bytes, backupCount=1, encoding='utf-8'
@@ -46,13 +50,16 @@ class AppLogger:
                 handler.setFormatter(logging.Formatter('%(message)s'))
                 logger.addHandler(handler)
             self._loggers[filename] = logger
-            
+
         self._loggers[filename].info(message)
 
+
+# --- Configuration ---
 class Config:
     """Handles loading, saving, and validating application settings via an INI configuration file."""
-    
+
     def __init__(self):
+        """Initializes the Config."""
         self.ffmpeg_path = ""
         self.log_file_size_kb = 1024
         self.single_log_entry_enabled = True
@@ -61,9 +68,10 @@ class Config:
         self.load_options()
 
     def load_options(self):
+        """Loads application settings from the configuration file."""
         parser = configparser.ConfigParser()
         config_path = os.path.join(get_base_path(), constants.CONFIG_FILE_NAME)
-        
+
         if os.path.exists(config_path):
             parser.read(config_path, encoding='utf-8')
             settings = parser[constants.CONFIG_SECTION_SETTINGS] if constants.CONFIG_SECTION_SETTINGS in parser else {}
@@ -74,16 +82,18 @@ class Config:
             self.theme_mode = settings.get(constants.CONFIG_KEY_THEME_MODE, constants.DEFAULT_THEME_MODE)
         else:
             self.ffmpeg_path = self._find_ffmpeg_path()
-            
+
         self.ensure_log_size_valid()
 
     def _find_ffmpeg_path(self):
+        """Auto-detect FFmpeg in the application directory."""
         program_path = get_base_path()
         if os.path.exists(os.path.join(program_path, constants.FFMPEG_EXECUTABLE_NAME)):
             return program_path
         return ""
 
     def save_options(self):
+        """Persists the current application settings."""
         parser = configparser.ConfigParser()
         parser[constants.CONFIG_SECTION_SETTINGS] = {
             constants.CONFIG_KEY_FFMPEG_PATH: self.ffmpeg_path,
@@ -97,13 +107,15 @@ class Config:
             parser.write(f)
 
     def ensure_log_size_valid(self):
+        """Normalizes the configured log size to a safe minimum."""
         if not isinstance(self.log_file_size_kb, int) or self.log_file_size_kb <= 0:
             self.log_file_size_kb = 1024
 
-# Global configuration and logging instances
 app_config = Config()
 app_logger = AppLogger(app_config.log_file_size_kb, app_config.single_log_entry_enabled)
 
+
+# --- Shared Logger ---
 def reinit_logger():
     """Reinitializes the global logger instance. Required after applying configuration changes."""
     global app_logger
