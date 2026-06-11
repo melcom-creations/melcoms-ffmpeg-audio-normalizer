@@ -11,7 +11,7 @@ With Version 4.1.0, the project has evolved from a simple batch processor into a
 </p>
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/creations-ffmpeg-before-after.png"><img src="images/creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="49%"></a>
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/01-creations-ffmpeg-before-after.png"><img src="images/01-creations-ffmpeg-before-after.png?raw=true" alt="Waveform before and after normalization" width="49%"></a>
   <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/02-creations-ffmpeg-screenshot_2026-06-08_130528.png"><img src="images/02-creations-ffmpeg-screenshot_2026-06-08_130528.png?raw=true" alt="Main application window of FFmpeg Audio Normalizer" width="49%"></a>
 </p>
 
