@@ -163,7 +163,7 @@ For more detailed information, please refer to the included help files:
 
 For a detailed history of all changes, please see:
 
-`CHANGELOG.md`
+[CHANGELOG.md](CHANGELOG.md)
 
 ---
 
@@ -173,7 +173,7 @@ This software is open-source and released under the MIT License.
 
 See:
 
-`LICENSE.txt`
+[LICENSE.txt](LICENSE.txt)
 
 for details.
 
