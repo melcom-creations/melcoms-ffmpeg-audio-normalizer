@@ -4,10 +4,10 @@ Contains all static application data, metadata, format lists, and layout constan
 """
 
 # --- Build Metadata ---
-VERSION = "4.1.0"
+VERSION = "4.1.0 (Hotfix)"
 INTERNAL_VERSION = "dev.10b"
 EDITION_NAME = "Kontrollraum Edition 🖥️"
-BUILD_DATE = "2026-06-11"
+BUILD_DATE = "2026-06-13"
 AUTHOR = "melcom (Andreas Thomas Urban)"
 
 
