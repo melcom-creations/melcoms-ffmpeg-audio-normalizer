@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] (Hotfix) - 2026-06-13
+### Kontrollraum Edition 🖥
+
+### Fixed
+- **Windows Defender False Positive**
+  - Resolved a Windows Defender false positive (`Program:Win32/Wacapew.A!ml`) affecting the initial v4.1.0 release package.
+  - The detection was caused by the executable compression method used during packaging and not by the application itself.
+  - The release has been rebuilt without the affected compression stage.
+
+### Notes
+- Version 4.1.0 never contained a virus, trojan, spyware component, cryptocurrency miner, backdoor, or any other form of malicious software.
+- The application's source code was not affected and remains unchanged.
+- Previous releases, including v4.0.3 and all earlier versions, were also clean and safe to use.
+- Users who downloaded the original v4.1.0 package should replace it with the updated Hotfix build.
+
+---
+
 ## [4.1.0] - 2026-06-11 
 ### Kontrollraum Edition 🖥
 
