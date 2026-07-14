@@ -45,7 +45,7 @@ melcom's FFmpeg Audio Normalizer is a professional Windows application for batch
 
 ## Screenshots Gallery
 
-*Click on any image to view it in full size (opens in a new tab).*
+*Click on any image to view it in full size.*
 
 | Audio Properties | Metadata Editor | Artwork Manager |
 | --- | --- | --- |
