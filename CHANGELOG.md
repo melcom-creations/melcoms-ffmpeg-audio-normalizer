@@ -36,7 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated the About dialog, documentation, release files, and build scripts to reference the standard extensionless `LICENSE` filename.
 - **Missing Application Icon in Update Notification**
   - Applied the melcom application icon to the custom update-available dialog, matching the main window and standard update status messages.
-- **Malformed INI Crash on Startup**
+- **Stale FFmpeg Path in the Running Audio Player**
+  - Updated the active audio player immediately when a new FFmpeg path is saved in Options.
+  - Fixed false fplay.exe and fprobe.exe not-found messages when only the FFmpeg path changed without a language or theme change.
+- **Secondary Windows Flashing Before Centering**
+  - Kept all custom dialog windows transparent and withdrawn while their contents, sizes, and final positions are prepared.
+  - Windows are now mapped at their final positions before becoming visible, preventing brief flashes in the upper-left corner.- **Malformed INI Crash on Startup**
   - Fixed a crash that occurred when `options.ini` existed but did not contain a `[Settings]` section.
   - Corrected the fallback to use `configparser.DEFAULTSECT`; the previous `constants.DEFAULTSECT` reference could raise an `AttributeError` when the `[Settings]` section was missing.
   - `parser.read()` is now wrapped in a `try/except (configparser.Error, OSError)` block, preventing crashes when `options.ini` exists but is unreadable or completely malformed.

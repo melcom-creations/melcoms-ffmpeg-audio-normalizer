@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>melcom's FFmpeg Audio Normalizer - Help</title>
+	<style>
+		body { background-color: #1e1e1e; background-image: radial-gradient(#2a2a2a 1px, transparent 1px); background-size: 20px 20px; color: #d0d0d0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px 20px; line-height: 1.6; margin: 0; }
+		.container { max-width: 900px; margin: 0 auto; background-color: #2b2b2b; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 1px solid #3a3a3a; }
+		h1, h2, h3 { color: #00b7ff; font-weight: 600; margin-top: 30px; }
+		h1 { border-bottom: 2px solid #00b7ff; padding-bottom: 10px; margin-top: 0; font-size: 2.2em; }
+		h2 { border-bottom: 1px solid #3a3a3a; padding-bottom: 8px; margin-top: 40px; }
+		a { color: #4bd1ca; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		code { background-color: #111111; color: #4bd1ca; padding: 3px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.95em; border: 1px solid #333; }
+		ul, ol { padding-left: 24px; }
+		li { margin-bottom: 10px; }
+		.highlight { color: #00b7ff; font-weight: bold; }
+		.hero-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 25px; margin-bottom: 30px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+		.hero-box h1 { border-bottom: none; margin-bottom: 15px; }
+		.hero-box p { margin: 0; font-size: 1.1em; }
+		.toc { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 20px 24px; margin-top: 30px; margin-bottom: 30px; }
+		.toc h2 { margin-top: 0; border-bottom: none; }
+		.info-box, .preset-box { background-color: #222222; border-left: 4px solid #00b7ff; padding: 20px; margin-bottom: 20px; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+		.preset-box h3, .preset-box strong { color: #00b7ff; font-size: 1.2em; margin-top: 0; display: block; margin-bottom: 8px; font-weight: 600; }
+		.preset-box p { margin: 0; }
+		.footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #3a3a3a; text-align: center; color: #888; font-size: 0.9em; }
+		
+		/* Lightbox & Gallery Styles */
+		.gallery { display: flex; gap: 10px; margin-bottom: 25px; }
+		.gallery img { box-sizing: border-box; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 4px; transition: border-color 0.3s; background-color: #1a1a1a; width: 100%; }
+		.gallery img:hover { border-color: #00b7ff; }
+		.gallery-large { flex-wrap: nowrap; }
+		.gallery-large img { max-height: 250px; }
+		.gallery-small { flex-wrap: nowrap; }
+		.gallery-small img { max-height: 120px; }
+		
+		.lightbox { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); overflow: auto; }
+		.lightbox-content { display: block; margin: 40px auto 20px auto; max-width: 90%; max-height: 65vh; border-radius: 4px; box-shadow: 0 5px 25px rgba(0,0,0,0.8); }
+		.lightbox-close { position: absolute; top: 15px; right: 30px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+		.lightbox-close:hover { color: #00b7ff; }
+		.lightbox-thumbnails { display: flex; justify-content: center; gap: 10px; padding: 10px; max-width: 90%; margin: 0 auto; overflow-x: auto; }
+		.lightbox-thumbnails img { height: 80px; border-radius: 4px; cursor: pointer; opacity: 0.5; transition: 0.3s; border: 2px solid transparent; }
+		.lightbox-thumbnails img:hover, .lightbox-thumbnails img.active { opacity: 1; border-color: #00b7ff; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="hero-box">
+			<h1>melcom's FFmpeg Audio Normalizer v4.1.1</h1>
+			<p>Open-source audio normalization powered by FFmpeg, LUFS and True Peak processing. Built for music production, podcasts, gaming audio and large batch workflows - without requiring command-line knowledge.</p>
+		</div>
+		<div class="gallery gallery-large">
+			<img src="images/melcoms_ffmpeg_audio_normalizer_-_image_14._juli_2026,_08_52_09-2560x2560.jpg" alt="Flickwerk Edition cover" onclick="openLightbox(0)">
+			<img src="images/01-creations-ffmpeg-before-after.png" alt="Waveform before and after normalization" onclick="openLightbox(1)">
+		</div>
+		<div class="toc">
+			<h2>Table of Contents</h2>
+			<ul>
+				<li><a href="#requirements">Requirements</a></li>
+				<li><a href="#getting-started">Getting Started</a></li>
+				<li><a href="#updates">Update Checks</a></li>
+				<li><a href="#normalization">Normalization Modes & Export Options</a></li>
+				<li><a href="#controls">Playback Controls & Queue</a></li>
+				<li><a href="#inspector">Audio Properties Inspector</a></li>
+				<li><a href="#presets">Presets & Audio Character</a></li>
+				<li><a href="#quality">Quality & Metadata</a></li>
+				<li><a href="#profile">Profile Management</a></li>
+				<li><a href="#notes">Additional Notes</a></li>
+				<li><a href="#about">About This Help File</a></li>
+			</ul>
+		</div>
+		<h2 id="requirements">Requirements</h2>
+		<p>To use <span class="highlight">melcom's FFmpeg Audio Normalizer</span>, the complete FFmpeg suite is required:</p>
+		<ul>
+			<li><code>ffmpeg.exe</code> - Audio analysis, normalization, and metadata writing</li>
+			<li><code>ffplay.exe</code> - Audio preview playback and player operations</li>
+			<li><code>ffprobe.exe</code> - Reading technical audio information and column detection</li>
+		</ul>
+		<div class="info-box">
+			<strong>Recommended download:</strong><br><br>
+			<a href="https://github.com/BtbN/FFmpeg-Builds/releases" target="_blank" rel="noopener">github.com/BtbN/FFmpeg-Builds/releases</a><br><br>
+			Recommended package:<br><code>ffmpeg-master-latest-win64-gpl.zip</code>
+		</div>
+		<p>After extracting FFmpeg, configure the path to the FFmpeg folder inside the application's options menu.</p>
+		
+		<h2 id="getting-started">Getting Started</h2>
+		<ol>
+			<li>Launch <code>AudioNormalizer.exe</code>.</li>
+			<li>Open: <br><code>File -> Options</code></li>
+			<li>Select the folder containing: <br><code>ffmpeg.exe</code>, <code>ffplay.exe</code> and <code>ffprobe.exe</code></li>
+			<li>Use "Add Files", "Add Folder", or drag your files directly into the queue.</li>
+			<li>Select your desired LUFS preset, True Peak limit and output format.</li>
+			<li>Choose an audio character preset. <span class="highlight">Transparent</span> is the default and applies no additional coloration.</li>
+			<li>Click: <br><span class="highlight">"Start Normalization"</span></li>
+		</ol>
+		<div class="info-box">During processing, the log window displays the current status, FFmpeg output and processing progress in real time.</div>
+		
+		<h2 id="updates">Update Checks</h2>
+		<p>The application can check GitHub Releases for a newer public version when it starts. This option can be enabled or disabled under <code>File -&gt; Options</code>. Pre-release updates can be included with a separate option; they are excluded by default.</p>
+		<p>The automatic check stays silent when the installed version is current or GitHub cannot be reached. Use <code>Info -&gt; Check for Updates...</code> to run a manual check and always receive a result.</p>
+		<div class="info-box">The application only displays a notification and a link to the matching GitHub release. It never downloads or installs updates automatically.</div>
+		
+		<h2 id="normalization">Normalization Modes & Export Options</h2>
+		<div class="preset-box">
+			<h3>Linear (2 Passes)</h3>
+			<p>Recommended for music production, mastering and archival work. The audio file is analyzed during the first pass and normalized with a fixed gain during the second pass. This preserves the original dynamics as accurately as possible.</p>
+		</div>
+		<div class="preset-box">
+			<h3>Dynamic (1 Pass)</h3>
+			<p>Recommended for speech, podcasts, streams and broadcast material. Loudness differences are actively balanced during processing.</p>
+		</div>
+
+		<h3>Advanced Export Options & Real-Time Specs</h3>
+		<p>The Flickwerk Edition offers total control over your output format:</p>
+		<ul>
+			<li><strong>Sample Rate Selection:</strong> Adjust output sample rates from "Original / Default" up to <code>192000 Hz (192 kHz)</code>.</li>
+			<li><strong>Quality & Bit Depth:</strong> 
+				<ul>
+					<li><em>WAV:</em> Choose between 64-bit / 32-bit Floating Point, linear 32-bit / 24-bit / 16-bit integer, and 8-bit unsigned.</li>
+					<li><em>FLAC:</em> Select 24-bit or 16-bit lossless resolutions.</li>
+					<li><em>MP3 & M4A (CBR/VBR):</em> Choose constant bitrates (up to 320 kbps) or highly efficient variable profiles (e.g., V0, V2 for MP3).</li>
+					<li><em>OGG:</em> Supports variable quality levels (q4 to q10) and constant 320 kbps.</li>
+				</ul>
+			</li>
+			<li><strong>Live Specs & Auto-Reset:</strong> A dynamic <code>Specs:</code> indicator updates instantly with your settings. To prevent format conflicts, changing the container format automatically resets both settings back to "Original / Default".</li>
+		</ul>
+
+		<h2 id="controls">Playback Controls & Queue</h2>
+		<p>The built-in player and queue have been highly optimized for a seamless workflow:</p>
+		<ul>
+			<li><strong>Windows Process Freeze (0% CPU):</strong> Clicking Pause puts the FFplay process completely to sleep (using <code>NtSuspendProcess</code>), consuming exactly 0% CPU power while paused.</li>
+			<li><strong>Click-Interactive Seek:</strong> Click anywhere on the progress bar to jump directly to that point in the track. The timeline updates smoothly starting from second 0 without any lag.</li>
+			<li><strong>Asynchronous Treeview Columns:</strong> Columns for *Duration*, *Format*, and *Sample Rate* scan in a background thread, keeping the main interface completely fluid.</li>
+			<li><strong>Column Selector & Windows Integration:</strong> Right-click the headers or context menu to show or hide columns. Right-clicking a file also allows you to quickly locate it in Explorer or open the native Windows properties dialog.</li>
+		</ul>
+
+		<h2 id="inspector">Audio Properties Inspector</h2>
+		<p>The integrated <strong>Audio Properties Inspector</strong> allows you to view comprehensive details about your audio files, edit metadata (ID3 tags), manage cover artwork, and review detailed loudness statistics.</p>
+		
+		<h3>How to access the Inspector:</h3>
+		<p>Select a file in the list and click the <strong>[ i ]</strong> button, or simply <strong>right-click</strong> the desired file.</p>
+		<div class="gallery gallery-large">
+			<img src="images/02-creations-ffmpeg-screenshot_2026-07-14_080543.png" alt="Main application window" onclick="openLightbox(2)">
+			<img src="images/08-creations-ffmpeg-screenshot_2026-07-14_084122.png" alt="Audio Properties" onclick="openLightbox(8)">
+		</div>
+
+		<h3>Features by Tab:</h3>
+		<ul>
+			<li><strong>General Tab:</strong> Displays container, codec, sample rate, channels, duration, and nominal bitrate. To ensure technical accuracy, bit depths for lossy formats are correctly shown as <code>N/A</code>.</li>
+			<li><strong>Details Tab (Metadata):</strong> Edit Song Name, Artist, Album, Year, Genre, and more. Supported features adapt dynamically (WAV only supports standard RIFF INFO, raw AAC is read-only, and M4A offers complete tagging support).</li>
+			<li><strong>Artwork Tab:</strong> View embedded covers for MP3, FLAC, and M4A. Losslessly replace images, export them, or remove them entirely using a dedicated "X" button.</li>
+			<li><strong>Statistics Tab:</strong> Runs a high-precision EBU R128 analysis. View Integrated Loudness, True Peak, Sample Peak, average RMS power, DC Offset, measured bit depth, and Crest Factor.</li>
+			<li><strong>Smart-Copy:</strong> Formats and copies the content of the currently active tab directly into your clipboard with a single click.</li>
+		</ul>
+
+		<h3>Inside the Inspector:</h3>
+		<p>Click on the images to enlarge them.</p>
+		<div class="gallery gallery-small">
+			<img src="images/03-creations-ffmpeg-screenshot_2026-07-14_080600.png" alt="Audio Properties" onclick="openLightbox(3)">
+			<img src="images/04-creations-ffmpeg-screenshot_2026-07-14_080648.png" alt="Metadata editor" onclick="openLightbox(4)">
+			<img src="images/05-creations-ffmpeg-screenshot_2026-07-14_080657.png" alt="Artwork manager" onclick="openLightbox(5)">
+			<img src="images/06-creations-ffmpeg-screenshot_2026-07-14_080711.png" alt="Audio Properties" onclick="openLightbox(6)">
+			<img src="images/07-creations-ffmpeg-screenshot_2026-07-14_081701.png" alt="Export controls" onclick="openLightbox(7)">
+		</div>
+		
+		<h2 id="presets">Presets & Audio Character</h2>
+		<h3>LUFS & True Peak Presets</h3>
+		<ul>
+			<li>The application features clear, modern, and easily understandable preset profiles for all common streaming and broadcast guidelines.</li>
+			<li><span class="highlight">Default / Streaming Safe (-1.0 dBTP)</span> is a strong default choice for most streaming platforms.</li>
+			<li><span class="highlight">Lossy Codec Safe (-2.0 dBTP)</span> provides additional headroom for MP3, M4A and OGG exports.</li>
+			<li><span class="highlight">No Limit / Risky (0.0 dBTP)</span> should only be used when the destination format explicitly allows it.</li>
+		</ul>
+		<h3>Mastering Character</h3>
+		<div class="preset-box">
+			<strong>Transparent</strong>
+			<p>Pure loudness normalization without additional sound shaping.</p>
+		</div>
+		<div class="preset-box">
+			<strong>Cohesive</strong>
+			<p>Adds gentle compression and subtle soft clipping for a tighter overall mix.</p>
+		</div>
+		<div class="preset-box">
+			<strong>Punchy</strong>
+			<p>Delivers stronger impact, more energy and more noticeable dynamic processing.</p>
+		</div>
+		<div class="preset-box">
+			<strong>Aggressive</strong>
+			<p>The strongest processing mode for dense, sharp or aggressive electronic material.</p>
+		</div>
+		
+		<h2 id="quality">Quality & Metadata</h2>
+		<h3>Audio Quality Preservation</h3>
+		<p>When exporting to WAV or FLAC, original sample rates and bit depths are preserved automatically, unless a custom configuration has been manually selected.</p>
+		<h3>Metadata & Tags</h3>
+		<p>Artist, album, title, year and additional metadata are copied automatically to the normalized output file.</p>
+		<p>MP3 files automatically use the ID3v2.3 standard for maximum compatibility with Windows Explorer and hardware players.</p>
+
+		<h2 id="profile">Profile Management</h2>
+		<p>The Flickwerk Edition features a flexible configuration profile system that allows you to save, load, and manage your preferred parameter settings. This is highly useful for rapidly switching between different workflows (e.g., podcast normalization vs. high-fidelity music mastering).</p>
+		<h3>Available Actions:</h3>
+		<ul>
+			<li><strong>Save Profile...:</strong> Export all current settings to a JSON profile inside the <code>/profile/</code> directory. You can specify a custom file name.</li>
+			<li><strong>Load Profile...:</strong> Import a previously saved configuration from the <code>/profile/</code> directory to instantly restore your workspace state.</li>
+			<li><strong>Reset to Defaults:</strong> Instantly reset all configuration drop-downs, custom target values, and mastering options back to their safe default parameters.</li>
+		</ul>
+		<p>The profile system saves the complete set of Loudness settings (target LUFS, True Peak, Mastering Character), the chosen Normalization Mode, and the Output Format details (including target Sample Rate and Quality/Bit Depth selections).</p>
+		
+		<h2 id="notes">Additional Notes</h2>
+		<div class="info-box"><strong>Execution Smoothing:</strong> Subprocess reading now executes via <code>readline()</code> instead of reading byte-by-byte. This significantly cuts CPU overhead and entirely prevents GUI stutter during active processing.</div>
+		<div class="info-box"><strong>Robustness Guards:</strong> The application proactively prevents queue additions if the configured FFmpeg path is missing or invalid to avoid runtime issues.</div>
+		<div class="info-box">If a process is interrupted or an error occurs, temporary working files (<code>.temp</code>) are automatically removed.</div>
+		
+		<h2 id="about">About This Help File</h2>
+		<p>This project was created by melcom and released under the MIT License.</p>
+		<p>Project website:<br><a href="https://melcom-creations.github.io/melcom-music/" target="_blank" rel="noopener">melcom-creations.github.io/melcom-music</a></p>
+		
+		<div class="footer">
+			<p>melcom's FFmpeg Audio Normalizer v4.1.1 - Flickwerk Edition</p>
+		</div>
+	</div>
+
+	<!-- Lightbox Container -->
+	<div id="lightbox" class="lightbox">
+		<span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+		<img class="lightbox-content" id="lightbox-img">
+		<div class="lightbox-thumbnails" id="lightbox-thumbnails"></div>
+	</div>
+
+	<script>
+		const images = [
+			"images/melcoms_ffmpeg_audio_normalizer_-_image_14._juli_2026,_08_52_09-2560x2560.jpg",
+			"images/01-creations-ffmpeg-before-after.png",
+			"images/02-creations-ffmpeg-screenshot_2026-07-14_080543.png",
+			"images/03-creations-ffmpeg-screenshot_2026-07-14_080600.png",
+			"images/04-creations-ffmpeg-screenshot_2026-07-14_080648.png",
+			"images/05-creations-ffmpeg-screenshot_2026-07-14_080657.png",
+			"images/06-creations-ffmpeg-screenshot_2026-07-14_080711.png",
+			"images/07-creations-ffmpeg-screenshot_2026-07-14_081701.png",
+			"images/08-creations-ffmpeg-screenshot_2026-07-14_084122.png"
+		];
+
+		function openLightbox(index) {
+			document.getElementById('lightbox').style.display = 'block';
+			setLightboxImage(index);
+		}
+
+		function closeLightbox() {
+			document.getElementById('lightbox').style.display = 'none';
+		}
+
+		function setLightboxImage(index) {
+			const img = document.getElementById('lightbox-img');
+			img.src = images[index];
+			renderLightboxThumbnails(index);
+		}
+
+		function renderLightboxThumbnails(activeIndex) {
+			const container = document.getElementById('lightbox-thumbnails');
+			container.innerHTML = '';
+			images.forEach((src, index) => {
+				const thumb = document.createElement('img');
+				thumb.src = src;
+				if (index === activeIndex) {
+					thumb.classList.add('active');
+				}
+				thumb.onclick = () => setLightboxImage(index);
+				container.appendChild(thumb);
+			});
+		}
+
+		// Close lightbox when clicking outside the image
+		document.getElementById('lightbox').addEventListener('click', function(e) {
+			if (e.target === this) {
+				closeLightbox();
+			}
+		});
+
+		// Keyboard navigation support
+		document.addEventListener('keydown', function(e) {
+			if (document.getElementById('lightbox').style.display === 'block') {
+				if (e.key === 'Escape') closeLightbox();
+			}
+		});
+	</script>
+</body>
+</html>
