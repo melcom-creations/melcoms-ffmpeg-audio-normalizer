@@ -65,6 +65,8 @@ class Config:
         self.single_log_entry_enabled = True
         self.language = constants.DEFAULT_LANGUAGE_CODE
         self.theme_mode = constants.DEFAULT_THEME_MODE
+        self.check_for_updates_automatically = constants.DEFAULT_CHECK_FOR_UPDATES
+        self.include_prerelease_updates = constants.DEFAULT_INCLUDE_PRERELEASE_UPDATES
         self.load_options()
 
     def load_options(self):
@@ -73,13 +75,29 @@ class Config:
         config_path = os.path.join(get_base_path(), constants.CONFIG_FILE_NAME)
 
         if os.path.exists(config_path):
-            parser.read(config_path, encoding='utf-8')
-            settings = parser[constants.CONFIG_SECTION_SETTINGS] if constants.CONFIG_SECTION_SETTINGS in parser else {}
+            try:
+                parser.read(config_path, encoding='utf-8')
+            except (configparser.Error, OSError):
+                pass
+            if constants.CONFIG_SECTION_SETTINGS in parser:
+                settings = parser[constants.CONFIG_SECTION_SETTINGS]
+            else:
+                settings = parser[configparser.DEFAULTSECT]
             self.ffmpeg_path = settings.get(constants.CONFIG_KEY_FFMPEG_PATH, self._find_ffmpeg_path())
-            self.log_file_size_kb = settings.getint(constants.CONFIG_KEY_LOG_FILE_SIZE, 1024)
-            self.single_log_entry_enabled = settings.getboolean(constants.CONFIG_KEY_SINGLE_LOG_ENTRY, True)
+            self.log_file_size_kb = self._get_int_safe(settings, constants.CONFIG_KEY_LOG_FILE_SIZE, 1024)
+            self.single_log_entry_enabled = self._get_bool_safe(settings, constants.CONFIG_KEY_SINGLE_LOG_ENTRY, True)
             self.language = settings.get(constants.CONFIG_KEY_LANGUAGE, constants.DEFAULT_LANGUAGE_CODE)
             self.theme_mode = settings.get(constants.CONFIG_KEY_THEME_MODE, constants.DEFAULT_THEME_MODE)
+            self.check_for_updates_automatically = self._get_bool_safe(
+                settings,
+                constants.CONFIG_KEY_CHECK_FOR_UPDATES,
+                constants.DEFAULT_CHECK_FOR_UPDATES
+            )
+            self.include_prerelease_updates = self._get_bool_safe(
+                settings,
+                constants.CONFIG_KEY_INCLUDE_PRERELEASE_UPDATES,
+                constants.DEFAULT_INCLUDE_PRERELEASE_UPDATES
+            )
         else:
             self.ffmpeg_path = self._find_ffmpeg_path()
 
@@ -92,6 +110,22 @@ class Config:
             return program_path
         return ""
 
+    @staticmethod
+    def _get_int_safe(settings, key, fallback):
+        """Safely reads an integer value from a ConfigParser section, returning the fallback on any error."""
+        try:
+            return settings.getint(key, fallback=fallback)
+        except (ValueError, TypeError, configparser.Error):
+            return fallback
+
+    @staticmethod
+    def _get_bool_safe(settings, key, fallback):
+        """Safely reads a boolean value from a ConfigParser section, returning the fallback on any error."""
+        try:
+            return settings.getboolean(key, fallback=fallback)
+        except (ValueError, TypeError, configparser.Error):
+            return fallback
+
     def save_options(self):
         """Persists the current application settings."""
         parser = configparser.ConfigParser()
@@ -100,11 +134,16 @@ class Config:
             constants.CONFIG_KEY_LOG_FILE_SIZE: str(self.log_file_size_kb),
             constants.CONFIG_KEY_SINGLE_LOG_ENTRY: str(self.single_log_entry_enabled),
             constants.CONFIG_KEY_LANGUAGE: self.language,
-            constants.CONFIG_KEY_THEME_MODE: self.theme_mode
+            constants.CONFIG_KEY_THEME_MODE: self.theme_mode,
+            constants.CONFIG_KEY_CHECK_FOR_UPDATES: str(self.check_for_updates_automatically),
+            constants.CONFIG_KEY_INCLUDE_PRERELEASE_UPDATES: str(self.include_prerelease_updates)
         }
         config_path = os.path.join(get_base_path(), constants.CONFIG_FILE_NAME)
-        with open(config_path, "w", encoding='utf-8') as f:
-            parser.write(f)
+        try:
+            with open(config_path, "w", encoding='utf-8') as f:
+                parser.write(f)
+        except OSError:
+            pass
 
     def ensure_log_size_valid(self):
         """Normalizes the configured log size to a safe minimum."""

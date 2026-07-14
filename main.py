@@ -3,7 +3,12 @@ main.py
 Application Entry Point for melcom's FFmpeg Audio Normalizer.
 """
 
-from tkinterdnd2 import TkinterDnD
+try:
+    from tkinterdnd2 import TkinterDnD
+except Exception:
+    TkinterDnD = None
+    import tkinter as tk
+
 from gui import AudioNormalizerApp
 
 
@@ -31,7 +36,7 @@ def _center_window(root) -> None:
 
 # --- Application Entry Point ---
 if __name__ == "__main__":
-    root = TkinterDnD.Tk()
+    root = TkinterDnD.Tk() if TkinterDnD is not None else tk.Tk()
     root.withdraw()
 
     app = AudioNormalizerApp(root)

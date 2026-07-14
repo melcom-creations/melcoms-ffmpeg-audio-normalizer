@@ -4,11 +4,16 @@ Contains all static application data, metadata, format lists, and layout constan
 """
 
 # --- Build Metadata ---
-VERSION = "4.1.0 (Hotfix)"
-INTERNAL_VERSION = "dev.10b"
-EDITION_NAME = "Kontrollraum Edition 🖥️"
-BUILD_DATE = "2026-06-13"
+VERSION = "4.1.1"
+INTERNAL_VERSION = "dev.06"
+EDITION_NAME = "Flickwerk Edition"
+BUILD_DATE = "2026-07-14"
 AUTHOR = "melcom (Andreas Thomas Urban)"
+
+# --- Update Checks ---
+GITHUB_RELEASES_API = "https://api.github.com/repos/melcom-creations/melcoms-ffmpeg-audio-normalizer/releases?per_page=30"
+UPDATE_CHECK_TIMEOUT_SECONDS = 5.0
+UPDATE_CHECK_STARTUP_DELAY_MS = 2000
 
 
 # --- User Interface Spacing ---
@@ -55,6 +60,10 @@ CONFIG_KEY_FFMPEG_PATH = "ffmpeg_path"
 CONFIG_KEY_LOG_FILE_SIZE = "log_file_size_kb"
 CONFIG_KEY_SINGLE_LOG_ENTRY = "single_log_entry_enabled"
 CONFIG_KEY_LANGUAGE = "language"
+CONFIG_KEY_CHECK_FOR_UPDATES = "check_for_updates_automatically"
+CONFIG_KEY_INCLUDE_PRERELEASE_UPDATES = "include_prerelease_updates"
+DEFAULT_CHECK_FOR_UPDATES = True
+DEFAULT_INCLUDE_PRERELEASE_UPDATES = False
 
 
 # --- Localization ---

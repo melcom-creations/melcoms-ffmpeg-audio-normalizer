@@ -37,11 +37,15 @@ class AudioPlayer:
 
     def _set_playback_suspended(self, suspend: bool):
         """Uses Windows native API to freeze/unfreeze the ffplay subprocess."""
-        if not self.current_playback_process or self.current_playback_process.poll() is not None:
+        process = self.current_playback_process
+        if process is None or process.poll() is not None:
+            return False
+        handle_value = getattr(process, "_handle", None)
+        if handle_value is None:
             return False
         try:
             ntdll = ctypes.WinDLL("ntdll.dll")
-            handle = int(self.current_playback_process._handle)
+            handle = int(handle_value)
             if suspend:
                 status = ntdll.NtSuspendProcess(handle)
                 return status == 0
@@ -79,7 +83,7 @@ class AudioPlayer:
             except Exception:
                 pass
 
-    def play(self, filepath, start_time_sec=0):
+    def play(self, filepath: str, start_time_sec: float = 0.0):
         """Starts playback of a file in a separate background thread."""
         self.stop()
         self.playback_generation += 1
@@ -91,7 +95,7 @@ class AudioPlayer:
         self.is_playing = True
         thread.start()
 
-    def _playback_worker(self, filepath, start_time_sec, playback_id):
+    def _playback_worker(self, filepath: str, start_time_sec: float, playback_id: int):
         """Loads metadata and launches FFplay on a background thread."""
         self.gui_queue.put(("toggle_playback_controls", False))
 
@@ -133,15 +137,19 @@ class AudioPlayer:
                 cmd.extend(["-ss", str(start_time_sec)])
             cmd.append(filepath)
 
-            self.current_playback_process = subprocess.Popen(
-                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, 
-                text=True, creationflags=subprocess.CREATE_NO_WINDOW, 
+            process = subprocess.Popen(
+                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                text=True, creationflags=subprocess.CREATE_NO_WINDOW,
                 encoding='utf-8', errors='ignore'
             )
+            self.current_playback_process = process
+            stderr = process.stderr
+            if stderr is None:
+                raise RuntimeError("FFplay stderr pipe is unavailable.")
 
             buffer = ""
             while self.is_playing and playback_id == self.current_playback_id:
-                char = self.current_playback_process.stderr.read(1)
+                char = stderr.read(1)
                 if not char:
                     break
                 if char in ('\r', '\n'):
@@ -153,7 +161,7 @@ class AudioPlayer:
                 else:
                     buffer += char
 
-            self.current_playback_process.wait()
+            process.wait()
         except FileNotFoundError:
             self.gui_queue.put(("error", ("Playback Error", "ffplay.exe could not be executed.")))
         except Exception as e:

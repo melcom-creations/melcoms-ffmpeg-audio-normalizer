@@ -68,7 +68,7 @@ class HoverTooltip:
                 background=self.background
             )
             self.label.pack()
-        else:
+        elif self.label is not None:
             self.label.config(text=text)
 
         self.tooltip.wm_geometry(f"+{x + 15}+{y + 10}")

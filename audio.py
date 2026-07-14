@@ -252,55 +252,58 @@ class FFMpegProcessor:
         ret_code, stderr = self._run_process(command)
         stderr = self._clean_temp_paths_from_log(stderr, temp_file, file_path)
 
-        if ret_code == 0:
+        # Temp file cleanup runs in all cases
+        try:
+            if ret_code != 0:
+                return False, stderr
+
             try:
                 os.replace(temp_file, file_path)
-                try:
-                    if is_mp3:
-                        try:
-                            id3 = ID3(file_path)
-                        except Exception:
-                            id3 = ID3()
-
-                        id3.delall("COMM")
-                        id3.delall("WXXX")
-                        id3.delall("TENC")
-
-                        txxx_keys = [k for k in id3.keys() if k.startswith("TXXX")]
-                        for k in txxx_keys:
-                            desc = getattr(id3[k], "desc", "").lower()
-                            if desc in ("comment", "url", "encoded by"):
-                                del id3[k]
-
-                        encoded_by_val = tags.get("encoded_by", "")
-                        if str(encoded_by_val).strip():
-                            id3.add(TENC(encoding=3, text=[str(encoded_by_val)]))
-
-                        url_val = tags.get("url", "")
-                        if str(url_val).strip():
-                            id3.add(WXXX(encoding=3, desc="", url=str(url_val)))
-
-                        comment_val = tags.get("comment", "")
-                        if str(comment_val).strip():
-                            id3.add(COMM(encoding=3, lang="eng", desc="", text=[str(comment_val)]))
-
-                        id3.save(file_path, v2_version=3)
-                except Exception:
-                    pass
-                return True, ""
             except OSError as e:
                 if "[WinError 5]" in str(e):
                     return False, "ERR_ACCESS_DENIED"
                 return False, f"Failed to replace original file: {str(e)}"
-            finally:
-                if os.path.exists(temp_file):
-                    try: os.remove(temp_file)
-                    except OSError: pass
-        else:
+
+            if is_mp3:
+                try:
+                    try:
+                        id3 = ID3(file_path)
+                    except Exception:
+                        id3 = ID3()
+
+                    id3.delall("COMM")
+                    id3.delall("WXXX")
+                    id3.delall("TENC")
+
+                    txxx_keys = [k for k in id3.keys() if k.startswith("TXXX")]
+                    for k in txxx_keys:
+                        desc = getattr(id3[k], "desc", "").lower()
+                        if desc in ("comment", "url", "encoded by"):
+                            del id3[k]
+
+                    encoded_by_val = tags.get("encoded_by", "")
+                    if str(encoded_by_val).strip():
+                        id3.add(TENC(encoding=3, text=[str(encoded_by_val)]))
+
+                    url_val = tags.get("url", "")
+                    if str(url_val).strip():
+                        id3.add(WXXX(encoding=3, desc="", url=str(url_val)))
+
+                    comment_val = tags.get("comment", "")
+                    if str(comment_val).strip():
+                        id3.add(COMM(encoding=3, lang="eng", desc="", text=[str(comment_val)]))
+
+                    id3.save(file_path, v2_version=3)
+                except Exception:
+                    pass
+
+            return True, ""
+        finally:
             if os.path.exists(temp_file):
-                try: os.remove(temp_file)
-                except OSError: pass
-            return False, stderr
+                try:
+                    os.remove(temp_file)
+                except OSError:
+                    pass
 
     def extract_artwork(self, file_path, out_png_path, scale_size=None):
         """Extracts embedded artwork from the selected audio file."""
@@ -359,7 +362,8 @@ class FFMpegProcessor:
             "-i", file_path,
             "-i", artwork_image_path,
             "-map", "0:a", "-map", "1:v",
-            "-c" + ":a", "copy"
+            "-c:a", "copy",
+            "-map_metadata", "0"
         ]
 
         if is_mp3:
@@ -599,13 +603,14 @@ class FFMpegProcessor:
                 cmd_options = constants.OGG_ENCODER_MAP.get(quality_str, ["-q:a", "10"])
 
         command = [self.ffmpeg_path, "-hide_banner", "-nostats", "-i", input_file, "-map_metadata", "0", "-af", af_filter_string]
-        if output_format_name == "MP3": 
+        if output_format_name == "MP3":
             command.extend(["-id3v2_version", "3", "-write_id3v1", "0"])
 
         if output_format_name not in ["MP3", "FLAC", "M4A"]:
+            command.extend(["-map", "0:a"])
             command.append("-vn")
         else:
-            command.extend(["-c:v", "copy"])
+            command.extend(["-map", "0:a", "-map", "0:v?", "-c:v", "copy"])
 
         command.extend(cmd_rate)
         command.extend(cmd_channels)

@@ -98,6 +98,72 @@ class AboutDialog:
         ttk.Button(about_frame, text=get_text("about_ok_button"), command=self.on_close).pack(pady=constants.GUI_PADY)
 
 
+# --- Update Dialog ---
+class UpdateAvailableDialog:
+    """Displays a localized notification for a newer GitHub release."""
+
+    def __init__(self, parent, colors, current_version, latest_version, release_url):
+        """Initializes the update notification dialog."""
+        self.parent = parent
+        self.release_url = release_url
+        self.win = tk.Toplevel(parent)
+
+        icon_path = os.path.join(core.get_base_path(), "favicon", "melcom.ico")
+        if not os.path.exists(icon_path):
+            icon_path = os.path.join(core.get_base_path(), "custom", "favicon", "melcom.ico")
+        if os.path.exists(icon_path):
+            try:
+                self.win.iconbitmap(icon_path)
+            except Exception:
+                pass
+
+        self.win.geometry("520x230")
+        self.win.title(get_text("update_available_title"))
+        self.win.configure(bg=colors["bg"])
+        self.win.transient(parent)
+        self.win.grab_set()
+        self.win.protocol("WM_DELETE_WINDOW", self.close)
+
+        frame = ttk.LabelFrame(self.win, text=f" {get_text('update_available_title')} ")
+        frame.pack(fill=tk.BOTH, expand=True, padx=constants.GUI_PADX, pady=constants.GUI_PADY)
+
+        message = get_text(
+            "update_available_message",
+            current_version=current_version,
+            latest_version=latest_version
+        )
+        ttk.Label(
+            frame,
+            text=message,
+            justify=tk.LEFT,
+            wraplength=460
+        ).pack(fill=tk.X, padx=constants.GUI_PADX, pady=(constants.GUI_PADY * 2, constants.GUI_PADY))
+
+        button_frame = ttk.Frame(frame)
+        button_frame.pack(pady=constants.GUI_PADY)
+        ttk.Button(
+            button_frame,
+            text=get_text("update_open_release_button"),
+            command=self.open_release
+        ).pack(side=tk.LEFT, padx=5)
+        ttk.Button(
+            button_frame,
+            text=get_text("update_later_button"),
+            command=self.close
+        ).pack(side=tk.LEFT, padx=5)
+
+        utils.center_window(self.win)
+
+    def open_release(self):
+        """Opens the matching GitHub release page and closes the dialog."""
+        webbrowser.open(self.release_url)
+        self.close()
+
+    def close(self):
+        """Closes the update notification dialog."""
+        self.win.destroy()
+
+
 # --- Options Dialog ---
 class OptionsDialog:
     """Displays the options window for application preferences."""
@@ -108,7 +174,8 @@ class OptionsDialog:
         self.colors = colors
         self.win = tk.Toplevel(self.parent)
 
-        self.win.geometry("600x320")
+        self.win.geometry("780x700")
+        self.win.minsize(760, 680)
         self.win.title(get_text("options_dialog_title"))
         self.win.configure(bg=self.colors["bg"])
         self.win.transient(self.parent)
@@ -124,6 +191,8 @@ class OptionsDialog:
         self.ffmpeg_path_var = tk.StringVar(value=config.ffmpeg_path)
         self.single_log_var = tk.BooleanVar(value=config.single_log_entry_enabled)
         self.log_size_var = tk.IntVar(value=config.log_file_size_kb)
+        self.update_check_var = tk.BooleanVar(value=config.check_for_updates_automatically)
+        self.include_prerelease_var = tk.BooleanVar(value=config.include_prerelease_updates)
 
         self.create_widgets()
         utils.center_window(self.win)
@@ -142,48 +211,243 @@ class OptionsDialog:
             child.destroy()
         self.create_widgets()
 
+    def _configure_option_styles(self):
+        """Configures dialog-specific styles for the active application theme."""
+        style = ttk.Style(self.win)
+        card_bg = self.colors["bg"]
+        style.configure("OptionsHeader.TLabel", font=("Segoe UI", 17, "bold"), foreground=self.colors["accent"])
+        style.configure("OptionsSubtitle.TLabel", font=("Segoe UI", 9), foreground=self.colors["disabled_fg"])
+        style.configure(
+            "OptionsCard.TFrame",
+            background=card_bg,
+            bordercolor=self.colors["separator"],
+            relief="flat"
+        )
+        style.configure(
+            "OptionsCardTitle.TLabel",
+            background=card_bg,
+            foreground=self.colors["accent"],
+            font=("Segoe UI", 10, "bold")
+        )
+        style.configure(
+            "OptionsCardText.TLabel",
+            background=card_bg,
+            foreground=self.colors["fg"]
+        )
+        style.configure(
+            "OptionsCardMuted.TLabel",
+            background=card_bg,
+            foreground=self.colors["disabled_fg"],
+            font=("Segoe UI", 8)
+        )
+        style.configure(
+            "OptionsCard.TCheckbutton",
+            background=card_bg,
+            foreground=self.colors["fg"],
+            indicatorcolor=card_bg,
+            bordercolor=self.colors["separator"],
+            focuscolor=card_bg
+        )
+        style.map(
+            "OptionsCard.TCheckbutton",
+            background=[("active", card_bg)],
+            foreground=[("active", self.colors["fg"])],
+            indicatorcolor=[
+                ("active", self.colors["button_hover"]),
+                ("selected", self.colors["accent"])
+            ]
+        )
+
+    def _create_option_card(self, parent, title, description, row):
+        """Creates a themed settings card and returns its content frame."""
+        card = ttk.Frame(parent, style="OptionsCard.TFrame", padding=(18, 14))
+        card.grid(row=row, column=0, sticky="nsew", pady=(0, 12))
+        card.columnconfigure(0, weight=1)
+
+        ttk.Label(card, text=title, style="OptionsCardTitle.TLabel").grid(
+            row=0, column=0, sticky="w"
+        )
+        ttk.Label(
+            card,
+            text=description,
+            style="OptionsCardMuted.TLabel",
+            wraplength=690,
+            justify=tk.LEFT
+        ).grid(row=1, column=0, sticky="ew", pady=(1, 10))
+
+        body = ttk.Frame(card, style="OptionsCard.TFrame")
+        body.grid(row=2, column=0, sticky="nsew")
+        return body
+
     def create_widgets(self):
-        """Creates the dialog widgets."""
-        top_row_frame = ttk.Frame(self.win, style="TFrame")
-        top_row_frame.pack(fill=tk.X, padx=constants.GUI_PADX, pady=constants.GUI_PADY)
+        """Builds the modern card-based options layout."""
+        self._configure_option_styles()
 
-        lang_frame = ttk.LabelFrame(top_row_frame, text=f" {get_text('options_language_group')} ")
-        lang_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+        container = ttk.Frame(self.win, padding=(24, 18))
+        container.pack(fill=tk.BOTH, expand=True)
+        container.columnconfigure(0, weight=1)
+        container.rowconfigure(2, weight=1)
 
-        theme_group_text = get_text("options_theme_group")
-        if theme_group_text.startswith("["): theme_group_text = "Theme Settings"
-        theme_label_text = get_text("options_theme_label")
-        if theme_label_text.startswith("["): theme_label_text = "App Theme:"
+        header = ttk.Frame(container)
+        header.grid(row=0, column=0, sticky="ew", pady=(0, 12))
+        ttk.Label(
+            header,
+            text=get_text("options_dialog_title"),
+            style="OptionsHeader.TLabel"
+        ).pack(anchor="w")
+        ttk.Label(
+            header,
+            text=get_text("options_dialog_subtitle"),
+            style="OptionsSubtitle.TLabel"
+        ).pack(anchor="w", pady=(2, 0))
 
-        theme_frame = ttk.LabelFrame(top_row_frame, text=f" {theme_group_text} ")
-        theme_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        ttk.Separator(container, orient=tk.HORIZONTAL).grid(
+            row=1, column=0, sticky="ew", pady=(0, 14)
+        )
 
-        ffmpeg_frame = ttk.LabelFrame(self.win, text=f" {get_text('options_ffmpeg_path_group')} ")
-        ffmpeg_frame.pack(fill=tk.X, padx=constants.GUI_PADX, pady=constants.GUI_PADY)
+        cards = ttk.Frame(container)
+        cards.grid(row=2, column=0, sticky="nsew")
+        cards.columnconfigure(0, weight=1)
 
-        log_frame = ttk.LabelFrame(self.win, text=f" {get_text('options_log_settings_group')} ")
-        log_frame.pack(fill=tk.X, padx=constants.GUI_PADX, pady=constants.GUI_PADY)
+        appearance_body = self._create_option_card(
+            cards,
+            get_text("options_appearance_section"),
+            get_text("options_appearance_description"),
+            0
+        )
+        appearance_body.columnconfigure(0, weight=1)
+        appearance_body.columnconfigure(1, weight=1)
 
-        ttk.Label(lang_frame, text=get_text("options_language_label")).pack(side=tk.LEFT, padx=5, pady=5)
+        ttk.Label(
+            appearance_body,
+            text=get_text("options_language_label"),
+            style="OptionsCardText.TLabel"
+        ).grid(row=0, column=0, sticky="w", padx=(0, 12))
+        ttk.Label(
+            appearance_body,
+            text=get_text("options_theme_label"),
+            style="OptionsCardText.TLabel"
+        ).grid(row=0, column=1, sticky="w", padx=(12, 0))
+
         language_values = i18n.get_available_language_codes(refresh=True)
-        ttk.Combobox(lang_frame, textvariable=self.lang_var, values=language_values, state="readonly", width=12).pack(side=tk.LEFT, padx=5, pady=5)
+        ttk.Combobox(
+            appearance_body,
+            textvariable=self.lang_var,
+            values=language_values,
+            state="readonly"
+        ).grid(row=1, column=0, sticky="ew", padx=(0, 12), pady=(4, 0))
+        ttk.Combobox(
+            appearance_body,
+            textvariable=self.theme_var,
+            values=constants.THEME_MODES_LIST,
+            state="readonly"
+        ).grid(row=1, column=1, sticky="ew", padx=(12, 0), pady=(4, 0))
 
-        ttk.Label(theme_frame, text=theme_label_text).pack(side=tk.LEFT, padx=5, pady=5)
-        ttk.Combobox(theme_frame, textvariable=self.theme_var, values=constants.THEME_MODES_LIST, state="readonly", width=18).pack(side=tk.LEFT, padx=5, pady=5)
+        ffmpeg_body = self._create_option_card(
+            cards,
+            get_text("options_ffmpeg_path_group"),
+            get_text("options_ffmpeg_path_description"),
+            1
+        )
+        ffmpeg_body.columnconfigure(0, weight=1)
+        ttk.Entry(
+            ffmpeg_body,
+            textvariable=self.ffmpeg_path_var
+        ).grid(row=0, column=0, sticky="ew", padx=(0, 10))
+        ttk.Button(
+            ffmpeg_body,
+            text=get_text("options_browse_button"),
+            command=self.browse_ffmpeg
+        ).grid(row=0, column=1, sticky="e")
 
-        ttk.Entry(ffmpeg_frame, textvariable=self.ffmpeg_path_var, width=50).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5, pady=5)
-        ttk.Button(ffmpeg_frame, text=get_text("options_browse_button"), command=self.browse_ffmpeg).pack(side=tk.LEFT, padx=5)
+        behavior_body = self._create_option_card(
+            cards,
+            get_text("options_behavior_section"),
+            get_text("options_behavior_description"),
+            2
+        )
+        behavior_body.columnconfigure(0, weight=1)
+        behavior_body.columnconfigure(2, weight=1)
 
+        log_frame = ttk.Frame(behavior_body, style="OptionsCard.TFrame")
+        log_frame.grid(row=0, column=0, sticky="nsew", padx=(0, 18))
+        log_frame.columnconfigure(0, weight=1)
+        ttk.Label(
+            log_frame,
+            text=get_text("options_log_settings_group"),
+            style="OptionsCardTitle.TLabel"
+        ).grid(row=0, column=0, columnspan=2, sticky="w")
+        ttk.Label(
+            log_frame,
+            text=get_text("options_log_settings_description"),
+            style="OptionsCardMuted.TLabel",
+            wraplength=300,
+            justify=tk.LEFT
+        ).grid(row=1, column=0, columnspan=2, sticky="ew", pady=(1, 6))
+        ttk.Checkbutton(
+            log_frame,
+            text=get_text("options_log_single_entry_check"),
+            variable=self.single_log_var,
+            command=self.toggle_log_size,
+            style="OptionsCard.TCheckbutton"
+        ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(0, 5))
+        ttk.Label(
+            log_frame,
+            text=get_text("options_log_size_label"),
+            style="OptionsCardText.TLabel"
+        ).grid(row=3, column=0, sticky="w")
         self.log_size_entry = ttk.Entry(log_frame, textvariable=self.log_size_var, width=10)
-
-        chk = ttk.Checkbutton(log_frame, text=get_text("options_log_single_entry_check"), variable=self.single_log_var, command=self.toggle_log_size)
-        chk.grid(row=0, column=0, columnspan=2, sticky='w', padx=5, pady=5)
-
-        ttk.Label(log_frame, text=get_text("options_log_size_label")).grid(row=1, column=0, sticky='w', padx=5, pady=5)
-        self.log_size_entry.grid(row=1, column=1, sticky='w', padx=5, pady=5)
+        self.log_size_entry.grid(row=3, column=1, sticky="w", padx=(8, 0))
         self.toggle_log_size()
 
-        ttk.Button(self.win, text=get_text("options_save_button"), command=self.save_and_close).pack(pady=constants.GUI_PADY)
+        ttk.Separator(behavior_body, orient=tk.VERTICAL).grid(
+            row=0, column=1, sticky="ns", padx=4
+        )
+
+        update_frame = ttk.Frame(behavior_body, style="OptionsCard.TFrame")
+        update_frame.grid(row=0, column=2, sticky="nsew", padx=(18, 0))
+        update_frame.columnconfigure(0, weight=1)
+        ttk.Label(
+            update_frame,
+            text=get_text("options_update_settings_group"),
+            style="OptionsCardTitle.TLabel"
+        ).grid(row=0, column=0, sticky="w")
+        ttk.Label(
+            update_frame,
+            text=get_text("options_update_settings_description"),
+            style="OptionsCardMuted.TLabel",
+            wraplength=300,
+            justify=tk.LEFT
+        ).grid(row=1, column=0, sticky="ew", pady=(1, 6))
+        ttk.Checkbutton(
+            update_frame,
+            text=get_text("options_update_check_automatically"),
+            variable=self.update_check_var,
+            style="OptionsCard.TCheckbutton"
+        ).grid(row=2, column=0, sticky="w", pady=(0, 5))
+        ttk.Checkbutton(
+            update_frame,
+            text=get_text("options_update_include_prereleases"),
+            variable=self.include_prerelease_var,
+            style="OptionsCard.TCheckbutton"
+        ).grid(row=3, column=0, sticky="w")
+
+        footer = ttk.Frame(container)
+        footer.grid(row=3, column=0, sticky="ew", pady=(14, 0))
+        ttk.Separator(footer, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=(0, 12))
+        button_row = ttk.Frame(footer)
+        button_row.pack(fill=tk.X)
+        ttk.Button(
+            button_row,
+            text=get_text("options_cancel_button"),
+            command=self.on_close
+        ).pack(side=tk.RIGHT)
+        ttk.Button(
+            button_row,
+            text=get_text("options_save_button"),
+            command=self.save_and_close,
+            style="Accent.TButton"
+        ).pack(side=tk.RIGHT, padx=(0, 8))
 
     def browse_ffmpeg(self):
         """Performs browse ffmpeg."""
@@ -205,6 +469,8 @@ class OptionsDialog:
         config.ffmpeg_path = ffmpeg_path
         config.log_file_size_kb = self.log_size_var.get()
         config.single_log_entry_enabled = self.single_log_var.get()
+        config.check_for_updates_automatically = self.update_check_var.get()
+        config.include_prerelease_updates = self.include_prerelease_var.get()
 
         core.reinit_logger()
 

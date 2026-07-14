@@ -24,6 +24,7 @@ import theme
 from audio import FFMpegProcessor
 import utils
 import dialogs
+import update_checker
 from player import AudioPlayer
 from widgets import TreeviewTooltip, HoverTooltip, AudioVisualizer
 from profiles import save_profile, load_profile, reset_profile_to_defaults
@@ -78,6 +79,7 @@ class AudioNormalizerApp:
         self._playback_stop_requested = False
         self._playback_suppress_finish = False
         self._playback_error_received = False
+        self._update_check_in_progress = False
 
         self._status_hover_active = False
         self._status_state = ("status_program_start_no_files", {})
@@ -90,6 +92,7 @@ class AudioNormalizerApp:
         self.create_widgets()
         self.apply_language()
         self.process_gui_queue()
+        self.root.after(UPDATE_CHECK_STARTUP_DELAY_MS, self._run_automatic_update_check)
         utils.center_window(self.root)
 
     def setup_styles(self):
@@ -580,10 +583,63 @@ class AudioNormalizerApp:
 
         info_menu = tk.Menu(self.menubar, tearoff=0)
         info_menu.add_command(label=get_text("menu_info_help"), command=self.open_help_file)
-        info_menu.add_command(label=get_text("menu_info_updates"), command=lambda: webbrowser.open("http://melcom-creations.github.io/melcom-music/creations.html#ffmpeg"))
+        info_menu.add_command(label=get_text("menu_info_updates"), command=lambda: self.check_for_updates(manual=True))
         info_menu.add_separator()
         info_menu.add_command(label=get_text("menu_info_about"), command=self.show_about)
         self.menubar.add_cascade(label=get_text("menu_info"), menu=info_menu)
+
+    def _run_automatic_update_check(self):
+        """Starts the silent startup check when the preference is enabled."""
+        if config.check_for_updates_automatically:
+            self.check_for_updates(manual=False)
+
+    def check_for_updates(self, manual=False):
+        """Checks GitHub Releases without blocking the Tkinter event loop."""
+        if self._update_check_in_progress:
+            if manual:
+                messagebox.showinfo(
+                    get_text("update_check_in_progress_title"),
+                    get_text("update_check_in_progress_message"),
+                    parent=self.root
+                )
+            return
+
+        self._update_check_in_progress = True
+
+        def worker():
+            result = update_checker.check_for_updates(
+                VERSION,
+                GITHUB_RELEASES_API,
+                UPDATE_CHECK_TIMEOUT_SECONDS,
+                include_prereleases=config.include_prerelease_updates
+            )
+            self.gui_queue.put(("update_check_result", (manual, result)))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _handle_update_check_result(self, manual, result):
+        """Displays update results according to automatic or manual check behavior."""
+        self._update_check_in_progress = False
+        if result.status == "available":
+            dialogs.UpdateAvailableDialog(
+                self.root,
+                self.colors,
+                result.current_version,
+                result.latest_version,
+                result.release_url
+            )
+        elif result.status == "current" and manual:
+            messagebox.showinfo(
+                get_text("update_up_to_date_title"),
+                get_text("update_up_to_date_message", current_version=VERSION),
+                parent=self.root
+            )
+        elif result.status == "error" and manual:
+            messagebox.showerror(
+                get_text("update_check_failed_title"),
+                get_text("update_check_failed_message"),
+                parent=self.root
+            )
 
     def apply_language(self):
         """Refreshes all visible text after a language change."""
@@ -819,9 +875,13 @@ class AudioNormalizerApp:
         """Registers drag-and-drop handlers for the file queue."""
         if DND_FILES is None:
             return
+        register_drop_target = getattr(self.file_listbox, "drop_target_register", None)
+        bind_drop = getattr(self.file_listbox, "dnd_bind", None)
+        if not callable(register_drop_target) or not callable(bind_drop):
+            return
         try:
-            self.file_listbox.drop_target_register(DND_FILES)
-            self.file_listbox.dnd_bind("<<Drop>>", self._on_drop_files)
+            register_drop_target(DND_FILES)
+            bind_drop("<<Drop>>", self._on_drop_files)
         except Exception:
             pass
 
@@ -1366,7 +1426,7 @@ class AudioNormalizerApp:
         prev_index = (self.current_track_index - 1 + len(self.file_list)) % len(self.file_list)
         self._start_playback(prev_index)
 
-    def _start_playback(self, track_index, start_time_sec=0):
+    def _start_playback(self, track_index: int, start_time_sec: float = 0.0):
         """Starts playback for the active queue item."""
         if self.player.is_playing: self.stop_audio(show_status=False)
 
@@ -1601,8 +1661,11 @@ class AudioNormalizerApp:
                 elif task == "log":
                     if core.app_logger: core.app_logger.log(*message[1])
                 elif task == "error":
-                    self._playback_error_received = True if not self.is_processing else self._playback_error_received
-                    self.task_finished(status="error", message=message[1])
+                    if self.is_processing:
+                        self.task_finished(status="error", message=message[1])
+                    else:
+                        self._playback_error_received = True
+                        messagebox.showerror(message[1][0], message[1][1], parent=self.root)
                 elif task == "finish": self.task_finished(status=message[1])
                 elif task == "toggle_playback_controls":
                     self.toggle_controls(enable=message[1], for_playback=True)
@@ -1623,6 +1686,9 @@ class AudioNormalizerApp:
                                 self.file_listbox.item(item_id, values=(current_values[0], dur_str, fmt_str, sr_str))
                     except Exception:
                         pass
+                elif task == "update_check_result":
+                    manual, result = message[1]
+                    self._handle_update_check_result(manual, result)
                 elif task == "playback_finished":
                     finished_id = message[1] if len(message) > 1 else 0
                     if finished_id == self.player.current_playback_id or finished_id == 0:
