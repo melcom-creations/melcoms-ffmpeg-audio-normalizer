@@ -17,6 +17,17 @@ import utils
 get_text = i18n.get_text
 config = core.app_config
 
+
+def _set_window_icon(window):
+    """Applies the application icon to a secondary window when available."""
+    icon_path = os.path.join(core.get_base_path(), "favicon", "melcom.ico")
+    if not os.path.exists(icon_path):
+        icon_path = os.path.join(core.get_base_path(), "custom", "favicon", "melcom.ico")
+    if os.path.exists(icon_path):
+        try:
+            window.iconbitmap(icon_path)
+        except Exception:
+            pass
 # --- About Dialog ---
 class AboutDialog:
     """Displays the application's about window."""
@@ -25,16 +36,19 @@ class AboutDialog:
         self.parent = parent
         self.colors = colors
         self.win = tk.Toplevel(self.parent)
+        utils.prepare_window(self.win)
+        _set_window_icon(self.win)
 
         self.win.geometry("455x585") 
         self.win.title(get_text("menu_info_about"))
         self.win.configure(bg=self.colors["bg"])
         self.win.transient(self.parent)
-        self.win.grab_set()
 
         self.win.protocol("WM_DELETE_WINDOW", self.on_close)
         self.create_widgets()
         utils.center_window(self.win)
+        utils.show_prepared_window(self.win)
+        self.win.grab_set()
 
     def on_close(self):
         """Closes the dialog window."""
@@ -107,21 +121,14 @@ class UpdateAvailableDialog:
         self.parent = parent
         self.release_url = release_url
         self.win = tk.Toplevel(parent)
+        utils.prepare_window(self.win)
+        _set_window_icon(self.win)
 
-        icon_path = os.path.join(core.get_base_path(), "favicon", "melcom.ico")
-        if not os.path.exists(icon_path):
-            icon_path = os.path.join(core.get_base_path(), "custom", "favicon", "melcom.ico")
-        if os.path.exists(icon_path):
-            try:
-                self.win.iconbitmap(icon_path)
-            except Exception:
-                pass
 
         self.win.geometry("520x230")
         self.win.title(get_text("update_available_title"))
         self.win.configure(bg=colors["bg"])
         self.win.transient(parent)
-        self.win.grab_set()
         self.win.protocol("WM_DELETE_WINDOW", self.close)
 
         frame = ttk.LabelFrame(self.win, text=f" {get_text('update_available_title')} ")
@@ -153,6 +160,8 @@ class UpdateAvailableDialog:
         ).pack(side=tk.LEFT, padx=5)
 
         utils.center_window(self.win)
+        utils.show_prepared_window(self.win)
+        self.win.grab_set()
 
     def open_release(self):
         """Opens the matching GitHub release page and closes the dialog."""
@@ -173,13 +182,14 @@ class OptionsDialog:
         self.app = app
         self.colors = colors
         self.win = tk.Toplevel(self.parent)
+        utils.prepare_window(self.win)
+        _set_window_icon(self.win)
 
         self.win.geometry("780x700")
         self.win.minsize(760, 680)
         self.win.title(get_text("options_dialog_title"))
         self.win.configure(bg=self.colors["bg"])
         self.win.transient(self.parent)
-        self.win.grab_set()
 
         self.win.protocol("WM_DELETE_WINDOW", self.on_close)
 
@@ -196,6 +206,8 @@ class OptionsDialog:
 
         self.create_widgets()
         utils.center_window(self.win)
+        utils.show_prepared_window(self.win)
+        self.win.grab_set()
 
     def on_close(self):
         """Closes the dialog window."""
@@ -461,12 +473,13 @@ class OptionsDialog:
 
     def save_and_close(self):
         """Saves the current data or settings."""
-        ffmpeg_path = self.ffmpeg_path_var.get()
+        ffmpeg_path = os.path.normpath(self.ffmpeg_path_var.get().strip())
         if not os.path.exists(os.path.join(ffmpeg_path, constants.FFMPEG_EXECUTABLE_NAME)):
             messagebox.showerror(get_text("options_error_invalid_ffmpeg_path_title"), get_text("options_error_invalid_ffmpeg_path_message"), parent=self.win)
             return
 
         config.ffmpeg_path = ffmpeg_path
+        self.app.player.update_ffmpeg_path(ffmpeg_path)
         config.log_file_size_kb = self.log_size_var.get()
         config.single_log_entry_enabled = self.single_log_var.get()
         config.check_for_updates_automatically = self.update_check_var.get()

@@ -17,6 +17,7 @@ class TreeviewTooltip:
         """Displays the tooltip at the requested screen position."""
         self.hide()
         self.tooltip = tk.Toplevel(self.treeview)
+        self.tooltip.withdraw()
         self.tooltip.wm_overrideredirect(True)
         self.tooltip.wm_geometry(f"+{x + 15}+{y + 10}")
 
@@ -31,6 +32,8 @@ class TreeviewTooltip:
             background="#ffffe0"
         )
         label.pack()
+        self.tooltip.update_idletasks()
+        self.tooltip.deiconify()
 
     def hide(self):
         """Destroys the tooltip window if it is visible."""
@@ -52,6 +55,7 @@ class HoverTooltip:
         """Shows or updates the tooltip near the pointer."""
         if self.tooltip is None or not self.tooltip.winfo_exists():
             self.tooltip = tk.Toplevel(self.widget)
+            self.tooltip.withdraw()
             self.tooltip.wm_overrideredirect(True)
             try:
                 self.tooltip.wm_attributes("-topmost", True)
@@ -72,6 +76,7 @@ class HoverTooltip:
             self.label.config(text=text)
 
         self.tooltip.wm_geometry(f"+{x + 15}+{y + 10}")
+        self.tooltip.update_idletasks()
         self.tooltip.deiconify()
         self.tooltip.lift()
 

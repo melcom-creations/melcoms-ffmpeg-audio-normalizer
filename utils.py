@@ -12,6 +12,38 @@ def center_window(window):
     x = (window.winfo_screenwidth() // 2) - (width // 2)
     y = (window.winfo_screenheight() // 2) - (height // 2)
     window.geometry(f'{width}x{height}+{x}+{y}')
+    window.update_idletasks()
+
+
+def prepare_window(window):
+    """Keeps a top-level window invisible while its content and position are prepared."""
+    window.withdraw()
+    try:
+        window.attributes("-alpha", 0.0)
+    except Exception:
+        pass
+
+
+def show_prepared_window(window):
+    """Maps a prepared window invisibly before revealing it at its requested position."""
+    window.update_idletasks()
+    target_geometry = window.geometry()
+    width = window.winfo_width()
+    height = window.winfo_height()
+
+    # Force Windows to create the native window handle away from the visible desktop.
+    window.geometry(f"{width}x{height}+100000+100000")
+    window.deiconify()
+    window.update()
+
+    # Move the already-mapped but transparent window to its final position.
+    window.geometry(target_geometry)
+    window.update()
+    try:
+        window.attributes("-alpha", 1.0)
+    except Exception:
+        pass
+
 
 def format_time(seconds):
     """Formats a duration in seconds as HH:MM:SS."""

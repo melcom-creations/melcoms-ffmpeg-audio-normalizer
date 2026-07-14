@@ -432,12 +432,12 @@ class AudioNormalizerApp:
             winsound.MessageBeep(winsound.MB_ICONASTERISK)
 
             joke_win = tk.Toplevel(self.root)
+            utils.prepare_window(joke_win)
             joke_win.title(get_text("joke_eq_title"))
             joke_win.geometry("380x180")
             joke_win.configure(bg=self.colors["bg"])
             joke_win.transient(self.root)
             joke_win.resizable(False, False)
-            joke_win.grab_set()
 
             frame = ttk.Frame(joke_win, padding=15)
             frame.pack(fill=tk.BOTH, expand=True)
@@ -457,6 +457,8 @@ class AudioNormalizerApp:
             lbl.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
             utils.center_window(joke_win)
+            utils.show_prepared_window(joke_win)
+            joke_win.grab_set()
 
     def _sync_visualizers(self):
         """Keeps both playback visualizers aligned with the current state."""

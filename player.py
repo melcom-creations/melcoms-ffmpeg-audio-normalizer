@@ -33,7 +33,8 @@ class AudioPlayer:
 
     def update_ffmpeg_path(self, new_path):
         """Updates the ffmpeg path if it was changed in the options."""
-        self.ffmpeg_path = new_path
+        self.ffmpeg_path = os.path.normpath(new_path.strip())
+        self.ffprobe_checked = False
 
     def _set_playback_suspended(self, suspend: bool):
         """Uses Windows native API to freeze/unfreeze the ffplay subprocess."""

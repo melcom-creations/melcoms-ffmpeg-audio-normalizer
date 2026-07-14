@@ -69,6 +69,8 @@ class AudioInspectorDialog:
         self.comment_var = tk.StringVar()
 
         self.win = tk.Toplevel(self.parent)
+        utils.prepare_window(self.win)
+        self._set_window_icon(self.win)
         self.win.title(get_inspect_text("inspect_title", "Audio Properties"))
         self.win.geometry("560x740")
         self.win.configure(bg=self.colors["bg"])
@@ -79,13 +81,21 @@ class AudioInspectorDialog:
         self.create_widgets()
         self.reload_data()
 
-        self.win.update_idletasks()
-        width = self.win.winfo_width()
-        height = self.win.winfo_height()
-        x = (self.win.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.win.winfo_screenheight() // 2) - (height // 2)
-        self.win.geometry(f'{width}x{height}+{x}+{y}')
+        utils.center_window(self.win)
+        utils.show_prepared_window(self.win)
         self.win.after_idle(self._remove_initial_focus)
+
+    @staticmethod
+    def _set_window_icon(window):
+        """Applies the application icon to an inspector window when available."""
+        icon_path = os.path.join(core.get_base_path(), "favicon", "melcom.ico")
+        if not os.path.exists(icon_path):
+            icon_path = os.path.join(core.get_base_path(), "custom", "favicon", "melcom.ico")
+        if os.path.exists(icon_path):
+            try:
+                window.iconbitmap(icon_path)
+            except Exception:
+                pass
 
     def on_close_win(self):
         """Closes the inspector window and cleans up temporary files."""
@@ -786,13 +796,12 @@ class AudioInspectorDialog:
 
         try:
             pop = tk.Toplevel(self.win)
+            utils.prepare_window(pop)
+            self._set_window_icon(pop)
             self.preview_window = pop
             pop.title(get_inspect_text("inspect_cover_preview_title", "Cover Preview"))
             pop.configure(bg="#000000")
             pop.transient(self.win)
-            pop.grab_set()
-            pop.lift()
-            pop.focus_set()
 
             self.full_img = tk.PhotoImage(file=large_path)
             w = self.full_img.width()
@@ -815,6 +824,12 @@ class AudioInspectorDialog:
 
             lbl.bind("<Button-1>", lambda e: pop.destroy())
             pop.bind("<Key>", lambda e: pop.destroy())
+
+            pop.update_idletasks()
+            utils.show_prepared_window(pop)
+            pop.grab_set()
+            pop.lift()
+            pop.focus_set()
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to open image preview: {str(e)}", parent=self.win)
