@@ -205,3 +205,19 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# melcom's FFmpeg Audio Normalizer
+
+# Local application settings and runtime data
+/options.ini
+/normalization.log*
+/analysis.log*
+/profile/
+*.temp
+
+# Generated application binaries and release archives
+*.exe
+*.dll
+*.zip
+*.7z
+*.rar
