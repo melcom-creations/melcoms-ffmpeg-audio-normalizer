@@ -6,6 +6,10 @@ Version 4.1.1 focuses on careful repairs, safer behavior, clearer settings, and 
 
 melcom's FFmpeg Audio Normalizer is a professional Windows application for batch audio normalization using FFmpeg's EBU R128 loudness workflow. It combines precise LUFS and True Peak targeting with format conversion, metadata editing, artwork management, audio analysis, and an integrated player.
 
+> **☕ Optional support**
+>
+> melcom's FFmpeg Audio Normalizer is free and will remain free. If you'd like to support my work, you're welcome to [☕ buy me a coffee through PayPal](https://paypal.me/melcom2630). Support is entirely optional and always appreciated.
+
 ## What's New in Version 4.1.1
 
 * **GitHub Release Update Notifications:** Check for newer public releases directly from the application. Automatic checks are optional, remain silent when no update is available, and can include pre-releases when enabled.
