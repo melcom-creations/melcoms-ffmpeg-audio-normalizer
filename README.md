@@ -21,7 +21,11 @@ melcom's FFmpeg Audio Normalizer is a professional Windows application for batch
 * **Metadata and Artwork Repairs:** Improved MP3 URL compatibility and preservation of comments and custom tags when changing artwork, plus fixes for M4A cover handling.
 * **herbstklang Theme:** Warm brown backgrounds, amber accents, and cream-colored text, selected by default when no theme has been saved.
 
-[![Herbstklang Edition cover for melcom's FFmpeg Audio Normalizer 4.1.2](images/00-ffmpeg_audio_normalizer_im_herbstglanz.jpg?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/00-ffmpeg_audio_normalizer_im_herbstglanz.jpg)
+<p align="center">
+  <a href="https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/00-ffmpeg_audio_normalizer_im_herbstglanz.jpg">
+    <img src="images/00-ffmpeg_audio_normalizer_im_herbstglanz.jpg?raw=true" alt="Herbstklang Edition cover for melcom's FFmpeg Audio Normalizer 4.1.2" width="600">
+  </a>
+</p>
 
 | Normalization comparison | Main application window |
 | --- | --- |
@@ -56,8 +60,8 @@ melcom's FFmpeg Audio Normalizer is a professional Windows application for batch
 | Audio Properties | Metadata Editor | Artwork Manager |
 | --- | --- | --- |
 | [![Audio Properties](images/03-screenshot_2026-10-21_193747.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/03-screenshot_2026-10-21_193747.png) | [![Metadata Editor](images/04-screenshot_2026-10-21_193805.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/04-screenshot_2026-10-21_193805.png) | [![Artwork Manager](images/05-screenshot_2026-10-21_193903.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/05-screenshot_2026-10-21_193903.png) |
-| **Loudness & Signal Statistics** | **Export Controls** | **Analysis Progress** |
-| [![Loudness and signal statistics](images/06-screenshot_2026-10-21_193951.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/06-screenshot_2026-10-21_193951.png) | [![Output format selection](images/07-screenshot_2026-10-21_194016.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/07-screenshot_2026-10-21_194016.png) | [![Audio analysis progress](images/08-screenshot_2026-10-21_194038.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/08-screenshot_2026-10-21_194038.png) |
+| **Loudness & Signal Statistics** | **Export Controls** | **Normalization Results** |
+| [![Loudness and signal statistics](images/06-screenshot_2026-10-21_193951.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/06-screenshot_2026-10-21_193951.png) | [![Output format selection](images/07-screenshot_2026-10-21_194016.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/07-screenshot_2026-10-21_194016.png) | [![Normalization results comparing original measurements, targets, and measured output](images/08-Screenshot%202026-10-21%20221814.png?raw=true)](https://raw.githubusercontent.com/melcom-creations/melcoms-ffmpeg-audio-normalizer/main/images/08-Screenshot%202026-10-21%20221814.png) |
 
 ---
 
