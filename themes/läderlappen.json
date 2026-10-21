@@ -1,0 +1,17 @@
+{
+    "name": "läderlappen",
+    "bg": "#171717",
+    "fg": "#f5f5f5",
+    "info_bg": "#222222",
+    "separator": "#4a4a4a",
+    "entry_bg": "#2a2a2a",
+    "disabled_fg": "#7b7b7b",
+    "error_bg": "#7f1d1d",
+    "button_bg": "#303038",
+    "button_hover": "#3a3a44",
+    "text_relief": "flat",
+    "accent": "#CB850C",
+    "tree_selected": "#50505c",
+    "tree_selected_fg": "#ffffff",
+    "tree_row_alt": "#f7f7f7"
+}
