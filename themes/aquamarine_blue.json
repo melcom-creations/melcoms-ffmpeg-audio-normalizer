@@ -1,0 +1,17 @@
+{
+    "name": "aquamarine & blue",
+    "bg": "#12202b",
+    "fg": "#84c6c2",
+    "info_bg": "#0c151c",
+    "separator": "#21394a",
+    "entry_bg": "#0e1922",
+    "disabled_fg": "#416361",
+    "error_bg": "#6b2222",
+    "button_bg": "#182a38",
+    "button_hover": "#223b4f",
+    "text_relief": "flat",
+    "accent": "#4bd1ca",
+    "tree_selected": "#2e506b",
+    "tree_selected_fg": "#e6f7f7",
+    "tree_row_alt": "#13222d"
+}

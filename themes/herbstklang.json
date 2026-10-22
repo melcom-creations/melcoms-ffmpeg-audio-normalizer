@@ -1,0 +1,17 @@
+{
+    "name": "herbstklang",
+    "bg": "#241D18",
+    "fg": "#F3E6D5",
+    "info_bg": "#1C1612",
+    "separator": "#80634A",
+    "entry_bg": "#30251E",
+    "disabled_fg": "#AC947E",
+    "error_bg": "#71392E",
+    "button_bg": "#493426",
+    "button_hover": "#61432E",
+    "text_relief": "flat",
+    "accent": "#E5A65A",
+    "tree_selected": "#78502F",
+    "tree_selected_fg": "#FFF1DB",
+    "tree_row_alt": "#382A21"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "midnight",
+    "bg": "#0f172a",
+    "fg": "#f8fafc",
+    "info_bg": "#1e293b",
+    "separator": "#334155",
+    "entry_bg": "#1e293b",
+    "disabled_fg": "#64748b",
+    "error_bg": "#7f1d1d",
+    "button_bg": "#1e293b",
+    "button_hover": "#334155",
+    "text_relief": "flat",
+    "accent": "#3b82f6",
+    "tree_selected": "#1d4ed8",
+    "tree_selected_fg": "#ffffff",
+    "tree_row_alt": "#f7f7f7"
+}
